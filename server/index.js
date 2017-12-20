@@ -1,15 +1,13 @@
-const express = require('express');
-const cors = require('cors');
-const { json } = require('body-parser');
-const session = require('express-session');
-const massive = require('massive');
-const passport = require('passport');
-const path = require('path');
-const axios = require('axios');
-const { OAuth2Strategy: GoogleStrategy } = require('passport-google-oauth');
-const { Strategy: DevmtnStrategy } = require('devmtn-auth');
-
-const devMtnPassport = new passport.Passport();
+const express = require('express'),
+  cors = require('cors'),
+  { json } = require('body-parser'),
+  session = require('express-session'),
+  massive = require('massive'),
+  passport = require('passport'),
+  path = require('path'),
+  { OAuth2Strategy: GoogleStrategy } = require('passport-google-oauth'),
+  { Strategy: DevmtnStrategy } = require('devmtn-auth'),
+  devMtnPassport = new passport.Passport();
 require('dotenv').config();
 
 const app = express();
@@ -88,18 +86,7 @@ devMtnPassport.serializeUser((user, done) => {
   done(null, user);
 });
 
-passport.serializeUser((user, done) => {
-  const { token, accessToken } = user;
-  if (token && accessToken) {
-    /**
-     * TODO: This may not actually be necessary (and in fact may be bad).
-     * Once endpoint calls to DM.com work, check if this is good or bad.
-     */
-    axios.defaults.headers['x-access-token'] = accessToken;
-    axios.defaults.headers['x-client-token'] = token;
-  }
-  done(null, user);
-});
+passport.serializeUser((user, done) => done(null, user));
 
 passport.deserializeUser((id, done) => {
   const db = app.get('db');
@@ -135,16 +122,13 @@ app.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    axios
-      .get('https://devmountain.com/api/users/mentors')
-      .then(console.log)
-      .catch(console.log);
-    res.redirect(auth_redirect);
+    res.redirect(`${auth_redirect}?isLoggedIn=true`);
   }
 );
+
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
-    res.redirect('/');
+    res.redirect(`${auth_redirect}?isLoggedIn=false`);
   });
 });
 

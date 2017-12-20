@@ -1,5 +1,6 @@
-const mentorCtrl = require('./mentorCtrl');
+const { getMentorRoles, getMentor } = require('./mentorCtrl');
 
 module.exports = app => {
-  app.get('/api/mentors', mentorCtrl.getMentors);
+  app.get('/api/mentor/', getMentor);
+  app.get('/api/mentor_roles', getMentorRoles);
 };
