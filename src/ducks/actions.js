@@ -1,8 +1,13 @@
-export const EXAMPLE_ACTION = 'EXAMPLE_ACTION';
+import axios from 'axios';
 
-export function updateTemplate(update) {
+export const IS_AUTHED = 'IS_AUTHED';
+
+export function verifyLogin() {
   return {
-    type: EXAMPLE_ACTION,
-    update
+    type: IS_AUTHED,
+    payload: axios
+      .get('/api/isLogged')
+      .then(res => res.data)
+      .catch(err => console.log('err: ', err))
   };
 }

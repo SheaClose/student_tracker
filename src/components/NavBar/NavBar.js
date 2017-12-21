@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Logo from '../../images/devLogo.png';
 import './NavBar.css';
 import { rootPath } from '../../resources/resources';
+import { verifyLogin } from '../../ducks/actions';
 
 class NavBar extends Component {
   constructor(props) {
     super(props);
-    if (
-      props.location.search
-        .substring(1)
-        .split('=')
-        .pop() !== 'true'
-    ) { window.location.href = `${rootPath}/auth/devmtn`; }
+    if (!props.isAuthed) {
+      props.verifyLogin();
+    }
   }
   render() {
+    const logInLogOut = this.props.isAuthed ? '/logout' : '/auth/devmtn';
     return (
       <div>
         <div className="navbar navbar-default">
@@ -36,8 +36,8 @@ class NavBar extends Component {
               <a href={`${rootPath}/api/users`}>Users</a>
             </li>
             <li>
-              <a href={`${rootPath}/auth/devmtn`}>
-                Log{this.props.isLoggedIn ? 'out' : 'in'}
+              <a href={`${rootPath}${logInLogOut}`}>
+                Log{this.props.isAuthed ? 'out' : 'in'}
               </a>
             </li>
             <li />
@@ -49,8 +49,8 @@ class NavBar extends Component {
 }
 
 NavBar.propTypes = {
-  isLoggedIn: PropTypes.string,
-  location: PropTypes.any
+  isAuthed: PropTypes.bool,
+  verifyLogin: PropTypes.func.isRequired
 };
 
-export default withRouter(NavBar);
+export default withRouter(connect(state => state, { verifyLogin })(NavBar));
