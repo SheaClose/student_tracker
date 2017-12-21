@@ -139,15 +139,15 @@ app.get(
 app.get('/auth/google', passport.authenticate('google'));
 app.get(
   '/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/' }),
+  passport.authenticate('google', { failureRedirect: '/loginFailure' }),
   (req, res) => {
-    res.redirect(`${auth_redirect}?isLoggedIn=true`);
+    res.redirect(`${auth_redirect}`);
   }
 );
 
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
-    res.redirect(`${auth_redirect}?isLoggedIn=false`);
+    res.redirect(auth_redirect);
   });
 });
 

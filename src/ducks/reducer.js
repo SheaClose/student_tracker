@@ -1,11 +1,21 @@
-import { EXAMPLE_ACTION } from './actions';
+import { IS_AUTHED } from './actions';
 
-const initialState = {};
+const initialState = {
+  isAuthed: false,
+  pendingAuth: false
+};
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-  case EXAMPLE_ACTION:
-    return Object.assign({}, state, action.payload);
+  case `${IS_AUTHED}_FULFILLED`:
+    return Object.assign({}, state, {
+      isAuthed: action.payload,
+      pendingAuth: false
+    });
+  case `${IS_AUTHED}_PENDING`:
+    return Object.assign({}, state, {
+      pendingAuth: true
+    });
   default:
     return state;
   }
