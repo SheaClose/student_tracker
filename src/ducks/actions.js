@@ -8,6 +8,6 @@ export function verifyLogin() {
     payload: axios
       .get('/api/isLogged')
       .then(res => res.data)
-      .catch(err => console.log('err: ', err))
+      .catch(console.log)
   };
 }
