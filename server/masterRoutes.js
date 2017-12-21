@@ -1,7 +1,7 @@
-const mentorRoutes = require('./api/mentors/mentorRoutes');
+const userRoutes = require('./api/user/userRoutes');
 const studentRoutes = require('./api/students/studentRoute');
 
 module.exports = app => {
-  mentorRoutes(app);
+  userRoutes(app);
   studentRoutes(app);
 };

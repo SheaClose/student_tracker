@@ -25,7 +25,7 @@ class NavBar extends Component {
               <Link to="/example3">example3</Link>
             </li>
             <li>
-              <a href={`${devLogin}/api/mentors`}>Mentors</a>
+              <a href={`${devLogin}/api/users`}>Users</a>
             </li>
             <li>
               <a href={`${devLogin}/auth/devmtn`}>
