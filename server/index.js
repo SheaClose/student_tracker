@@ -65,10 +65,6 @@ passport.deserializeUser((user, done) => {
           return done(null, newUser);
         })
         .catch(error => done(error, null));
-
-      //
-
-      // done(null, user);
     })
     .catch(err => {
       console.log('Could not find user, creating new User');
