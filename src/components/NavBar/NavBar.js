@@ -14,7 +14,6 @@ class NavBar extends Component {
       props.verifyLogin();
     }
   }
-
   logInLogOut() {
     if (this.props.isAuthed) {
       return <a href={`${rootPath}/logout`}>Logout</a>;
@@ -52,8 +51,17 @@ class NavBar extends Component {
 }
 
 NavBar.propTypes = {
-  isAuthed: PropTypes.bool,
+  isAuthed: PropTypes.bool.isRequired,
   verifyLogin: PropTypes.func.isRequired
 };
 
-export default withRouter(connect(state => state, { verifyLogin })(NavBar));
+export default withRouter(
+  connect(
+    // eslint-disable-next-line
+    ({ isAuthed, verifyLogin, pendingAuth }) => ({
+      isAuthed,
+      verifyLogin
+    }),
+    { verifyLogin }
+  )(NavBar)
+);

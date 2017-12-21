@@ -91,9 +91,9 @@ devMtnPassport.serializeUser((user, done) => {
 passport.serializeUser((user, done) => done(null, user));
 
 passport.deserializeUser((id, done) => {
-  const db = app.get('db');
   // Checking to see if user is google or devmtn
   if (id.google_id) {
+    const db = app.get('db');
     db.users
       .getUser([id.google_id])
       .then(user => done(null, user[0]))
@@ -111,7 +111,7 @@ app.use(passport.session());
 app.get('/auth/devmtn', devMtnPassport.authenticate('devmtn'));
 app.get(
   '/auth/devmtn/callback',
-  devMtnPassport.authenticate('devmtn', { failureRedirect: '/#/login' }),
+  devMtnPassport.authenticate('devmtn', { failureRedirect: '/loginFailed' }),
   (req, res) => {
     axios
       .get(
@@ -139,7 +139,7 @@ app.get(
 app.get('/auth/google', passport.authenticate('google'));
 app.get(
   '/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/loginFailure' }),
+  passport.authenticate('google', { failureRedirect: '/loginFailed' }),
   (req, res) => {
     res.redirect(`${auth_redirect}`);
   }
