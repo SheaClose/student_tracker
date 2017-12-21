@@ -1,8 +1,6 @@
-CREATE TABLE IF NOT EXISTS public.user(
+CREATE TABLE IF NOT EXISTS users (
      id serial primary key,
-     google_id varchar(255) unique,
+     devmountain_id integer unique,
      first_name varchar(255),
-     last_name varchar(255),
-     token varchar(255),
-     pic_url varchar(255)
+     last_name varchar(255)
 );

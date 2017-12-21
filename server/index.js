@@ -6,21 +6,17 @@ const express = require('express'),
   passport = require('passport'),
   axios = require('axios'),
   path = require('path'),
-  { OAuth2Strategy: GoogleStrategy } = require('passport-google-oauth'),
   { Strategy: DevmtnStrategy } = require('devmtn-auth'),
   devMtnPassport = new passport.Passport();
 require('dotenv').config();
 
 const app = express();
-const port = process.env.DEV_PORT || 8080;
+const port = process.env.DEV_PORT;
 const configPath = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
 const {
   connectionString,
   sessionConfig,
   devmtnAuth,
-  clientID,
-  clientSecret,
-  callbackURL,
   auth_redirect,
   authHeaders
 } = require(`../configs/${configPath}.config`); // eslint-disable-line
@@ -40,48 +36,11 @@ massive(connectionString)
       });
     app.set('db', dbInstance);
   })
-  .catch(console.log);
+  .catch(err => console.log('Failed to connect to Postgres DataBase: ', err));
 
 devMtnPassport.use(
   'devmtn',
   new DevmtnStrategy(devmtnAuth, (jwtoken, user, done) => done(null, user))
-);
-
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID,
-      clientSecret,
-      callbackURL,
-      scope: ['openid', 'email', 'https://www.googleapis.com/auth/calendar']
-    },
-    (accessToken, refreshToken, profile, done) => {
-      const db = app.get('db');
-      db.users
-        .getUser([profile.id])
-        .then(user => {
-          const existingUser = user[0];
-          existingUser.accessToken = accessToken;
-          return done(null, existingUser);
-        })
-        .catch(() => {
-          db.users
-            .addUser([
-              profile.id,
-              profile.name.givenName,
-              profile.name.familyName,
-              accessToken,
-              `${profile.photos[0].value}0`
-            ])
-            .then(user => {
-              const newUser = user[0];
-              newUser.accessToken = accessToken;
-              return done(null, newUser);
-            })
-            .catch(error => done(error, null));
-        });
-    }
-  )
 );
 
 devMtnPassport.serializeUser((user, done) => {
@@ -90,17 +49,27 @@ devMtnPassport.serializeUser((user, done) => {
 
 passport.serializeUser((user, done) => done(null, user));
 
-passport.deserializeUser((id, done) => {
-  // Checking to see if user is google or devmtn
-  if (id.google_id) {
-    const db = app.get('db');
-    db.users
-      .getUser([id.google_id])
-      .then(user => done(null, user[0]))
-      .catch(err => done(err, null));
-  } else {
-    done(null, id);
-  }
+passport.deserializeUser((user, done) => {
+  const db = app.get('db');
+  db.dm_users
+    .getUser([user.id])
+    .then(dbUser => {
+      if (dbUser.length) {
+        const existingUser = dbUser[0];
+        return done(null, existingUser);
+      }
+      db.dm_users
+        .addUser([user.id, user.first_name, user.last_name])
+        .then(newDbUser => {
+          const newUser = newDbUser[0];
+          return done(null, newUser);
+        })
+        .catch(error => done(error, null));
+    })
+    .catch(err => {
+      console.log('Could not find user, creating new User');
+      return done(err, null);
+    });
 });
 
 app.use(devMtnPassport.initialize());
@@ -128,20 +97,10 @@ app.get(
           id: userSession.id,
           name: userSession.short_name
         }));
-
-        // Puts information from devmtn auth onto sessions, as the google user will overwrite req.user
         req.session.devmtnUser = Object.assign({}, req.user, { sessions });
-        return res.redirect('/auth/google');
-      });
-  }
-);
-
-app.get('/auth/google', passport.authenticate('google'));
-app.get(
-  '/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/loginFailed' }),
-  (req, res) => {
-    res.redirect(`${auth_redirect}`);
+        return res.redirect(auth_redirect);
+      })
+      .catch(err => console.log('Cannot get sessions: ', err));
   }
 );
 

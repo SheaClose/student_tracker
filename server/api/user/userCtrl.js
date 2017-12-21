@@ -16,6 +16,7 @@ module.exports = {
             role.role === 'lead_mentor'
         ).length > 0;
       return res.status(200).json(isLoggedIn);
-    } return res.status(500).json('Not logged in');
+    }
+    return res.status(500).json(false);
   }
 };
