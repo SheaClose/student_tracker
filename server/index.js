@@ -76,7 +76,6 @@ passport.use(
             .then(user => {
               const newUser = user[0];
               newUser.accessToken = accessToken;
-              console.log('newUser: ', newUser);
               return done(null, newUser);
             })
             .catch(error => done(error, null));
@@ -86,7 +85,6 @@ passport.use(
 );
 
 devMtnPassport.serializeUser((user, done) => {
-  console.log('user: ', user);
   done(null, user);
 });
 
