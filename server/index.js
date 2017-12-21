@@ -4,6 +4,7 @@ const express = require('express'),
   session = require('express-session'),
   massive = require('massive'),
   passport = require('passport'),
+  axios = require('axios'),
   path = require('path'),
   { OAuth2Strategy: GoogleStrategy } = require('passport-google-oauth'),
   { Strategy: DevmtnStrategy } = require('devmtn-auth'),
@@ -20,7 +21,8 @@ const {
   clientID,
   clientSecret,
   callbackURL,
-  auth_redirect
+  auth_redirect,
+  authHeaders
 } = require(`../configs/${configPath}.config`); // eslint-disable-line
 const masterRoutes = require('./masterRoutes');
 
@@ -111,9 +113,26 @@ app.get(
   '/auth/devmtn/callback',
   devMtnPassport.authenticate('devmtn', { failureRedirect: '/#/login' }),
   (req, res) => {
-    // Puts information from devmtn auth onto sessions, as the google user will overwrite req.user
-    req.session.devmtnUser = Object.assign({}, req.user);
-    res.redirect('/auth/google');
+    axios
+      .get(
+        `https://devmountain.com/api/mentors/${req.user.id}/classsessions`,
+        authHeaders
+      )
+      .then(sessionResponse => {
+        /**
+         * Currently only adding sesssion id and short_name, however in the future
+         * if there is any other information that is needed about the classes that
+         * the mentor/instructor was over, this is where we'd want to add it.
+         */
+        const sessions = sessionResponse.data.map(userSession => ({
+          id: userSession.id,
+          name: userSession.short_name
+        }));
+
+        // Puts information from devmtn auth onto sessions, as the google user will overwrite req.user
+        req.session.devmtnUser = Object.assign({}, req.user, { sessions });
+        return res.redirect('/auth/google');
+      });
   }
 );
 

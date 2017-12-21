@@ -13,12 +13,18 @@ class App extends Component {
         .split('=')
         .pop() === 'true'
     ) {
-      const students = axios.get('/api/students/');
-      const mentor = axios.get('/api/mentor/');
-      const mentorRoles = axios.get('/api/mentor_roles');
+      const promises = [axios.get('/api/students/'), axios.get('/api/user/')];
       axios
-        .all([students, mentor, mentorRoles])
-        .then(res => console.log(res.map(c => c.data)))
+        .all(promises)
+        .then(
+          axios.spread((students, user) => {
+            console.log({
+              students: students.data,
+              user: user.data,
+              userRoles: user.data.roles
+            });
+          })
+        )
         .catch(console.log);
     }
   }
