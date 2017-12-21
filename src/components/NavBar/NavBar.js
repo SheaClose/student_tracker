@@ -15,6 +15,7 @@ class NavBar extends Component {
     }
   }
   render() {
+    const logInLogOut = this.props.isAuthed ? '/logout' : '/auth/devmtn';
     return (
       <div>
         <div className="navbar navbar-default">
@@ -35,7 +36,7 @@ class NavBar extends Component {
               <a href={`${rootPath}/api/users`}>Users</a>
             </li>
             <li>
-              <a href={`${rootPath}/auth/devmtn`}>
+              <a href={`${rootPath}${logInLogOut}`}>
                 Log{this.props.isAuthed ? 'out' : 'in'}
               </a>
             </li>
