@@ -14,8 +14,15 @@ class NavBar extends Component {
       props.verifyLogin();
     }
   }
+
+  logInLogOut() {
+    if (this.props.isAuthed) {
+      return <a href={`${rootPath}/logout`}>Logout</a>;
+    }
+    return <a href={`${rootPath}/auth/devmtn`}>Login</a>;
+  }
+
   render() {
-    const logInLogOut = this.props.isAuthed ? '/logout' : '/auth/devmtn';
     return (
       <div>
         <div className="navbar navbar-default">
@@ -35,11 +42,7 @@ class NavBar extends Component {
             <li>
               <a href={`${rootPath}/api/users`}>Users</a>
             </li>
-            <li>
-              <a href={`${rootPath}${logInLogOut}`}>
-                Log{this.props.isAuthed ? 'out' : 'in'}
-              </a>
-            </li>
+            <li>{this.logInLogOut()}</li>
             <li />
           </ul>
         </div>
