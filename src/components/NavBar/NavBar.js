@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Logo from '../../images/devLogo.png';
 import './NavBar.css';
+import { rootPath } from '../../resources/resources';
 
 class NavBar extends Component {
+  constructor(props) {
+    super(props);
+    if (
+      props.location.search
+        .substring(1)
+        .split('=')
+        .pop() !== 'true'
+    ) { window.location.href = `${rootPath}/auth/devmtn`; }
+  }
   render() {
-    const devLogin =
-      process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
     return (
       <div>
         <div className="navbar navbar-default">
@@ -25,10 +33,10 @@ class NavBar extends Component {
               <Link to="/example3">example3</Link>
             </li>
             <li>
-              <a href={`${devLogin}/api/users`}>Users</a>
+              <a href={`${rootPath}/api/users`}>Users</a>
             </li>
             <li>
-              <a href={`${devLogin}/auth/devmtn`}>
+              <a href={`${rootPath}/auth/devmtn`}>
                 Log{this.props.isLoggedIn ? 'out' : 'in'}
               </a>
             </li>
@@ -41,7 +49,8 @@ class NavBar extends Component {
 }
 
 NavBar.propTypes = {
-  isLoggedIn: PropTypes.string
+  isLoggedIn: PropTypes.string,
+  location: PropTypes.any
 };
 
-export default NavBar;
+export default withRouter(NavBar);
