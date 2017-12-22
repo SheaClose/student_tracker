@@ -20,6 +20,7 @@ class App extends Component {
   }
   componentDidUpdate() {
     if (this.props.isAuthed) {
+<<<<<<< HEAD
       this.props.getStudents();
       this.props.getUserInfo();
       console.log(this.props);
@@ -36,6 +37,26 @@ class App extends Component {
       //     })
       //   )
       //   .catch(console.log);
+=======
+      const promises = [
+        axios.get('/api/students/'),
+        axios.get('/api/user/'),
+        axios.get('/api/repos')
+      ];
+      axios
+        .all(promises)
+        .then(
+          axios.spread((students, user, repos) => {
+            console.log({
+              students: students.data,
+              user: user.data,
+              userRoles: user.data.roles,
+              repos: repos.data
+            });
+          })
+        )
+        .catch(console.log);
+>>>>>>> master
     }
   }
 
