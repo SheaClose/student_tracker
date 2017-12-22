@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-// import axios from 'axios';
 import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/CircularProgress';
-import { getStudents, getUserInfo } from './ducks/actions';
 
+import { getStudents, getUserInfo } from './ducks/actions';
 import NavBar from './components/NavBar/NavBar';
 
 // import routes from "./routes";
@@ -18,15 +17,20 @@ class App extends Component {
     if (this.props.isAuthed) {
       props.getStudents();
       props.getUserInfo();
-    } else {
-      window.location.href = `${rootPath}/auth/devmtn`;
+    }
   }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.isAuthed !== this.props.isAuthed && !newProps.isAuthed) {
+      window.location.href = `${rootPath}/auth/devmtn`;
+    }
+  }
+
   shouldComponentUpdate(nextProps) {
     return nextProps.isAuthed !== this.props.isAuthed;
   }
 
   render() {
-    console.log(this.props);
     return (
       <div>
         <NavBar />
