@@ -5,9 +5,11 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/CircularProgress';
 
-import './App.css';
 import NavBar from './components/NavBar/NavBar';
+
 // import routes from "./routes";
+import { rootPath } from './resources/resources';
+import './App.css';
 
 class App extends Component {
   shouldComponentUpdate(nextProps) {
@@ -15,24 +17,21 @@ class App extends Component {
   }
   componentDidUpdate() {
     if (this.props.isAuthed) {
-      const promises = [
-        axios.get('/api/students/'),
-        axios.get('/api/user/'),
-        axios.get('/api/repos')
-      ];
+      const promises = [axios.get('/api/students/'), axios.get('/api/user/')];
       axios
         .all(promises)
         .then(
-          axios.spread((students, user, repos) => {
+          axios.spread((students, user) => {
             console.log({
               students: students.data,
               user: user.data,
-              userRoles: user.data.roles,
-              repos: repos.data
+              userRoles: user.data.roles
             });
           })
         )
         .catch(console.log);
+    } else {
+      window.location.href = `${rootPath}/auth/devmtn`;
     }
   }
 
@@ -40,13 +39,8 @@ class App extends Component {
     return (
       <div>
         <NavBar />
-        <p>
-          To get started, edit <code>src/App.js</code> and save to reload.
-          {/* routes */}
-          {this.props.pendingAuth && (
-            <CircularProgress size={80} thickness={5} />
-          )}
-        </p>
+        {/* routes */}
+        {this.props.pendingAuth && <CircularProgress size={80} thickness={5} />}
       </div>
     );
   }
@@ -54,7 +48,7 @@ class App extends Component {
 
 App.propTypes = {
   isAuthed: PropTypes.bool,
-  pendingAuth: PropTypes.bool.isRequired
+  pendingAuth: PropTypes.bool
 };
 
 export default withRouter(
