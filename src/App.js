@@ -11,32 +11,15 @@ import NavBar from './components/NavBar/NavBar';
 // import routes from "./routes";
 
 class App extends Component {
-  // constructor(props) {
-  //   super(props);
-
-  // }
+  constructor(props) {
+    super(props);
+    if (this.props.isAuthed) {
+      props.getStudents();
+      props.getUserInfo();
+    }
+  }
   shouldComponentUpdate(nextProps) {
     return nextProps.isAuthed !== this.props.isAuthed;
-  }
-  componentDidUpdate() {
-    if (this.props.isAuthed) {
-      console.log(this.props.getStudents());
-      console.log(this.props.getUserInfo());
-      console.log(this.props);
-      // const promises = [axios.get('/api/students/'), axios.get('/api/user/')];
-      // axios
-      //   .all(promises)
-      //   .then(
-      //     axios.spread((students, user) => {
-      //       console.log({
-      //         students: students.data,
-      //         user: user.data,
-      //         userRoles: user.data.roles
-      //       });
-      //     })
-      //   )
-      //   .catch(console.log);
-    }
   }
 
   render() {
