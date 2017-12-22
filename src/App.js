@@ -7,7 +7,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 import './App.css';
 import NavBar from './components/NavBar/NavBar';
-// import routes from "./routes";
+import routes from './routes';
 
 class App extends Component {
   shouldComponentUpdate(nextProps) {
@@ -42,11 +42,11 @@ class App extends Component {
         <NavBar />
         <p>
           To get started, edit <code>src/App.js</code> and save to reload.
-          {/* routes */}
           {this.props.pendingAuth && (
             <CircularProgress size={80} thickness={5} />
           )}
         </p>
+        {routes}
       </div>
     );
   }
