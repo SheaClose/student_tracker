@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+// import axios from 'axios';
 import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/CircularProgress';
+import { getStudents, getUserInfo } from './ducks/actions';
 
 import NavBar from './components/NavBar/NavBar';
 
@@ -12,30 +13,20 @@ import { rootPath } from './resources/resources';
 import './App.css';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    if (this.props.isAuthed) {
+      props.getStudents();
+      props.getUserInfo();
+    } else {
+      window.location.href = `${rootPath}/auth/devmtn`;
+  }
   shouldComponentUpdate(nextProps) {
     return nextProps.isAuthed !== this.props.isAuthed;
   }
-  componentDidUpdate() {
-    if (this.props.isAuthed) {
-      const promises = [axios.get('/api/students/'), axios.get('/api/user/')];
-      axios
-        .all(promises)
-        .then(
-          axios.spread((students, user) => {
-            console.log({
-              students: students.data,
-              user: user.data,
-              userRoles: user.data.roles
-            });
-          })
-        )
-        .catch(console.log);
-    } else {
-      window.location.href = `${rootPath}/auth/devmtn`;
-    }
-  }
 
   render() {
+    console.log(this.props);
     return (
       <div>
         <NavBar />
@@ -48,9 +39,19 @@ class App extends Component {
 
 App.propTypes = {
   isAuthed: PropTypes.bool,
-  pendingAuth: PropTypes.bool
+  pendingAuth: PropTypes.bool,
+  getStudents: PropTypes.func,
+  getUserInfo: PropTypes.func
 };
 
 export default withRouter(
-  connect(({ isAuthed, pendingAuth }) => ({ isAuthed, pendingAuth }))(App)
+  connect(
+    ({ isAuthed, pendingAuth, students, userInfo }) => ({
+      isAuthed,
+      pendingAuth,
+      students,
+      userInfo
+    }),
+    { getStudents, getUserInfo }
+  )(App)
 );
