@@ -13,20 +13,29 @@ import NavBar from './components/NavBar/NavBar';
 class App extends Component {
   constructor(props) {
     super(props);
-    if (this.props.isAuthed) {
-      props.getStudents();
-      props.getUserInfo();
-    }
+
+    this.state = {
+      students: this.props.students
+    };
   }
+
   shouldComponentUpdate(nextProps) {
     return nextProps.isAuthed !== this.props.isAuthed;
   }
 
+  componentDidUpdate() {
+    this.props.getStudents();
+    this.props.getUserInfo();
+  }
+
+
   render() {
-    console.log(this.props);
     return (
       <div>
         <NavBar />
+        {this.props.students.length > 0 && this.props.students[0].classSession.map((x) => {
+          return <h1>{x.first_name}</h1>;
+        })}
         <p>
           To get started, edit <code>src/App.js</code> and save to reload.
           {/* routes */}
@@ -43,7 +52,8 @@ App.propTypes = {
   isAuthed: PropTypes.bool,
   pendingAuth: PropTypes.bool.isRequired,
   getStudents: PropTypes.func,
-  getUserInfo: PropTypes.func
+  getUserInfo: PropTypes.func,
+  students: PropTypes.array
 };
 
 export default withRouter(
