@@ -1,45 +1,44 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/CircularProgress';
 
-import './App.css';
+import { getStudents, getUserInfo } from './ducks/actions';
 import NavBar from './components/NavBar/NavBar';
+<<<<<<< HEAD
 import routes from './routes';
+=======
+
+// import routes from "./routes";
+import { rootPath } from './resources/resources';
+import './App.css';
+>>>>>>> master
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    if (this.props.isAuthed) {
+      props.getStudents();
+      props.getUserInfo();
+    }
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.isAuthed !== this.props.isAuthed && !newProps.isAuthed) {
+      window.location.href = `${rootPath}/auth/devmtn`;
+    }
+  }
+
   shouldComponentUpdate(nextProps) {
     return nextProps.isAuthed !== this.props.isAuthed;
-  }
-  componentDidUpdate() {
-    if (this.props.isAuthed) {
-      const promises = [
-        axios.get('/api/students/'),
-        axios.get('/api/user/'),
-        axios.get('/api/repos')
-      ];
-      axios
-        .all(promises)
-        .then(
-          axios.spread((students, user, repos) => {
-            console.log({
-              students: students.data,
-              user: user.data,
-              userRoles: user.data.roles,
-              repos: repos.data
-            });
-          })
-        )
-        .catch(console.log);
-    }
   }
 
   render() {
     return (
       <div>
         <NavBar />
+<<<<<<< HEAD
         <p>
           To get started, edit <code>src/App.js</code> and save to reload.
           {this.props.pendingAuth && (
@@ -47,6 +46,10 @@ class App extends Component {
           )}
         </p>
         {routes}
+=======
+        {/* routes */}
+        {this.props.pendingAuth && <CircularProgress size={80} thickness={5} />}
+>>>>>>> master
       </div>
     );
   }
@@ -54,9 +57,19 @@ class App extends Component {
 
 App.propTypes = {
   isAuthed: PropTypes.bool,
-  pendingAuth: PropTypes.bool.isRequired
+  pendingAuth: PropTypes.bool,
+  getStudents: PropTypes.func,
+  getUserInfo: PropTypes.func
 };
 
 export default withRouter(
-  connect(({ isAuthed, pendingAuth }) => ({ isAuthed, pendingAuth }))(App)
+  connect(
+    ({ isAuthed, pendingAuth, students, userInfo }) => ({
+      isAuthed,
+      pendingAuth,
+      students,
+      userInfo
+    }),
+    { getStudents, getUserInfo }
+  )(App)
 );
