@@ -31,13 +31,14 @@ class RepoDropDown extends Component {
 
   handleUpdateInput(value) {
     this.setState({
-      dataSource: this.state.dataSource.filter(c =>
-        c.toLowerCase().includes(value.toLowerCase())
-      )
+      dataSource: this.state.repos
+        .map(c => c.name)
+        .filter(c => c.toLowerCase().includes(value.toLowerCase()))
     });
   }
 
   handleSelect(selected) {
+    console.log('selected: ', this.state.repos.find(c => c.name === selected));
     this.setState({
       selected: this.state.repos.find(c => c.name === selected)
     });
@@ -50,6 +51,7 @@ class RepoDropDown extends Component {
         dataSource={this.state.dataSource}
         onUpdateInput={this.handleUpdateInput}
         onNewRequest={this.handleSelect}
+        maxSearchResults={5}
       />
     );
   }

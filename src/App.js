@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/CircularProgress';
 
-import { getStudents, getUserInfo } from './ducks/actions';
 import NavBar from './components/NavBar/NavBar';
 <<<<<<< HEAD
 import routes from './routes';
@@ -16,14 +15,6 @@ import './App.css';
 >>>>>>> master
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    if (this.props.isAuthed) {
-      props.getStudents();
-      props.getUserInfo();
-    }
-  }
-
   componentWillReceiveProps(newProps) {
     if (newProps.isAuthed !== this.props.isAuthed && !newProps.isAuthed) {
       window.location.href = `${rootPath}/auth/devmtn`;
@@ -57,19 +48,12 @@ class App extends Component {
 
 App.propTypes = {
   isAuthed: PropTypes.bool,
-  pendingAuth: PropTypes.bool,
-  getStudents: PropTypes.func,
-  getUserInfo: PropTypes.func
+  pendingAuth: PropTypes.bool
 };
 
 export default withRouter(
-  connect(
-    ({ isAuthed, pendingAuth, students, userInfo }) => ({
-      isAuthed,
-      pendingAuth,
-      students,
-      userInfo
-    }),
-    { getStudents, getUserInfo }
-  )(App)
+  connect(({ isAuthed, pendingAuth }) => ({
+    isAuthed,
+    pendingAuth
+  }))(App)
 );
