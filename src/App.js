@@ -5,14 +5,10 @@ import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/CircularProgress';
 
 import NavBar from './components/NavBar/NavBar';
-<<<<<<< HEAD
-import routes from './routes';
-=======
 
 // import routes from "./routes";
 import { rootPath } from './resources/resources';
 import './App.css';
->>>>>>> master
 
 class App extends Component {
   componentWillReceiveProps(newProps) {
@@ -29,18 +25,8 @@ class App extends Component {
     return (
       <div>
         <NavBar />
-<<<<<<< HEAD
-        <p>
-          To get started, edit <code>src/App.js</code> and save to reload.
-          {this.props.pendingAuth && (
-            <CircularProgress size={80} thickness={5} />
-          )}
-        </p>
-        {routes}
-=======
         {/* routes */}
         {this.props.pendingAuth && <CircularProgress size={80} thickness={5} />}
->>>>>>> master
       </div>
     );
   }
