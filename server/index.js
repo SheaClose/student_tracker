@@ -29,8 +29,8 @@ app.use(session(sessionConfig));
 massive(connectionString)
   .then(dbInstance => {
     dbInstance.init
-      .createUserTable()
-      .then(() => console.log('user table initialised'))
+      .initTables()
+      .then(() => console.log('tables initialized'))
       .catch(err => {
         console.log('failed to initialize user table', err);
       });

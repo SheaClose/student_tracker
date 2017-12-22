@@ -15,15 +15,20 @@ class App extends Component {
   }
   componentDidUpdate() {
     if (this.props.isAuthed) {
-      const promises = [axios.get('/api/students/'), axios.get('/api/user/')];
+      const promises = [
+        axios.get('/api/students/'),
+        axios.get('/api/user/'),
+        axios.get('/api/repos')
+      ];
       axios
         .all(promises)
         .then(
-          axios.spread((students, user) => {
+          axios.spread((students, user, repos) => {
             console.log({
               students: students.data,
               user: user.data,
-              userRoles: user.data.roles
+              userRoles: user.data.roles,
+              repos: repos.data
             });
           })
         )
