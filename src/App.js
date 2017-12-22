@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-// import axios from 'axios';
 import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/CircularProgress';
-import { getStudents, getUserInfo } from './ducks/actions';
 
-import './App.css';
+import { getStudents, getUserInfo } from './ducks/actions';
 import NavBar from './components/NavBar/NavBar';
+
 // import routes from "./routes";
+import { rootPath } from './resources/resources';
+import './App.css';
 
 class App extends Component {
   constructor(props) {
@@ -17,6 +18,12 @@ class App extends Component {
     this.state = {
       students: this.props.students
     };
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.isAuthed !== this.props.isAuthed && !newProps.isAuthed) {
+      window.location.href = `${rootPath}/auth/devmtn`;
+    }
   }
 
   shouldComponentUpdate(nextProps) {
@@ -28,21 +35,12 @@ class App extends Component {
     this.props.getUserInfo();
   }
 
-
   render() {
     return (
       <div>
         <NavBar />
-        {this.props.students.length > 0 && this.props.students[0].classSession.map((x) => {
-          return <h1>{x.first_name}</h1>;
-        })}
-        <p>
-          To get started, edit <code>src/App.js</code> and save to reload.
-          {/* routes */}
-          {this.props.pendingAuth && (
-            <CircularProgress size={80} thickness={5} />
-          )}
-        </p>
+        {/* routes */}
+        {this.props.pendingAuth && <CircularProgress size={80} thickness={5} />}
       </div>
     );
   }
@@ -50,7 +48,7 @@ class App extends Component {
 
 App.propTypes = {
   isAuthed: PropTypes.bool,
-  pendingAuth: PropTypes.bool.isRequired,
+  pendingAuth: PropTypes.bool,
   getStudents: PropTypes.func,
   getUserInfo: PropTypes.func,
   students: PropTypes.array
