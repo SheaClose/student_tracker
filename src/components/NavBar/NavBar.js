@@ -66,7 +66,7 @@ class NavBar extends Component {
           <Link to="/students">
             <MenuItem onClick={this.handleToggle}>Students</MenuItem>
           </Link>
-          <Link to="/attendace">
+          <Link to="/attendance">
             <MenuItem onClick={this.handleToggle}>Attendace</MenuItem>
           </Link>
           <Link to="/user">
