@@ -1,4 +1,4 @@
-import { IS_AUTHED, STUDENTS, USER_INFO } from './actions';
+import { IS_AUTHED, GET_STUDENTS, GET_USER_INFO } from './actions';
 import { rootPath } from '../resources/resources';
 
 const initialState = {
@@ -25,22 +25,14 @@ export default function reducer(state = initialState, action) {
       pendingAuth: false,
       isAuthed: false
     });
-  case `${STUDENTS}_FULFILLED`:
+  case `${GET_STUDENTS}_FULFILLED`:
     return Object.assign({}, state, {
       students: action.payload
     });
-  case `${STUDENTS}_PENDING`:
-    return Object.assign({}, state);
-  case `${STUDENTS}_REFECTED`:
-    return Object.assign({}, state);
-  case `${USER_INFO}_FUFILLED`:
+  case `${GET_USER_INFO}_FUFILLED`:
     return Object.assign({}, state, {
       userInfo: action.payload
     });
-  case `${USER_INFO}_PENDING`:
-    return Object.assign({}, state);
-  case `${USER_INFO}_REJECTED`:
-    return Object.assign({}, state);
   default:
     return state;
   }
