@@ -45,6 +45,7 @@
     "no-console": 0,
     "arrow-parens": 0,
     "no-underscore-dangle": "off",
-    "one-var": 0
+    "one-var": 0,
+    "import/prefer-default-export": 0
   }
 }
