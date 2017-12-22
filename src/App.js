@@ -6,7 +6,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 import NavBar from './components/NavBar/NavBar';
 
-// import routes from "./routes";
+import routes from './routes';
 import { rootPath } from './resources/resources';
 import './App.css';
 
@@ -25,8 +25,8 @@ class App extends Component {
     return (
       <div>
         <NavBar />
-        {/* routes */}
         {this.props.pendingAuth && <CircularProgress size={80} thickness={5} />}
+        {this.props.isAuthed && routes}
       </div>
     );
   }
