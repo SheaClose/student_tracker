@@ -43,9 +43,9 @@ devMtnPassport.use(
   new DevmtnStrategy(devmtnAuth, (jwtoken, user, done) => done(null, user))
 );
 
-devMtnPassport.serializeUser((user, done) => {
-  done(null, user);
-});
+// devMtnPassport.serializeUser((user, done) => {
+//   done(null, user);
+// });
 
 passport.serializeUser((user, done) => done(null, user));
 

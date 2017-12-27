@@ -2,6 +2,7 @@
   width: 50px;
 }
 .nav_icon {
+  z-index: 10;
   position: absolute;
   top: 10px;
   left: 10px;
