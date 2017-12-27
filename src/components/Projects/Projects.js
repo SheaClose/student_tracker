@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-// import './Projects.css';
+import RepoDropDown from '../Utils/RepoDropDown';
 
 class Projects extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
   render() {
-    return <div className="">Projects</div>;
+    return (
+      <div className="">
+        <RepoDropDown />
+      </div>
+    );
   }
 }
 export default Projects;
