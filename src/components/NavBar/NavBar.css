@@ -8,6 +8,11 @@
   left: 10px;
   font-size: 3rem;
 }
+
+.material-icons.nav_icon {
+  color: rgba(35, 172, 214, 0.5);
+}
 .nav_icon:hover {
   cursor: pointer;
+  color: rgba(35, 172, 214, 1);
 }
