@@ -27,7 +27,13 @@ module.exports = {
               .json(
                 response.reduce((acc, resObj) => [...acc, ...resObj.data], [])
               )
-          );
-      });
+          )
+          .catch(err => console.log(`Error getting Public Repos: ${err}`));
+      })
+      .catch(err =>
+        console.log(
+          `Error getting DevMountain organizational information: ${err}`
+        )
+      );
   }
 };
