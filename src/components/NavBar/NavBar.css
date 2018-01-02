@@ -11,3 +11,10 @@
 .nav_icon:hover {
   cursor: pointer;
 }
+
+.navbar-side {
+  width: 70px;
+  display: flex;
+  justify-content: space-around;
+  height: 100vh;
+}
