@@ -99,7 +99,17 @@ app.get(
           name: userSession.short_name
         }));
         req.session.devmtnUser = Object.assign({}, req.user, { sessions });
-        return res.redirect(auth_redirect);
+        res.redirect(auth_redirect);
+        axios
+          .get('https://api.github.com/orgs/DevMountain')
+          .then(response =>
+            app.set('dm_repo_count', response.data.public_repos)
+          )
+          .catch(err =>
+            console.log(
+              `Error getting DevMountain organizational information: ${err}`
+            )
+          );
       })
       .catch(err => console.log('Cannot get sessions: ', err));
   }
