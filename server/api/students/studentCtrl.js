@@ -43,7 +43,10 @@ module.exports = {
         /**
          * TODO: remove 'cohort' for production
          */
-        res.status(200).json([...activeStudents, cohort]);
+        if (process.env.NODE_ENV !== 'production') {
+          activeStudents.push(cohort);
+        }
+        res.status(200).json(activeStudents);
       })
       .catch(console.log);
   }
