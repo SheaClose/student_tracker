@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import './Attendance.css';
 import AttendanceTracker from './AttendanceTracker/AttendanceTracker';
-// import { getStudents, getUserInfo } from './ducks/actions';
+
 
 export default class Attendance extends Component {
   constructor(props) {
