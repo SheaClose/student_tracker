@@ -2,6 +2,11 @@ const configPath = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
 const { authHeaders } = require(`../../../configs/${configPath}.config`);
 const axios = require('axios');
 
+/**
+ * TODO: remove 'cohort' for production
+ */
+const cohort = require('../../../configs/cohort');
+
 module.exports = {
   getstudents(req, res) {
     const { sessions } = req.session.devmtnUser;
@@ -35,7 +40,10 @@ module.exports = {
             name: sessions[ind].name,
             classSession
           }));
-        res.status(200).json(activeStudents);
+        /**
+         * TODO: remove 'cohort' for production
+         */
+        res.status(200).json([...activeStudents, cohort]);
       })
       .catch(console.log);
   }
