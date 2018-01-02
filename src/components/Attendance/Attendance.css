@@ -13,3 +13,10 @@
   display: flex;
   flex-direction: row;
 }
+
+.attendance-student-tracker {
+  background-color: aquamarine;
+  width: 95%;
+  height: 80vh;
+  padding: 10px;
+}

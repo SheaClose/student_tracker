@@ -1,0 +1,1 @@
+-- SELECT * FROM students WHERE cohortid = user cohort id;
