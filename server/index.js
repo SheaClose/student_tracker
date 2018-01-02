@@ -6,6 +6,7 @@ const express = require('express'),
   passport = require('passport'),
   axios = require('axios'),
   path = require('path'),
+  { authMiddleware } = require('./api/user/userCtrl'),
   { Strategy: DevmtnStrategy } = require('devmtn-auth'),
   devMtnPassport = new passport.Passport();
 require('dotenv').config();
@@ -116,10 +117,13 @@ switch (process.env.npm_lifecycle_event) {
 case 'build':
   break;
 case 'start':
+  app.get('*', authMiddleware, (req, res) => {
+    res.redirect(auth_redirect);
+  });
   break;
 default:
-  app.use('/', express.static(`${__dirname}/../build`));
-  app.get('*', (req, res) => {
+  app.use('/', authMiddleware, express.static(`${__dirname}/../build`));
+  app.get('*', authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, '/../build/index.html'));
   });
 }

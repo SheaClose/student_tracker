@@ -1,5 +1,6 @@
+const configPath = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
+const { github_token } = require(`../../../configs/${configPath}.config`);
 const axios = require('axios');
-const { github_token } = require('../../../configs/dev.config');
 
 module.exports = {
   getRepos(req, res) {

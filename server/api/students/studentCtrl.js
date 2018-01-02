@@ -1,5 +1,6 @@
+const configPath = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
+const { authHeaders } = require(`../../../configs/${configPath}.config`);
 const axios = require('axios');
-const { authHeaders } = require('../../../configs/dev.config');
 
 module.exports = {
   getstudents(req, res) {
