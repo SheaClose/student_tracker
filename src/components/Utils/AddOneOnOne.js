@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { TextField, RaisedButton, DatePicker } from 'material-ui';
 
-import RatingBar from '../RatingBar/RatingBar';
-
-const today = new Date();
+import RatingBar from './RatingBar';
 
 class AddOneOnOne extends Component {
   render() {
