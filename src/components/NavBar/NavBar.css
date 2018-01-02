@@ -16,3 +16,9 @@
   cursor: pointer;
   color: rgba(35, 172, 214, 1);
 }
+
+.navbar-side {
+  float: left;
+  width: 70px;
+  height: 100vh;
+}
