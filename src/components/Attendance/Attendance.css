@@ -1,0 +1,14 @@
+.attendance-main-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.attendance-navbar {
+    height: 50px;
+    width: 100%;
+}
+
+.attendance-content {
+    display: flex;
+    flex-direction: row;
+}
