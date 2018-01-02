@@ -6,6 +6,7 @@ const express = require('express'),
   passport = require('passport'),
   axios = require('axios'),
   path = require('path'),
+  { authMiddleware } = require('./api/user/userCtrl'),
   { Strategy: DevmtnStrategy } = require('devmtn-auth'),
   devMtnPassport = new passport.Passport();
 require('dotenv').config();
@@ -98,7 +99,17 @@ app.get(
           name: userSession.short_name
         }));
         req.session.devmtnUser = Object.assign({}, req.user, { sessions });
-        return res.redirect(auth_redirect);
+        res.redirect(auth_redirect);
+        axios
+          .get('https://api.github.com/orgs/DevMountain')
+          .then(response =>
+            app.set('dm_repo_count', response.data.public_repos)
+          )
+          .catch(err =>
+            console.log(
+              `Error getting DevMountain organizational information: ${err}`
+            )
+          );
       })
       .catch(err => console.log('Cannot get sessions: ', err));
   }
@@ -116,10 +127,13 @@ switch (process.env.npm_lifecycle_event) {
 case 'build':
   break;
 case 'start':
+  app.get('*', authMiddleware, (req, res) => {
+    res.redirect(auth_redirect);
+  });
   break;
 default:
-  app.use('/', express.static(`${__dirname}/../build`));
-  app.get('*', (req, res) => {
+  app.use('/', authMiddleware, express.static(`${__dirname}/../build`));
+  app.get('*', authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, '/../build/index.html'));
   });
 }
