@@ -17,7 +17,8 @@ export default class AttendanceTracker extends Component {
           id: 1
         },
         {
-          name: 'Shea Close'
+          name: 'Shea Close',
+          id: 2
         }
       ]
     };
@@ -26,7 +27,7 @@ export default class AttendanceTracker extends Component {
     return this.state.students.map(student => (
       <div key={student.id} className="attendance-tracker-container">
         <div>{student.name}</div>
-        <div>
+        <div className="attendance-button-container">
           <button> Morning</button>
           <button> Break</button>
           <button> Lunch</button>
