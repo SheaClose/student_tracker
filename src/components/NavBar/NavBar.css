@@ -1,35 +1,13 @@
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  list-style-type: none;
-  background-color: #444444;
-  color: white;
-  height: 79px;
-}
 .navImage {
   width: 50px;
 }
-.nav a {
-  color: white !important;
+.nav_icon {
+  z-index: 10;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 3rem;
 }
-.nav a:hover {
-  color: #25a9e0 !important;
-}
-.profile img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-left: -10px;
-}
-
-a {
-  text-decoration: none;
-}
-.navbar-nav {
-  margin: 0px;
-}
-.navbar {
-  border: none;
+.nav_icon:hover {
+  cursor: pointer;
 }

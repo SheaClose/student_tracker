@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import AutoComplete from 'material-ui/AutoComplete';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 class RepoDropDown extends Component {
@@ -14,19 +13,17 @@ class RepoDropDown extends Component {
     this.handleUpdateInput = this.handleUpdateInput.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
   }
-  componentDidUpdate(og) {
-    if (og.isAuthed !== this.props.isAuthed && this.props.isAuthed) {
-      axios
-        .get('/api/repos')
-        .then(res => {
-          this.setState({
-            repos: res.data,
-            dataSource: res.data.map(c => c.name),
-            selected: {}
-          });
-        })
-        .catch(console.log);
-    }
+  componentDidMount() {
+    axios
+      .get('/api/repos')
+      .then(res => {
+        this.setState({
+          repos: res.data,
+          dataSource: res.data.map(c => c.name),
+          selected: {}
+        });
+      })
+      .catch(console.log);
   }
 
   handleUpdateInput(value) {
@@ -56,9 +53,5 @@ class RepoDropDown extends Component {
     );
   }
 }
-
-RepoDropDown.propTypes = {
-  isAuthed: PropTypes.bool
-};
 
 export default connect(({ isAuthed }) => ({ isAuthed }))(RepoDropDown);
