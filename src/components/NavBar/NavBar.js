@@ -35,11 +35,7 @@ class NavBar extends Component {
     return (
       <div className="navbar-side">
         <div>
-          <i
-            onClick={this.handleToggle}
-            style={{ color: '#23ACD6' }}
-            className="material-icons nav_icon"
-          >
+          <i onClick={this.handleToggle} className="material-icons nav_icon">
             &#xE5D2;
           </i>
           <Drawer
