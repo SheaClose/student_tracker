@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
+import { Link } from 'react-router-dom';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn
+} from 'material-ui/Table';
 import { getStudents } from '../../ducks/actions';
-// import './Students.css';
+import './Students.css';
+
 
 class Students extends Component {
   constructor(props) {
@@ -15,8 +24,41 @@ class Students extends Component {
   }
 
   render() {
-    console.log('props: ', this.props.students);
-    return <div className="">Students</div>;
+    const { students } = this.props;
+    const cohorts = students.map(c => (
+      <div className="cohort_card" key={c.name}>
+        <h2 style={{ textAlign: 'center' }}>{c.name}</h2>
+        <Table>
+          <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+            <TableRow>
+              <TableHeaderColumn>First Name</TableHeaderColumn>
+              <TableHeaderColumn>Last Name</TableHeaderColumn>
+              <TableHeaderColumn>Email</TableHeaderColumn>
+              <TableHeaderColumn>Status</TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false} stripedRows={true}>
+            {c.classSession.map((cur, i) => (
+              <TableRow selectable={true} striped={true} key={i}>
+                <TableRowColumn>
+                  <Link to={`/student/${cur.dmId}`}>{cur.first_name}</Link>
+                </TableRowColumn>
+                <TableRowColumn>
+                  <Link to={`/student/${cur.dmId}`}>{cur.last_name}</Link>
+                </TableRowColumn>
+                <TableRowColumn>
+                  <Link to={`/student/${cur.dmId}`}>{cur.email}</Link>
+                </TableRowColumn>
+                <TableRowColumn>
+                  <Link to={`/student/${cur.dmId}`}>{cur.status}</Link>
+                </TableRowColumn>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    ));
+    return <div className="students">{cohorts}</div>;
   }
 }
 
@@ -25,4 +67,9 @@ Students.propTypes = {
   students: PropTypes.array.isRequired
 };
 
-export default connect(state => state, { getStudents })(Students);
+export default connect(
+  state => ({
+    students: state.students
+  }),
+  { getStudents }
+)(Students);

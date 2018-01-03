@@ -4,6 +4,8 @@ import Attendance from './components/Attendance/Attendance';
 import Home from './components/Home/Home';
 import Projects from './components/Projects/Projects';
 import Students from './components/Students/Students';
+import Student from './components/Students/Student/Student';
+
 import User from './components/User/User';
 
 export default (
@@ -12,10 +14,8 @@ export default (
     <Route path="/attendance" component={Attendance} />
     <Route path="/projects" component={Projects} />
     <Route path="/students" component={Students} />
+    <Route exact path="/student/:id" component={Student} />
     <Route path="/user" component={User} />
-    <Route
-      path="/404"
-      component={() => <div> Error 404: Page not found! </div>}
-    />
+    <Route path="*" component={() => <div> Error 404: Page not found! </div>} />
   </Switch>
 );

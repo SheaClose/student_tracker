@@ -7,7 +7,8 @@ const express = require('express'),
   axios = require('axios'),
   path = require('path'),
   { Strategy: DevmtnStrategy } = require('devmtn-auth'),
-  devMtnPassport = new passport.Passport();
+  devMtnPassport = new passport.Passport(),
+  { authMiddleware } = require('./api/user/userCtrl');
 require('dotenv').config();
 
 const app = express();
@@ -105,6 +106,8 @@ app.get('/logout', (req, res) => {
     res.redirect(auth_redirect);
   });
 });
+
+// app.use('*', authMiddleware);
 
 masterRoutes(app);
 
