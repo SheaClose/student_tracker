@@ -1,0 +1,10 @@
+.home-styling {
+  background-color: skyblue;
+  width: 100vw;
+  height: 100vh;
+}
+
+img {
+  height: 30%;
+  margin: 0 auto;
+}

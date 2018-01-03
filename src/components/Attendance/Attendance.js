@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
 import './Attendance.css';
+import AttendanceTracker from './AttendanceTracker/AttendanceTracker';
 
-// import { getStudents, getUserInfo } from './ducks/actions';
 
 export default class Attendance extends Component {
   constructor(props) {
@@ -10,6 +10,7 @@ export default class Attendance extends Component {
 
     this.state = {
       students: [],
+      today: true,
       aggregate: false,
       weekly: false
     };
@@ -18,10 +19,15 @@ export default class Attendance extends Component {
   render() {
     return (
       <div className="attendance-main-container">
-        <div className="attendance-navbar">Top Button Bar</div>
+        <div className="attendance-navbar">
+          <button>Today</button>
+          <button>Weekly</button>
+          <button>Aggregate</button>
+        </div>
         <div className="attendance-content">
-          <div>Left Student List</div>
-          <div>Right attendance view</div>
+          <div className="attendance-student-tracker">
+            {this.state.today && <AttendanceTracker />}
+          </div>
         </div>
       </div>
     );
