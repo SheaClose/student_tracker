@@ -16,9 +16,17 @@ class App extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    return nextProps.isAuthed !== this.props.isAuthed;
-  }
+  /**
+   * SCU was created to enforce logini not authed, but appears to be resolved now with CWRP.
+   * Leaving temporarily to ensure no conflicts. Will remove if no issues are created.
+   */
+  // shouldComponentUpdate(nextProps) {
+  //   const { isAuthed, location } = this.props;
+  //   return (
+  //     nextProps.isAuthed !== isAuthed ||
+  //     location.pathname !== nextProps.location.pathname
+  //   );
+  // }
 
   render() {
     return (
