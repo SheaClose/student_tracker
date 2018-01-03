@@ -14,7 +14,7 @@ export default (
     <Route path="/attendance" component={Attendance} />
     <Route path="/projects" component={Projects} />
     <Route path="/students" component={Students} />
-    <Route exact path="/student/:id" component={Student} />
+    <Route path="/student/:id" component={Student} />
     <Route path="/user" component={User} />
     <Route path="*" component={() => <div> Error 404: Page not found! </div>} />
   </Switch>

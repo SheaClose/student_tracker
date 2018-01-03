@@ -1,7 +1,7 @@
 module.exports = {
   authMiddleware(req, res, next) {
-    const isLoggedIn = verifyAuth(req.session.devmtnUser);
-    if (isLoggedIn) return next();
+    const userIsAuthed = verifyAuth(req.session.devmtnUser);
+    if (userIsAuthed) return next();
     return res.redirect('/auth/devmtn');
   },
   getUser(req, res) {
@@ -11,9 +11,9 @@ module.exports = {
     return res.status(200).json(req.session.devmtnUser.roles);
   },
   isLoggedIn(req, res) {
-    const isLoggedIn = verifyAuth(req.session.devmtnUser);
-    if (isLoggedIn) {
-      return res.status(200).json(isLoggedIn);
+    const userIsAuthed = verifyAuth(req.session.devmtnUser);
+    if (userIsAuthed) {
+      return res.status(200).json(userIsAuthed);
     }
     return res.status(500).json(false);
   }

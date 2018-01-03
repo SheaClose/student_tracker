@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import AutoComplete from 'material-ui/AutoComplete';
-import { connect } from 'react-redux';
 
 class RepoDropDown extends Component {
   constructor(props) {
@@ -54,4 +53,4 @@ class RepoDropDown extends Component {
   }
 }
 
-export default connect(({ isAuthed }) => ({ isAuthed }))(RepoDropDown);
+export default RepoDropDown;
