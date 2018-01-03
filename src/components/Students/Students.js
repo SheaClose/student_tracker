@@ -13,14 +13,15 @@ import {
 import { getStudents } from '../../ducks/actions';
 import './Students.css';
 
-
 class Students extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
   componentDidMount() {
-    this.props.getStudents();
+    if (this.props.students.length === 0) {
+      this.props.getStudents();
+    }
   }
 
   render() {
