@@ -11,9 +11,7 @@
 /build
 
 # Configs
-/dummyData
-/configs/dev.config.js
-/configs/prod.config.js
+/configs
 
 # misc
 .DS_Store
