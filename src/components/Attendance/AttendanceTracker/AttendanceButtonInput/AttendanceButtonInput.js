@@ -10,18 +10,40 @@ export default class AttendanceButtonInput extends Component {
     this.state = {
       submit: false,
       time: '',
-      minutes: 0
+      minutes: 0,
+      timePeriods: ['Morning', 'Break', 'Lunch', 'Left Early']
     };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmitToggle = this.handleSubmitToggle.bind(this);
+    this.renderButtonText = this.renderButtonText.bind(this);
   }
 
-  handleChange(t) {
+  handleSubmitToggle(time) {
     if (this.state.time) {
       this.setState({ time: '', submit: false });
     } else {
-      this.setState({ time: t, submit: true });
+      this.setState({ time, submit: true });
     }
+  }
+
+  renderButtonText(str) {
+    if (this.state.submit && this.state.time === str) return 'Submit';
+    return str;
+  }
+
+  renderInputField(str) {
+    const { time, submit } = this.state;
+    if (submit && time === str) {
+      return (
+        <input
+          placeholder="Minutes"
+          onChange={e => {
+            this.setState({ minutes: e.target.value });
+          }}
+        />
+      );
+    }
+    return null;
   }
 
   render() {
@@ -33,77 +55,24 @@ export default class AttendanceButtonInput extends Component {
         }}
       />
     );
+    const buttons = this.state.timePeriods.map((period, i) => (
+      <span key={i}>
+        <button
+          onClick={() => {
+            this.handleSubmitToggle(period, this.props.student.dmId);
+          }}
+        >
+          {this.renderButtonText(period)}
+        </button>
+        {this.renderInputField(period)}
+      </span>
+    ));
     return (
       <div className="attendance-tracker-container">
         <div>
           {this.props.student.first_name} {this.props.student.last_name}
         </div>
-        <div className="attendance-button-container">
-          <button
-            onClick={() => {
-              this.handleChange('Morning', this.props.student.dmId);
-            }}
-          >
-            {!this.state.submit && !this.state.time
-              ? 'Morning'
-              : this.state.submit && this.state.time === 'Morning'
-                ? 'Submit'
-                : 'Morning'}
-          </button>
-          {this.state.submit &&
-            this.state.time === 'Morning' && (
-              <input
-                placeholder="Minutes"
-                onChange={e => {
-                  this.setState({ minutes: e.target.value });
-                }}
-              />
-            )}
-          <button
-            onClick={() => {
-              this.handleChange('Break', this.props.student.dmId);
-            }}
-          >
-            {!this.state.submit && !this.state.time
-              ? 'Break'
-              : this.state.submit && this.state.time === 'Break'
-                ? 'Submit'
-                : 'Break'}
-          </button>
-          {this.state.submit &&
-            this.state.time === 'Break' && (
-              <input
-                placeholder="Minutes"
-                onChange={e => {
-                  this.setState({ minutes: e.target.value });
-                }}
-              />
-            )}
-          <button
-            onClick={() => {
-              this.handleChange('Lunch', this.props.student.dmId);
-            }}
-          >
-            {!this.state.submit && !this.state.time
-              ? 'Lunch'
-              : this.state.submit && this.state.time === 'Lunch'
-                ? 'Submit'
-                : 'Lunch'}
-          </button>
-          {this.state.submit && this.state.time === 'Lunch' && input}
-          <button
-            onClick={() => {
-              this.handleChange('Left Early', this.props.student.dmId);
-            }}
-          >
-            {!this.state.submit && !this.state.time
-              ? 'Left Early'
-              : this.state.submit && this.state.time === 'Left Early'
-                ? 'Submit'
-                : 'Left Early'}
-          </button>
-          {this.state.submit && this.state.time === 'Left Early' && input}
-        </div>
+        <div className="attendance-button-container">{buttons}</div>
       </div>
     );
   }
