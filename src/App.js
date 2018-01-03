@@ -12,9 +12,9 @@ import './App.css';
 
 class App extends Component {
   componentWillReceiveProps(newProps) {
-    if (newProps.isAuthed !== this.props.isAuthed && !newProps.isAuthed) {
-      window.location.href = `${rootPath}/auth/devmtn`;
-    }
+     if (newProps.isAuthed !== this.props.isAuthed && !newProps.isAuthed) {
+       window.location.href = `${rootPath}/auth/devmtn`;
+     }
   }
 
   shouldComponentUpdate(nextProps) {
