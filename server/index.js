@@ -117,8 +117,8 @@ case 'build':
 case 'start':
   break;
 default:
-  app.use('/', authMiddleware, express.static(`${__dirname}/../build`));
-  app.get('*', authMiddleware, (req, res) => {
+  app.use('/', express.static(`${__dirname}/../build`));
+  app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '/../build/index.html'));
   });
 }
