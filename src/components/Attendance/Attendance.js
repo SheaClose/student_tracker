@@ -13,10 +13,11 @@ class Attendance extends Component {
     super(props);
 
     this.state = {
-      today: true,
-      aggregate: false,
-      weekly: false
+      pages: ['Today', 'Weekly', 'Aggregate'],
+      check: ''
     };
+    this.pageCheck = this.pageCheck.bind(this);
+    this.pageChange = this.pageChange.bind(this);
   }
   // create function to render component that's a switch that checks which page is on the state and returns whichever component is selected
   componentDidMount() {
@@ -25,43 +26,46 @@ class Attendance extends Component {
     }
   }
 
-  render() {
+  pageCheck(check) {
+    this.setState({ check });
+  }
+
+  pageChange(check) {
     const { students } = this.props;
-    console.log(this.props);
+    switch (check) {
+    case 'Today':
+      return <AttendanceTracker students={students} />;
+    case 'Weekly':
+      return <WeeklyView students={students} />;
+    case 'Aggregate':
+      return <AggregateView students={students} />;
+    default:
+      return <AttendanceTracker students={students} />;
+    }
+  }
+
+  render() {
+    const buttons = this.state.pages.map((page, i) => (
+      <button
+        key={i}
+        onClick={() => {
+          this.pageCheck(page);
+        }}
+      >
+        {page}
+      </button>
+    ));
+    const childPage = this.pageChange(this.state.check);
+    console.log(buttons);
     return (
       <div className="attendance-main-container">
-        <div className="attendance-navbar">
-          <button
-            onClick={() =>
-              this.setState({ today: true, aggregate: false, weekly: false })
-            }
-          >
-            Today
-          </button>
-          <button
-            onClick={() =>
-              this.setState({ today: false, aggregate: false, weekly: true })
-            }
-          >
-            Weekly
-          </button>
-          <button
-            onClick={() =>
-              this.setState({ today: false, aggregate: true, weekly: false })
-            }
-          >
-            Aggregate
-          </button>
-        </div>
         <h1>
           Add dropdown with choices + ability to view different cohorts based on
           auth level + only view your cohorts
         </h1>
         <div className="attendance-content">
           <div className="attendance-student-tracker">
-            {this.state.today && <AttendanceTracker students={students} />}
-            {this.state.weekly && <WeeklyView students={students} />}
-            {this.state.aggregate && <AggregateView students={students} />}
+            {buttons} {childPage}
           </div>
         </div>
       </div>
