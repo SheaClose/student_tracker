@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 import './Attendance.css';
 import AttendanceTracker from './AttendanceTracker/AttendanceTracker';
-
+import WeeklyView from './WeeklyView/WeeklyView';
+import AggregateView from './AggregateView/AggregateView';
 
 export default class Attendance extends Component {
   constructor(props) {
@@ -16,17 +18,51 @@ export default class Attendance extends Component {
     };
   }
 
+  componentDidMount() {
+    axios.get('/api/students/').then(response => {
+      this.setState({ students: response.data[0].classSession });
+    });
+  }
+
   render() {
     return (
       <div className="attendance-main-container">
         <div className="attendance-navbar">
-          <button>Today</button>
-          <button>Weekly</button>
-          <button>Aggregate</button>
+          <button
+            onClick={() =>
+              this.setState({ today: true, aggregate: false, weekly: false })
+            }
+          >
+            Today
+          </button>
+          <button
+            onClick={() =>
+              this.setState({ today: false, aggregate: false, weekly: true })
+            }
+          >
+            Weekly
+          </button>
+          <button
+            onClick={() =>
+              this.setState({ today: false, aggregate: true, weekly: false })
+            }
+          >
+            Aggregate
+          </button>
         </div>
+        <h1>
+          Add dropdown with choices + ability to view different cohorts based on
+          auth level + only view your cohorts
+        </h1>
         <div className="attendance-content">
           <div className="attendance-student-tracker">
-            {this.state.today && <AttendanceTracker />}
+            {this.state.today && (
+              <AttendanceTracker students={this.state.students} />
+            )}
+            {this.state.weekly && <WeeklyView students={this.state.students} />}
+            {this.state.aggregate && (
+              <AggregateView students={this.state.students} />
+            )}
           </div>
         </div>
       </div>
