@@ -7,7 +7,8 @@ const express = require('express'),
   axios = require('axios'),
   path = require('path'),
   { Strategy: DevmtnStrategy } = require('devmtn-auth'),
-  devMtnPassport = new passport.Passport();
+  devMtnPassport = new passport.Passport(),
+  { authMiddleware } = require('./api/user/userCtrl');
 require('dotenv').config();
 
 const app = express();
@@ -106,6 +107,8 @@ app.get('/logout', (req, res) => {
   });
 });
 
+// app.use('*', authMiddleware);
+
 masterRoutes(app);
 
 switch (process.env.npm_lifecycle_event) {
@@ -114,8 +117,8 @@ case 'build':
 case 'start':
   break;
 default:
-  app.use('/', express.static(`${__dirname}/../build`));
-  app.get('*', (req, res) => {
+  app.use('/', authMiddleware, express.static(`${__dirname}/../build`));
+  app.get('*', authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, '/../build/index.html'));
   });
 }
