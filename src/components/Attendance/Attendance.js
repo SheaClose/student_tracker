@@ -50,11 +50,19 @@ export default class Attendance extends Component {
             Aggregate
           </button>
         </div>
+        <h1>
+          Add dropdown with choices + ability to view different cohorts based on
+          auth level + only view your cohorts
+        </h1>
         <div className="attendance-content">
           <div className="attendance-student-tracker">
-            {this.state.today && <AttendanceTracker students={this.state.students} />}
+            {this.state.today && (
+              <AttendanceTracker students={this.state.students} />
+            )}
             {this.state.weekly && <WeeklyView students={this.state.students} />}
-            {this.state.aggregate && <AggregateView students={this.state.students} />}
+            {this.state.aggregate && (
+              <AggregateView students={this.state.students} />
+            )}
           </div>
         </div>
       </div>
