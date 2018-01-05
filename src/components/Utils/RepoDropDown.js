@@ -9,7 +9,6 @@ class RepoDropDown extends Component {
       dataSource: [],
       repos: []
     };
-    this.handleUpdateInput = this.handleUpdateInput.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
   }
   componentDidMount() {
@@ -25,14 +24,6 @@ class RepoDropDown extends Component {
       .catch(console.log);
   }
 
-  handleUpdateInput(value) {
-    this.setState({
-      dataSource: this.state.repos
-        .map(c => c.name)
-        .filter(c => c.toLowerCase().includes(value.toLowerCase()))
-    });
-  }
-
   handleSelect(selected) {
     console.log('selected: ', this.state.repos.find(c => c.name === selected));
     this.setState({
@@ -43,9 +34,9 @@ class RepoDropDown extends Component {
   render() {
     return (
       <AutoComplete
-        hintText="Type anything"
+        hintText="Search Project Repos"
         dataSource={this.state.dataSource}
-        onUpdateInput={this.handleUpdateInput}
+        filter={AutoComplete.caseInsensitiveFilter}
         onNewRequest={this.handleSelect}
         maxSearchResults={5}
       />
