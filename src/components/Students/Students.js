@@ -17,7 +17,7 @@ class Students extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      indexOfDefaultCohort: props.students.findIndex(
+      selectedCohortIndex: props.students.findIndex(
         c => c.name === this.props.defaultCohort
       )
     };
@@ -25,7 +25,7 @@ class Students extends Component {
 
   render() {
     const { students } = this.props;
-    const { indexOfDefaultCohort } = this.state;
+    const { selectedCohortIndex } = this.state;
     const cohorts = students.map((c, i) => (
       <Tab value={i} label={c.name} key={c.name}>
         <div className="cohort_card">
@@ -63,8 +63,8 @@ class Students extends Component {
     ));
     return (
       <Tabs
-        value={indexOfDefaultCohort}
-        onChange={e => this.setState({ indexOfDefaultCohort: e })}
+        value={selectedCohortIndex}
+        onChange={e => this.setState({ selectedCohortIndex: e })}
         className="students"
       >
         {cohorts}
