@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover/Popover';
 import { Menu, MenuItem } from 'material-ui/Menu';
+import Snackbar from 'material-ui/Snackbar';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -13,6 +14,8 @@ class DefaultCohortButton extends Component {
     super(props);
     this.state = {
       cohorts: props.students.map(c => c.name),
+      snackBarMsg: '',
+      openSnackBar: false,
       open: false,
       anchorOrigin: {
         horizontal: 'left',
@@ -26,11 +29,19 @@ class DefaultCohortButton extends Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleRequestClose = this.handleRequestClose.bind(this);
     this.setDefaultCohort = this.setDefaultCohort.bind(this);
+    this.handleSnackBarRequestClose = this.handleSnackBarRequestClose.bind(
+      this
+    );
   }
 
   setDefaultCohort(_, __, index) {
     const cohortName = this.props.students[index].name;
-    this.props.updateDefaultCohort(cohortName);
+    this.props.updateDefaultCohort(cohortName).then(cur => {
+      this.setState({
+        snackBarMsg: `UPDATE_DEFAULT_COHORT_FULFILLED: ${cur.value}`,
+        openSnackBar: true
+      });
+    });
     this.setState({ open: false });
   }
 
@@ -49,6 +60,11 @@ class DefaultCohortButton extends Component {
     });
   }
 
+  handleSnackBarRequestClose() {
+    this.setState({
+      openSnackBar: false
+    });
+  }
   render() {
     const cohorts = this.state.cohorts.map(c => (
       <MenuItem key={c} primaryText={c} />
@@ -70,6 +86,12 @@ class DefaultCohortButton extends Component {
         >
           <Menu onItemClick={this.setDefaultCohort}>{cohorts}</Menu>
         </Popover>
+        <Snackbar
+          open={this.state.openSnackBar}
+          message={this.state.snackBarMsg}
+          autoHideDuration={3005}
+          onRequestClose={this.handleSnackBarRequestClose}
+        />
       </div>
     );
   }
