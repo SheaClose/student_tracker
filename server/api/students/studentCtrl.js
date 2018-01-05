@@ -39,7 +39,10 @@ module.exports = {
           .map((classSession, ind) => ({
             name: sessions[ind].name,
             classSession
-          }));
+          }))
+          .sort(
+            (a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
+          );
         /**
          * TODO: remove 'cohort' for production
          */
