@@ -81,7 +81,13 @@ DefaultCohortButton.propTypes = {
   defaultCohort: PropTypes.string.isRequired
 };
 
-export default connect(
-  state => ({ students: state.students, defaultCohort: state.defaultCohort }),
-  { updateDefaultCohort }
-)(DefaultCohortButton);
+function mapStateToProps({ students, defaultCohort }) {
+  return {
+    students,
+    defaultCohort
+  };
+}
+
+export default connect(mapStateToProps, { updateDefaultCohort })(
+  DefaultCohortButton
+);

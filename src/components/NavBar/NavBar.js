@@ -75,4 +75,8 @@ NavBar.propTypes = {
   isAuthed: PropTypes.bool.isRequired
 };
 
-export default withRouter(connect(({ isAuthed }) => ({ isAuthed }))(NavBar));
+function mapStateToProps({ isAuthed }) {
+  return { isAuthed };
+}
+
+export default withRouter(connect(mapStateToProps)(NavBar));

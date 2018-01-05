@@ -42,8 +42,12 @@ App.propTypes = {
   verifyLogin: PropTypes.func.isRequired
 };
 
+function mapStateToProps({ isAuthed }) {
+  return { isAuthed };
+}
+
 export default withRouter(
-  connect(state => state, {
+  connect(mapStateToProps, {
     getStudents,
     getUserInfo,
     verifyLogin
