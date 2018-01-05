@@ -5,7 +5,7 @@ const initialState = {
   isAuthed: false,
   pendingAuth: false,
   students: [],
-  userInfo: []
+  userInfo: {}
 };
 
 export default function reducer(state = initialState, action) {
@@ -29,7 +29,7 @@ export default function reducer(state = initialState, action) {
     return Object.assign({}, state, {
       students: action.payload
     });
-  case `${GET_USER_INFO}_FUFILLED`:
+  case `${GET_USER_INFO}_FULFILLED`:
     return Object.assign({}, state, {
       userInfo: action.payload
     });
