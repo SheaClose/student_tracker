@@ -30,7 +30,7 @@ class Students extends Component {
   render() {
     const { students } = this.props;
     const { indexOfDefaultCohort } = this.state;
-    const cohorts = [...students].map((c, i) => (
+    const cohorts = students.map(c => (
       <Tab value={indexOfDefaultCohort} label={c.name} key={c.name}>
         <div className="cohort_card">
           <h2 style={{ textAlign: 'center' }}>{c.name}</h2>
