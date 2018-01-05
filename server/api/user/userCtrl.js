@@ -16,6 +16,12 @@ module.exports = {
       return res.status(200).json(userIsAuthed);
     }
     return res.status(500).json(false);
+  },
+  updateDefaultCohort(req, res) {
+    // const db = req.app.get('db')
+    // db.update_default_cohort().then()
+    // TODO: Update db once created.
+    return res.status(200).json(req.body.cohortName);
   }
 };
 

@@ -1,11 +1,17 @@
-import { IS_AUTHED, GET_STUDENTS, GET_USER_INFO } from './actions';
+import {
+  IS_AUTHED,
+  GET_STUDENTS,
+  GET_USER_INFO,
+  UPDATE_DEFAULT_COHORT
+} from './actions';
 import { rootPath } from '../resources/resources';
 
 const initialState = {
   isAuthed: false,
   pendingAuth: false,
   students: [],
-  userInfo: {}
+  userInfo: [],
+  defaultCohort: ''
 };
 
 export default function reducer(state = initialState, action) {
@@ -32,6 +38,10 @@ export default function reducer(state = initialState, action) {
   case `${GET_USER_INFO}_FULFILLED`:
     return Object.assign({}, state, {
       userInfo: action.payload
+    });
+  case `${UPDATE_DEFAULT_COHORT}_FULFILLED`:
+    return Object.assign({}, state, {
+      defaultCohort: action.payload
     });
   default:
     return state;
