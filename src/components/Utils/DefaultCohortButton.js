@@ -5,7 +5,7 @@ import { Menu, MenuItem } from 'material-ui/Menu';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { updateDefaultCohort } from '../../../ducks/actions';
+import { updateDefaultCohort } from '../../ducks/actions';
 // import './DefaultCohortButton.css';
 
 class DefaultCohortButton extends Component {
