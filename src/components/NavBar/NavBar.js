@@ -8,17 +8,11 @@ import MenuItem from 'material-ui/MenuItem';
 import Logo from '../../images/devLogo.png';
 import './NavBar.css';
 import { rootPath } from '../../resources/resources';
-import { verifyLogin } from '../../ducks/actions';
 
 class NavBar extends Component {
   constructor(props) {
     super(props);
-
     this.state = { open: false };
-
-    if (!props.isAuthed) {
-      props.verifyLogin();
-    }
     this.handleToggle = this.handleToggle.bind(this);
   }
   logInLogOut() {
@@ -78,17 +72,7 @@ class NavBar extends Component {
 }
 
 NavBar.propTypes = {
-  isAuthed: PropTypes.bool.isRequired,
-  verifyLogin: PropTypes.func.isRequired
+  isAuthed: PropTypes.bool.isRequired
 };
 
-export default withRouter(
-  connect(
-    // eslint-disable-next-line
-    ({ isAuthed, verifyLogin, pendingAuth }) => ({
-      isAuthed,
-      verifyLogin
-    }),
-    { verifyLogin }
-  )(NavBar)
-);
+export default withRouter(connect(({ isAuthed }) => ({ isAuthed }))(NavBar));

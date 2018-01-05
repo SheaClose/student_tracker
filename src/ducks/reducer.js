@@ -37,9 +37,11 @@ export default function reducer(state = initialState, action) {
     });
   case `${GET_USER_INFO}_FULFILLED`:
     return Object.assign({}, state, {
-      userInfo: action.payload
+      userInfo: action.payload,
+      defaultCohort: action.payload.default_cohort_id || ''
     });
   case `${UPDATE_DEFAULT_COHORT}_FULFILLED`:
+    console.log('Successfully Updated Default Cohort to: ', action.payload);
     return Object.assign({}, state, {
       defaultCohort: action.payload
     });

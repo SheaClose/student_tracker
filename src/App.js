@@ -8,25 +8,22 @@ import NavBar from './components/NavBar/NavBar';
 import routes from './routes';
 import { rootPath } from './resources/resources';
 import './App.css';
+import { getStudents, getUserInfo, verifyLogin } from './ducks/actions';
 
 class App extends Component {
+  componentWillMount() {
+    if (!this.props.isAuthed) {
+      this.props.verifyLogin();
+    }
+    this.props.getStudents();
+    this.props.getUserInfo();
+  }
+
   componentWillReceiveProps(newProps) {
     if (newProps.isAuthed !== this.props.isAuthed && !newProps.isAuthed) {
       window.location.href = `${rootPath}/auth/devmtn`;
     }
   }
-
-  /**
-   * SCU was created to enforce logini not authed, but appears to be resolved now with CWRP.
-   * Leaving temporarily to ensure no conflicts. Will remove if no issues are created.
-   */
-  // shouldComponentUpdate(nextProps) {
-  //   const { isAuthed, location } = this.props;
-  //   return (
-  //     nextProps.isAuthed !== isAuthed ||
-  //     location.pathname !== nextProps.location.pathname
-  //   );
-  // }
 
   render() {
     return (
@@ -39,12 +36,16 @@ class App extends Component {
 }
 
 App.propTypes = {
-  isAuthed: PropTypes.bool
+  isAuthed: PropTypes.bool,
+  getStudents: PropTypes.func.isRequired,
+  getUserInfo: PropTypes.func.isRequired,
+  verifyLogin: PropTypes.func.isRequired
 };
 
 export default withRouter(
-  connect(({ isAuthed, pendingAuth }) => ({
-    isAuthed,
-    pendingAuth
-  }))(App)
+  connect(state => state, {
+    getStudents,
+    getUserInfo,
+    verifyLogin
+  })(App)
 );
