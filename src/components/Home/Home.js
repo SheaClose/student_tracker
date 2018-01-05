@@ -14,7 +14,8 @@ class Home extends Component {
           src="https://78.media.tumblr.com/6379b40e4a36490c58cae94a474babce/tumblr_o2idih49Md1u69veko1_500.gif"
           style={{ width: '25px', height: 'auto' }}
         />
-        {this.props.selectedCohort && (
+
+        {this.props.students[0] && (
           <Overview students={this.props.students[0].classSession} />
         )}
       </div>
