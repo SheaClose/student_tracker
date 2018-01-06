@@ -78,9 +78,8 @@ Attendance.propTypes = {
   students: PropTypes.array.isRequired
 };
 
-export default connect(
-  state => ({
-    students: state.students
-  }),
-  { getStudents }
-)(Attendance);
+function mapStateToProps({ students }) {
+  return { students };
+}
+
+export default connect(mapStateToProps, { getStudents })(Attendance);

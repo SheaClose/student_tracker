@@ -11,27 +11,23 @@ import {
   TableRowColumn
 } from 'material-ui/Table';
 import { Tabs, Tab } from 'material-ui/Tabs';
-import { getStudents } from '../../ducks/actions';
 import './Students.css';
 
 class Students extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      indexOfDefaultCohort: 0
+      selectedCohortIndex: props.students.findIndex(
+        c => c.name === this.props.defaultCohort
+      )
     };
-  }
-  componentDidMount() {
-    if (!this.props.students.length) {
-      this.props.getStudents();
-    }
   }
 
   render() {
     const { students } = this.props;
-    const { indexOfDefaultCohort } = this.state;
-    const cohorts = students.map(c => (
-      <Tab value={indexOfDefaultCohort} label={c.name} key={c.name}>
+    const { selectedCohortIndex } = this.state;
+    const cohorts = students.map((c, i) => (
+      <Tab value={i} label={c.name} key={c.name}>
         <div className="cohort_card">
           <h2 style={{ textAlign: 'center' }}>{c.name}</h2>
           <Table>
@@ -66,7 +62,11 @@ class Students extends Component {
       </Tab>
     ));
     return (
-      <Tabs value={this.props.defaultCohort} className="students">
+      <Tabs
+        value={selectedCohortIndex}
+        onChange={e => this.setState({ selectedCohortIndex: e })}
+        className="students"
+      >
         {cohorts}
       </Tabs>
     );
@@ -74,15 +74,15 @@ class Students extends Component {
 }
 
 Students.propTypes = {
-  getStudents: PropTypes.func.isRequired,
   students: PropTypes.array.isRequired,
   defaultCohort: PropTypes.string.isRequired
 };
 
-export default connect(
-  state => ({
-    students: state.students,
-    defaultCohort: state.defaultCohort
-  }),
-  { getStudents }
-)(Students);
+function mapStateToProps({ students, defaultCohort }) {
+  return {
+    students,
+    defaultCohort
+  };
+}
+
+export default connect(mapStateToProps)(Students);

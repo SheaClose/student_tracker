@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DefaultCohortButton from './DefaultCohortButton/DefaultCohortButton';
+import DefaultCohortButton from '../Utils/DefaultCohortButton';
 
 // import './User.css';
 
