@@ -3,10 +3,25 @@ import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import { getUserInfo, getStudents, getOutliers } from '../../ducks/actions';
 import Overview from './Overview/Overview';
+import axios from 'axios';
 import './Home.css';
 
 class Home extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      outliers: {}
+    };
+  }
+  componentDidMount() {
+    // get this into redux obvi
+    axios
+      .get('/api/outliers/')
+      .then(response => this.setState({ outliers: response.data }));
+  }
   render() {
+    console.log(this.state.outliers);
     return (
       <div>
         <img
@@ -15,9 +30,10 @@ class Home extends Component {
           style={{ width: '25px', height: 'auto' }}
         />
 
-        {this.props.students[0] && (
-          <Overview students={this.props.students[0].classSession} />
-        )}
+        {/* this.state.outliers.absences && (
+          <Overview outliers={this.state.outliers} />
+        ) */}
+        {JSON.stringify(this.state.outliers)}
       </div>
     );
   }
