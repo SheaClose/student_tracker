@@ -12,7 +12,7 @@ WITH
 	outliers AS (
 		SELECT * 
 		FROM totals 
-		WHERE count > 1)
+		WHERE count > 2)
 
 
 SELECT * FROM tardies 
@@ -20,4 +20,4 @@ SELECT * FROM tardies
 	WHERE student_id IN (
 		SELECT student_id FROM outliers
 		) 
-	AND cohort_id IN ('WDL10')
+	AND cohort_id = ANY($1)

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
-import { getUserInfo, getStudents } from '../../ducks/actions';
+import { getUserInfo, getStudents, getOutliers } from '../../ducks/actions';
 import Overview from './Overview/Overview';
 import './Home.css';
 
