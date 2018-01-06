@@ -52,5 +52,22 @@ module.exports = {
         res.status(200).json(activeStudents);
       })
       .catch(console.log);
+  },
+  getOutliers(req, res) {
+    // should cohort permissions be stored in our database instead?
+    const allowedCohorts = req.session.devmtnUser.sessions.map(
+      session => session.name
+    );
+    const db = req.app.get('db');
+    const absencePromise = db.students.get_absence_outliers(allowedCohorts);
+    const tardiesPromise = db.students.get_tardies_outliers(allowedCohorts);
+    const projectPromise = db.students.get_project_outliers(allowedCohorts);
+    const oneononePromise = db.students.get_oneonone_outliers(allowedCohorts);
+
+    axios
+      .all([absencePromise, tardiesPromise, projectPromise, oneononePromise])
+      .then(([absences, tardies, projects, oneonones]) =>
+        res.json({ absences, tardies, projects, oneonones })
+      );
   }
 };
