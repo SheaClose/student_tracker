@@ -23,4 +23,4 @@ SELECT * FROM absences
 	WHERE student_id IN (
 		SELECT student_id FROM outliers
 		) 
-	AND cohort_id = ANY($1)
+	AND cohort_id IN ($1:csv);

@@ -5,4 +5,4 @@ SELECT * FROM oneonones t1
 		WHERE t2.student_id = t1.student_id
 		)
 	AND (skill < 2 OR confidence_skill < 2 OR confidence_personal < 2 OR attitude < 2 OR defer_drop_concern IS TRUE)
-	AND cohort_id = ANY($1)
+	AND cohort_id IN ($1:csv);
