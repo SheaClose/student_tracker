@@ -13,15 +13,12 @@ export default class AttendanceTracker extends Component {
 
   render() {
     console.log(this.props);
-    const index = this.props.cohort;
-    return (
-      this.props.students.length > 0 &&
-      this.props.students.map(student => (
-        <div key={student.dmId} className="attendance-tracker-container">
-          <AttendanceButtonInput student={student} />
-        </div>
-      ))
-    );
+    const selectedCohort = this.props.students[this.props.cohort];
+    return this.props.students.map((student, i) => (
+      <div key={i} className="attendance-tracker-container">
+        <AttendanceButtonInput student={student} />
+      </div>
+    ));
   }
 }
 

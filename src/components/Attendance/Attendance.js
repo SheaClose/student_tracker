@@ -72,12 +72,12 @@ class Attendance extends Component {
         <DropDownMenu
           value={this.state.cohort}
           onChange={e => {
-            console.log(e);
-            this.cohortChange(value);
+            console.log('someone help mackenzie figure out dropdowns :-)');
+            this.cohortChange(this.state.cohort);
           }}
         >
           {this.props.students.map((cohort, i) => (
-            <MenuItem value={i} primaryText={cohort.name} />
+            <MenuItem key={i} value={i} primaryText={cohort.name} />
           ))}
         </DropDownMenu>
         <div className="attendance-content">
