@@ -14,7 +14,13 @@ require('dotenv').config();
 const app = express();
 const port = process.env.DEV_PORT;
 const configPath = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
-const { connectionString, sessionConfig, devmtnAuth, auth_redirect, authHeaders } = require(`../configs/${configPath}.config`);
+const {
+  connectionString,
+  sessionConfig,
+  devmtnAuth,
+  auth_redirect,
+  authHeaders
+} = require(`../configs/${configPath}.config`);
 const masterRoutes = require('./masterRoutes');
 
 app.use(cors());
@@ -33,7 +39,10 @@ massive(connectionString)
   })
   .catch(err => console.log('Failed to connect to Postgres DataBase: ', err));
 
-devMtnPassport.use('devmtn', new DevmtnStrategy(devmtnAuth, (jwtoken, user, done) => done(null, user)));
+devMtnPassport.use(
+  'devmtn',
+  new DevmtnStrategy(devmtnAuth, (jwtoken, user, done) => done(null, user))
+);
 
 passport.serializeUser((user, done) => done(null, user));
 
@@ -66,24 +75,31 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/auth/devmtn', devMtnPassport.authenticate('devmtn'));
-app.get('/auth/devmtn/callback', devMtnPassport.authenticate('devmtn', { failureRedirect: '/loginFailed' }), (req, res) => {
-  axios
-    .get(`https://devmountain.com/api/mentors/${req.user.id}/classsessions`, authHeaders)
-    .then(sessionResponse => {
-      /**
-       * Currently only adding sesssion id and short_name, however in the future
-       * if there is any other information that is needed about the classes that
-       * the mentor/instructor was over, this is where we'd want to add it.
-       */
-      const sessions = sessionResponse.data.map(userSession => ({
-        id: userSession.id,
-        name: userSession.short_name
-      }));
-      req.session.devmtnUser = Object.assign({}, req.user, { sessions });
-      return res.redirect(auth_redirect);
-    })
-    .catch(err => console.log('Cannot get sessions: ', err));
-});
+app.get(
+  '/auth/devmtn/callback',
+  devMtnPassport.authenticate('devmtn', { failureRedirect: '/loginFailed' }),
+  (req, res) => {
+    axios
+      .get(
+        `https://devmountain.com/api/mentors/${req.user.id}/classsessions`,
+        authHeaders
+      )
+      .then(sessionResponse => {
+        /**
+         * Currently only adding sesssion id and short_name, however in the future
+         * if there is any other information that is needed about the classes that
+         * the mentor/instructor was over, this is where we'd want to add it.
+         */
+        const sessions = sessionResponse.data.map(userSession => ({
+          id: userSession.id,
+          name: userSession.short_name
+        }));
+        req.session.devmtnUser = Object.assign({}, req.user, { sessions });
+        return res.redirect(auth_redirect);
+      })
+      .catch(err => console.log('Cannot get sessions: ', err));
+  }
+);
 
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {

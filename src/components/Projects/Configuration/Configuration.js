@@ -4,8 +4,6 @@ import { ConfigToolbar } from './Toolbar/Toolbar';
 import ProjectsTable from './ProjectsTable/ProjectsTable';
 import { AddProject } from './AddProject/AddProject';
 
-import { connect } from 'react-redux'; /** Not used... */
-
 import './styles.css';
 
 export default class Configuration extends Component {
