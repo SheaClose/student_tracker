@@ -8,12 +8,24 @@ import Configuration from './Configuration/Configuration';
 import './projects.css';
 
 class Projects extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      cohort: ''
+    };
+  }
+
   render() {
     return (
       <div className="view-container">
         <Tabs>
           <Tab label="Configuration">
-            <Configuration />
+            <Configuration
+              selectCohort={val => {
+                this.setState({ cohort: val });
+              }}
+            />
           </Tab>
           <Tab label="Afternoon Projects">
             <AfternoonProjects />

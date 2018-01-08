@@ -12,6 +12,6 @@ export const AddProject = props => (
   </Fragment>
 );
 
-AddProject.proptypes = {
+AddProject.propTypes = {
   selectProject: PropTypes.func
 };
