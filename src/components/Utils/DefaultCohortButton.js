@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { updateDefaultCohort } from '../../ducks/actions';
-// import './DefaultCohortButton.css';
 
 class DefaultCohortButton extends Component {
   constructor(props) {
@@ -71,8 +70,8 @@ class DefaultCohortButton extends Component {
     ));
     const { defaultCohort } = this.props;
     return (
-      <div className="">
-        <h4>Select Default Cohort:</h4>
+      <div style={{ margin: '20px' }}>
+        <span style={{ margin: '20px' }}> Select Default Cohort: </span>
         <RaisedButton
           onClick={this.handleClick}
           label={defaultCohort || 'Default Cohort'}

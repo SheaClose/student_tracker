@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
-import DefaultCohortButton from '../Utils/DefaultCohortButton';
+import Paper from 'material-ui/Paper';
 
-// import './User.css';
+import DefaultCohortButton from '../Utils/DefaultCohortButton';
+import './User.css';
 
 class User extends Component {
   render() {
     return (
-      <div className="">
-        <DefaultCohortButton />
+      <div className="user_container">
+        <Paper className="user_card_container" zDepth={1}>
+          <div>
+            <DefaultCohortButton />
+            <DefaultCohortButton />
+            <DefaultCohortButton />
+            <DefaultCohortButton />
+            <DefaultCohortButton />
+          </div>
+        </Paper>
       </div>
     );
   }
