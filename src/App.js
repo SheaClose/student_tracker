@@ -19,17 +19,17 @@ class App extends Component {
     this.props.getUserInfo();
   }
 
-  componentWillReceiveProps(newProps) {
-    if (newProps.isAuthed !== this.props.isAuthed && !newProps.isAuthed) {
-      window.location.href = `${rootPath}/auth/devmtn`;
-    }
-  }
+  // componentWillReceiveProps(newProps) {
+  //   if (newProps.isAuthed !== this.props.isAuthed && !newProps.isAuthed) {
+  //     window.location.href = `${rootPath}/auth/devmtn`;
+  //   }
+  // }
 
   render() {
     return (
       <div>
         <NavBar />
-        {this.props.isAuthed && routes}
+        {routes}
       </div>
     );
   }
