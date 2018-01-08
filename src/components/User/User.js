@@ -1,22 +1,44 @@
 import React, { Component } from 'react';
-import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
+import Popover from 'material-ui/Popover/Popover';
+import { Menu, MenuItem } from 'material-ui/Menu';
+import Snackbar from 'material-ui/Snackbar';
 
 import DefaultCohortButton from '../Utils/DefaultCohortButton';
 import './User.css';
 
 class User extends Component {
+  handleClick(event) {
+    // This prevents ghost click.
+    event.preventDefault();
+    this.setState({
+      open: true,
+      anchorEl: event.currentTarget
+    });
+  }
   render() {
     return (
       <div className="user_container">
-        <Paper className="user_card_container" zDepth={1}>
+        <div className="user_card_container">
           <div>
-            <DefaultCohortButton />
-            <DefaultCohortButton />
-            <DefaultCohortButton />
-            <DefaultCohortButton />
-            <DefaultCohortButton />
+            <DefaultCohortButton className="user_button" />
+            <RaisedButton
+              className="user_button"
+              onClick={this.handleClick}
+              label={'Select default cohort'}
+            />
+            <RaisedButton
+              className="user_button"
+              onClick={this.handleClick}
+              label={'Select default cohort'}
+            />
+            <RaisedButton
+              className="user_button"
+              onClick={this.handleClick}
+              label={'Select default cohort'}
+            />
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }
