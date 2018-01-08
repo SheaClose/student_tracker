@@ -5,7 +5,7 @@ module.exports = {
     return res.redirect('/auth/devmtn');
   },
   getUser(req, res) {
-    res.status(200).json(req.session.devmtnUser);
+    res.status(200).json(req.user);
   },
   getUserRoles(req, res) {
     return res.status(200).json(req.session.devmtnUser.roles);
@@ -16,6 +16,13 @@ module.exports = {
       return res.status(200).json(userIsAuthed);
     }
     return res.status(500).json(false);
+  },
+  updateDefaultCohort(req, res) {
+    const db = req.app.get('db');
+    db.dm_users
+      .update_default_cohort([req.body.cohortName, req.user.devmountain_id])
+      .then(response => res.status(200).json(response[0].default_cohort_id))
+      .catch(err => res.status(500).json(err));
   }
 };
 

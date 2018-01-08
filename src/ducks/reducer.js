@@ -1,11 +1,18 @@
-import { IS_AUTHED, GET_STUDENTS, GET_USER_INFO } from './actions';
+import {
+  IS_AUTHED,
+  GET_STUDENTS,
+  GET_USER_INFO,
+  UPDATE_DEFAULT_COHORT,
+  GET_OUTLIERS
+} from './actions';
 import { rootPath } from '../resources/resources';
 
 const initialState = {
   isAuthed: false,
   pendingAuth: false,
   students: [],
-  userInfo: []
+  userInfo: {},
+  defaultCohort: ''
 };
 
 export default function reducer(state = initialState, action) {
@@ -29,10 +36,18 @@ export default function reducer(state = initialState, action) {
     return Object.assign({}, state, {
       students: action.payload
     });
-  case `${GET_USER_INFO}_FUFILLED`:
+  case `${GET_USER_INFO}_FULFILLED`:
     return Object.assign({}, state, {
-      userInfo: action.payload
+      userInfo: action.payload,
+      defaultCohort: action.payload.default_cohort_id || ''
     });
+  case `${UPDATE_DEFAULT_COHORT}_FULFILLED`:
+    console.log('Successfully Updated Default Cohort to: ', action.payload);
+    return Object.assign({}, state, {
+      defaultCohort: action.payload
+    });
+  case `${GET_OUTLIERS}_FULFILLED`:
+    return Object.assign({}, state, { outliers: action.payload });
   default:
     return state;
   }
