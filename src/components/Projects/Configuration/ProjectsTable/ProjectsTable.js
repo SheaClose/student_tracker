@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
-
-import { connect } from 'react-redux'; /** Not used... */
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn
+} from 'material-ui/Table';
 
 /**
- * A simple table demonstrating the hierarchy of the `Table` component and its sub-components.
+ * A simple table demonstrating the hierarchy of the `Table` component and
+ * its sub-components.
  */
 
 class ProjectsTable extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <Table>

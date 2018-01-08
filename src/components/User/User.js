@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
-import Popover from 'material-ui/Popover/Popover';
-import { Menu, MenuItem } from 'material-ui/Menu';
-import Snackbar from 'material-ui/Snackbar';
 
 import DefaultCohortButton from '../Utils/DefaultCohortButton';
 import './User.css';
