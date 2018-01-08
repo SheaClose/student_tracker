@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import AutoComplete from 'material-ui/AutoComplete';
+import { PropTypes } from 'prop-types';
 
 class RepoDropDown extends Component {
   constructor(props) {
@@ -26,9 +27,14 @@ class RepoDropDown extends Component {
 
   handleSelect(selected) {
     console.log('selected: ', this.state.repos.find(c => c.name === selected));
-    this.setState({
-      selected: this.state.repos.find(c => c.name === selected)
-    });
+    this.setState(
+      {
+        selected: this.state.repos.find(c => c.name === selected)
+      },
+      () => {
+        this.props.selectProject(this.state.selected);
+      }
+    );
   }
 
   render() {
@@ -43,5 +49,9 @@ class RepoDropDown extends Component {
     );
   }
 }
+
+RepoDropDown.propTypes = {
+  selectProject: PropTypes.func
+};
 
 export default RepoDropDown;

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover/Popover';
 import { Menu, MenuItem } from 'material-ui/Menu';
@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { updateDefaultCohort } from '../../ducks/actions';
-// import './DefaultCohortButton.css';
 
 class DefaultCohortButton extends Component {
   constructor(props) {
@@ -66,16 +65,17 @@ class DefaultCohortButton extends Component {
     });
   }
   render() {
-    const cohorts = this.state.cohorts.map(c => (
-      <MenuItem key={c} primaryText={c} />
+    const cohorts = this.state.cohorts.map((c, i) => (
+      <MenuItem value={i} key={c} primaryText={c} />
     ));
-    const { defaultCohort } = this.props;
+    const defaultCohortIndex = this.props.students.findIndex(
+      c => c.name === this.props.defaultCohort
+    );
     return (
-      <div className="">
-        <h4>Select Default Cohort:</h4>
+      <Fragment>
         <RaisedButton
           onClick={this.handleClick}
-          label={defaultCohort || 'Default Cohort'}
+          label={'Select default cohort'}
         />
         <Popover
           open={this.state.open}
@@ -84,7 +84,9 @@ class DefaultCohortButton extends Component {
           targetOrigin={this.state.targetOrigin}
           onRequestClose={this.handleRequestClose}
         >
-          <Menu onItemClick={this.setDefaultCohort}>{cohorts}</Menu>
+          <Menu value={defaultCohortIndex} onItemClick={this.setDefaultCohort}>
+            {cohorts}
+          </Menu>
         </Popover>
         <Snackbar
           open={this.state.openSnackBar}
@@ -92,7 +94,7 @@ class DefaultCohortButton extends Component {
           autoHideDuration={3005}
           onRequestClose={this.handleSnackBarRequestClose}
         />
-      </div>
+      </Fragment>
     );
   }
 }
