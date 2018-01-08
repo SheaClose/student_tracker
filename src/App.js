@@ -8,7 +8,16 @@ import NavBar from './components/NavBar/NavBar';
 import routes from './routes';
 import { rootPath } from './resources/resources';
 import './App.css';
+<<<<<<< HEAD
 import { getStudents, getUserInfo, verifyLogin, getOutliers } from './ducks/actions';
+=======
+import {
+  getStudents,
+  getUserInfo,
+  verifyLogin,
+  getOutliers
+} from './ducks/actions';
+>>>>>>> master
 
 class App extends Component {
   componentWillMount() {

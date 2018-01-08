@@ -2,7 +2,8 @@ import {
   IS_AUTHED,
   GET_STUDENTS,
   GET_USER_INFO,
-  UPDATE_DEFAULT_COHORT
+  UPDATE_DEFAULT_COHORT,
+  GET_OUTLIERS
 } from './actions';
 import { rootPath } from '../resources/resources';
 
@@ -10,7 +11,7 @@ const initialState = {
   isAuthed: false,
   pendingAuth: false,
   students: [],
-  userInfo: [],
+  userInfo: {},
   defaultCohort: ''
 };
 
@@ -45,6 +46,8 @@ export default function reducer(state = initialState, action) {
     return Object.assign({}, state, {
       defaultCohort: action.payload
     });
+  case `${GET_OUTLIERS}_FULFILLED`:
+    return Object.assign({}, state, { outliers: action.payload });
   default:
     return state;
   }
