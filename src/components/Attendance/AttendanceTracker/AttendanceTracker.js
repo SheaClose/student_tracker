@@ -13,7 +13,7 @@ export default class AttendanceTracker extends Component {
 
   render() {
     console.log(this.props);
-    const selectedCohort = this.props.students[this.props.cohort];
+    // const selectedCohort = this.props.students[this.props.cohort];
     return this.props.students.map((student, i) => (
       <div key={i} className="attendance-tracker-container">
         <AttendanceButtonInput student={student} />
@@ -23,6 +23,6 @@ export default class AttendanceTracker extends Component {
 }
 
 AttendanceTracker.propTypes = {
-  students: PropTypes.array.isRequired,
-  cohort: PropTypes.number.isRequired
+  students: PropTypes.array.isRequired
+  // cohort: PropTypes.number.isRequired
 };

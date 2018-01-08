@@ -17,7 +17,7 @@ class Attendance extends Component {
     this.state = {
       pages: ['Today', 'Weekly', 'Aggregate'],
       check: '',
-      cohort: 0
+      cohort: this.props.students.students
     };
     this.pageCheck = this.pageCheck.bind(this);
     this.pageChange = this.pageChange.bind(this);
@@ -52,6 +52,7 @@ class Attendance extends Component {
   }
 
   render() {
+    console.log(this.state.cohort);
     const buttons = this.state.pages.map((page, i) => (
       <button
         key={i}
@@ -69,15 +70,16 @@ class Attendance extends Component {
           Add dropdown with choices + ability to view different cohorts based on
           auth level + only view your cohorts
         </h1>
-        <DropDownMenu
-          value={this.state.cohort}
-          onChange={e => {
-            console.log('someone help mackenzie figure out dropdowns :-)');
-            this.cohortChange(this.state.cohort);
-          }}
-        >
+        <DropDownMenu value={this.state.cohort}>
           {this.props.students.map((cohort, i) => (
-            <MenuItem key={i} value={i} primaryText={cohort.name} />
+            <MenuItem
+              key={i}
+              value={i}
+              primaryText={cohort.name}
+              onClick={() => {
+                this.cohortChange(cohort.name);
+              }}
+            />
           ))}
         </DropDownMenu>
         <div className="attendance-content">
