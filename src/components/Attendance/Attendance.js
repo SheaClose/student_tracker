@@ -17,7 +17,7 @@ class Attendance extends Component {
     this.state = {
       pages: ['Today', 'Weekly', 'Aggregate'],
       check: '',
-      cohort: this.props.students.students
+      cohort: 0
     };
     this.pageCheck = this.pageCheck.bind(this);
     this.pageChange = this.pageChange.bind(this);
@@ -48,11 +48,10 @@ class Attendance extends Component {
   }
 
   cohortChange(cohort) {
-    this.setState({ cohort });
+    this.setState({ cohort: parseInt(cohort, 10) });
   }
 
   render() {
-    console.log(this.state.cohort);
     const buttons = this.state.pages.map((page, i) => (
       <button
         key={i}
@@ -77,7 +76,7 @@ class Attendance extends Component {
               value={i}
               primaryText={cohort.name}
               onClick={() => {
-                this.cohortChange(cohort.name);
+                this.cohortChange(i);
               }}
             />
           ))}
