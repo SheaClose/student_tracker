@@ -30,6 +30,7 @@ class App extends Component {
     return (
       <div>
         <NavBar />
+
         {this.props.isAuthed && routes}
       </div>
     );

@@ -1,6 +1,6 @@
 module.exports = {
-  getCohortRepos(req, res) {
-    console.log(req, res);
+  getProjects(req, res) {
+    console.log(req.body, req.params);
   },
   saveCohortRepo(req, res) {
     console.log(req, res);

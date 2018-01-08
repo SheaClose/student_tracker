@@ -9,12 +9,10 @@ const cohort = require('../../../configs/cohort');
 
 module.exports = {
   getstudents(req, res) {
+    console.log(req.session);
     const { sessions } = req.session.devmtnUser;
     const sessionPromises = sessions.map(session =>
-      axios.get(
-        `https://devmountain.com/api/classsession/enrollments/${session.id}`,
-        authHeaders
-      )
+      axios.get(`https://devmountain.com/api/classsession/enrollments/${session.id}`, authHeaders)
     );
     /**
      * since we are potentially getting multiple sessions, we await all responses
@@ -40,9 +38,7 @@ module.exports = {
             name: sessions[ind].name,
             classSession
           }))
-          .sort(
-            (a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
-          );
+          .sort((a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, ''));
         /**
          * TODO: remove 'cohort' for production
          */
@@ -55,9 +51,7 @@ module.exports = {
   },
   getOutliers(req, res) {
     // should cohort permissions be stored in our database instead?
-    const allowedCohorts = req.session.devmtnUser.sessions.map(
-      session => session.name
-    );
+    const allowedCohorts = req.session.devmtnUser.sessions.map(session => session.name);
     const db = req.app.get('db');
     const absencePromise = db.students.get_absence_outliers(allowedCohorts);
     const tardiesPromise = db.students.get_tardies_outliers(allowedCohorts);
@@ -66,8 +60,6 @@ module.exports = {
 
     axios
       .all([absencePromise, tardiesPromise, projectPromise, oneononePromise])
-      .then(([absences, tardies, projects, oneonones]) =>
-        res.json({ absences, tardies, projects, oneonones })
-      );
+      .then(([absences, tardies, projects, oneonones]) => res.json({ absences, tardies, projects, oneonones }));
   }
 };
