@@ -33,7 +33,15 @@ class Attendance extends Component {
       return null;
     }
     const { students } = this.props;
-    const cohort = this.state.cohort;
+    let cohort = this.state.cohort;
+    if (this.props.defaultCohort) {
+      for (let i = 0; i < students.length; i++) {
+        if (students[i].name === this.props.defaultCohort) {
+          cohort = i;
+        }
+      }
+    }
+
     switch (check) {
     case 'Weekly':
       return <WeeklyView students={students[cohort].classSession} />;
@@ -51,7 +59,7 @@ class Attendance extends Component {
   }
 
   render() {
-    const buttons = this.state.pages.map((page, i) => (
+    const buttons = (<div className="attendance-page-buttons"> {this.state.pages.map((page, i) => (
       <button
         key={i}
         onClick={() => {
@@ -60,7 +68,7 @@ class Attendance extends Component {
       >
         {page}
       </button>
-    ));
+    ))} </div>);
     const childPage = this.pageChange(this.state.check);
     return (
       <div className="attendance-main-container">
@@ -82,6 +90,7 @@ class Attendance extends Component {
         </DropDownMenu>
         <div className="attendance-content">
           <div className="attendance-student-tracker">
+            {this.props.defaultCohort}
             {buttons} {childPage}
           </div>
         </div>
@@ -91,11 +100,12 @@ class Attendance extends Component {
 }
 
 Attendance.propTypes = {
-  students: PropTypes.array.isRequired
+  students: PropTypes.array.isRequired,
+  defaultCohort: PropTypes.string.isRequired
 };
 
-function mapStateToProps({ students }) {
-  return { students };
+function mapStateToProps({ students, defaultCohort }) {
+  return { students, defaultCohort };
 }
 
 export default connect(mapStateToProps, { getStudents })(Attendance);

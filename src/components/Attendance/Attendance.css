@@ -18,4 +18,14 @@
   width: 95%;
   height: 80vh;
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.attendance-page-buttons {
+  width: 95%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 10px;
 }
