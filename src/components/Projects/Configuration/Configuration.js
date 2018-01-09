@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import ProjectsTable from './ProjectsTable/ProjectsTable';
-import { ConfigToolbar } from './Toolbar/Toolbar';
-import { AddProject } from './AddProject/AddProject';
-import { getProjects } from './../../../ducks/projects/actions';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import ProjectsTable from "./ProjectsTable/ProjectsTable";
+import { ConfigToolbar } from "./Toolbar/Toolbar";
+import { AddProject } from "./AddProject/AddProject";
+import { getProjects } from "./../../../ducks/projects/actions";
 
-import './styles.css';
+import "./styles.css";
 
 export class Configuration extends Component {
   constructor(props) {
@@ -13,8 +13,8 @@ export class Configuration extends Component {
 
     this.state = {
       addProject: false,
-      selected: '',
-      selectedCohort: ''
+      selected: "",
+      selectedCohort: "",
     };
   }
 

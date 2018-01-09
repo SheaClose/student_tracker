@@ -29,7 +29,7 @@
     "react/jsx-indent": ["error", 2],
     "react/jsx-boolean-value": ["off"],
     "react/prefer-stateless-function": 0,
-    "max-len": "off",
+    "max-len": ["warn", { "code": 80 }],
     "no-nested-ternary": "off",
     "camelcase": "off",
     "no-param-reassign": "off",

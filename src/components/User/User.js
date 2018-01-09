@@ -1,13 +1,41 @@
 import React, { Component } from 'react';
-import DefaultCohortButton from '../Utils/DefaultCohortButton';
+import RaisedButton from 'material-ui/RaisedButton';
 
-// import './User.css';
+import DefaultCohortButton from '../Utils/DefaultCohortButton';
+import './User.css';
 
 class User extends Component {
+  handleClick(event) {
+    // This prevents ghost click.
+    event.preventDefault();
+    this.setState({
+      open: true,
+      anchorEl: event.currentTarget
+    });
+  }
   render() {
     return (
-      <div className="">
-        <DefaultCohortButton />
+      <div className="user_container">
+        <div className="user_card_container">
+          <div>
+            <DefaultCohortButton className="user_button" />
+            <RaisedButton
+              className="user_button"
+              onClick={this.handleClick}
+              label={'Select default cohort'}
+            />
+            <RaisedButton
+              className="user_button"
+              onClick={this.handleClick}
+              label={'Select default cohort'}
+            />
+            <RaisedButton
+              className="user_button"
+              onClick={this.handleClick}
+              label={'Select default cohort'}
+            />
+          </div>
+        </div>
       </div>
     );
   }

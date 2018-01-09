@@ -12,8 +12,7 @@ import './App.css';
 import { getStudents, getUserInfo, verifyLogin, getOutliers } from './ducks/actions';
 
 class App extends Component {
-  componentWillMount() {
-    console.log(rootPath);
+  componentDidMount() {
     if (!this.props.isAuthed) {
       this.props.verifyLogin();
     }

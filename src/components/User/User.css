@@ -1,0 +1,12 @@
+.user_container {
+  padding: 5vh;
+}
+.user_card_container {
+  min-height: 80vh;
+  width: 80vw;
+  margin: auto;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
