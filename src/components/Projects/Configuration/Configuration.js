@@ -19,7 +19,7 @@ export class Configuration extends Component {
   }
 
   componentDidMount() {
-    getProjects(this.state.selectedCohort || 'WDL10');
+    // getProjects(this.state.selectedCohort || 'WDL10');
   }
 
   render() {

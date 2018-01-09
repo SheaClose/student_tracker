@@ -7,5 +7,5 @@ module.exports = app => {
   userRoutes(app);
   studentRoutes(app);
   reposRoutes(app);
-  projectsRoutes(app);
+  // projectsRoutes(app);
 };

@@ -8,10 +8,12 @@ import NavBar from './components/NavBar/NavBar';
 import routes from './routes';
 import { rootPath } from './resources/resources';
 import './App.css';
+
 import { getStudents, getUserInfo, verifyLogin, getOutliers } from './ducks/actions';
 
 class App extends Component {
   componentWillMount() {
+    console.log(rootPath);
     if (!this.props.isAuthed) {
       this.props.verifyLogin();
     }
@@ -30,7 +32,6 @@ class App extends Component {
     return (
       <div>
         <NavBar />
-
         {this.props.isAuthed && routes}
       </div>
     );
