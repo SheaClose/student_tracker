@@ -23,11 +23,6 @@ class Attendance extends Component {
     this.pageChange = this.pageChange.bind(this);
     this.cohortChange = this.cohortChange.bind(this);
   }
-  componentDidMount() {
-    if (this.props.students.length === 0) {
-      this.props.getStudents();
-    }
-  }
 
   pageCheck(check) {
     this.setState({ check });
@@ -35,14 +30,15 @@ class Attendance extends Component {
 
   pageChange(check) {
     const { students } = this.props;
+    const cohort = this.state.cohort;
     switch (check) {
     case 'Weekly':
-      return <WeeklyView students={students} cohort={this.state.cohort} />;
+      return <WeeklyView students={students[cohort]} />;
     case 'Aggregate':
-      return <AggregateView students={students} cohort={this.state.cohort} />;
+      return <AggregateView students={students[cohort]} />;
     default:
       return (
-        <AttendanceTracker students={students} cohort={this.state.cohort} />
+        <AttendanceTracker students={students[cohort]} />
       );
     }
   }
@@ -52,6 +48,7 @@ class Attendance extends Component {
   }
 
   render() {
+    console.log(this.props.students);
     const buttons = this.state.pages.map((page, i) => (
       <button
         key={i}
@@ -92,7 +89,6 @@ class Attendance extends Component {
 }
 
 Attendance.propTypes = {
-  getStudents: PropTypes.func.isRequired,
   students: PropTypes.array.isRequired
 };
 
