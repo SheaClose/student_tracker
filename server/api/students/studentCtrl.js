@@ -54,7 +54,7 @@ module.exports = {
       .catch(console.log);
   },
   getOutliers(req, res) {
-    // should cohort permissions be stored in our database instead?
+    console.log(req.session.devmtnUser.sessions);
     const allowedCohorts = req.session.devmtnUser.sessions.map(
       session => session.name
     );
@@ -64,10 +64,51 @@ module.exports = {
     const projectPromise = db.students.get_project_outliers(allowedCohorts);
     const oneononePromise = db.students.get_oneonone_outliers(allowedCohorts);
 
-    axios
-      .all([absencePromise, tardiesPromise, projectPromise, oneononePromise])
-      .then(([absences, tardies, projects, oneonones]) =>
-        res.json({ absences, tardies, projects, oneonones })
+    Promise.all([
+      absencePromise,
+      tardiesPromise,
+      projectPromise,
+      oneononePromise
+    ]).then(([absences, tardies, projects, oneonones]) => {
+      const attendance = {};
+      absences.forEach(row => {
+        attendance[row.dm_id] = attendance[row.dm_id] || {
+          name: `${row.first_name} ${row.last_name}`
+        };
+        attendance[row.dm_id].absences = attendance[row.dm_id].absences || [];
+        attendance[row.dm_id].absences = [
+          ...attendance[row.dm_id].absences,
+          { date: row.date }
+        ];
+      });
+
+      tardies.forEach(row => {
+        attendance[row.dm_id] = attendance[row.dm_id] || {};
+        attendance[row.dm_id].tardies = attendance[row.dm_id].tardies || [];
+        attendance[row.dm_id].tardies = [
+          ...attendance[row.dm_id].tardies,
+          {
+            date: row.date,
+            minutes: row.minutes,
+            timeframe: row.timeframe
+          }
+        ];
+      });
+
+      const att = Object.keys(attendance).reduce(
+        (acc, cur) => [...acc, { ...attendance[cur], dm_id: cur }],
+        []
       );
+      // const attendance = absences.reduce((acc, row) => {
+      //   const absenceArray = acc[row.dm_id] ? acc[row.dm_id].absences : [];
+      //   acc[row.dm_id] = {
+      //     name: `${row.first_name} ${row.last_name}`,
+      //     absences: [...absenceArray, row.date]
+      //   };
+      //   return acc;
+      // }, {});
+
+      res.json({ att, projects, oneonones });
+    });
   }
 };

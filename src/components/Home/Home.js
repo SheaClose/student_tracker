@@ -6,6 +6,7 @@ import { PropTypes } from 'prop-types';
 // import Overview from './Overview/Overview';
 
 import './Home.css';
+import AttendanceOutliers from './AttendanceOutliers/AttendanceOutliers';
 
 class Home extends Component {
   render() {
@@ -20,7 +21,8 @@ class Home extends Component {
         {/* this.state.outliers.absences && (
           <Overview outliers={this.state.outliers} />
         ) */}
-        {JSON.stringify(this.props.outliers)}
+        {/* {JSON.stringify(this.props.outliers)} */}
+        <AttendanceOutliers />
       </div>
     );
   }
