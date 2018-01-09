@@ -29,16 +29,19 @@ class Attendance extends Component {
   }
 
   pageChange(check) {
+    if (!this.props.students[0]) {
+      return null;
+    }
     const { students } = this.props;
     const cohort = this.state.cohort;
     switch (check) {
     case 'Weekly':
-      return <WeeklyView students={students[cohort]} />;
+      return <WeeklyView students={students[cohort].classSession} />;
     case 'Aggregate':
-      return <AggregateView students={students[cohort]} />;
+      return <AggregateView students={students[cohort].classSession} />;
     default:
       return (
-        <AttendanceTracker students={students[cohort]} />
+        <AttendanceTracker students={students[cohort].classSession} />
       );
     }
   }
