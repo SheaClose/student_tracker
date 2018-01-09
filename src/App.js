@@ -17,7 +17,7 @@ import {
 } from './ducks/actions';
 
 class App extends Component {
-  componentWillMount() {
+  componentDidMount() {
     if (!this.props.isAuthed) {
       this.props.verifyLogin();
     }
