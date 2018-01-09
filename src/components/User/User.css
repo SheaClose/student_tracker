@@ -10,3 +10,9 @@
   align-items: center;
   justify-content: center;
 }
+.user_button {
+  display: block;
+}
+.paper {
+  padding: 5vh;
+}
