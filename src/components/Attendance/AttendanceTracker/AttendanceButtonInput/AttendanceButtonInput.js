@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
 
 import '../AttendanceTracker.css';
 
@@ -35,8 +37,9 @@ export default class AttendanceButtonInput extends Component {
     const { time, submit } = this.state;
     if (submit && time === str) {
       return (
-        <input
-          placeholder="Minutes"
+        <TextField
+          style={{ height: 33, width: 80 }}
+          hintText="Minutes"
           onChange={e => {
             this.setState({ minutes: e.target.value });
           }}
@@ -47,23 +50,16 @@ export default class AttendanceButtonInput extends Component {
   }
 
   render() {
-    const input = (
-      <input
-        placeholder="Minutes"
-        onChange={e => {
-          this.setState({ minutes: e.target.value });
-        }}
-      />
-    );
     const buttons = this.state.timePeriods.map((period, i) => (
       <span key={i}>
-        <button
+        <FlatButton
+          secondary={true}
           onClick={() => {
             this.handleSubmitToggle(period, this.props.student.dmId);
           }}
         >
           {this.renderButtonText(period)}
-        </button>
+        </FlatButton>
         {this.renderInputField(period)}
       </span>
     ));
@@ -72,7 +68,11 @@ export default class AttendanceButtonInput extends Component {
         <div>
           {this.props.student.first_name} {this.props.student.last_name}
         </div>
-        <div className="attendance-button-container">{buttons}</div>
+        <div className="attendance-button-container">
+          {buttons}
+          <FlatButton secondary={true}>ABSENT</FlatButton>
+          <FlatButton primary={true}>Excused </FlatButton>
+        </div>
       </div>
     );
   }
