@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 import PropTypes from 'prop-types';
 import { getStudents } from '../../ducks/actions';
 
@@ -14,16 +16,12 @@ class Attendance extends Component {
 
     this.state = {
       pages: ['Today', 'Weekly', 'Aggregate'],
-      check: ''
+      check: '',
+      cohort: 0
     };
     this.pageCheck = this.pageCheck.bind(this);
     this.pageChange = this.pageChange.bind(this);
-  }
-  // create function to render component that's a switch that checks which page is on the state and returns whichever component is selected
-  componentDidMount() {
-    if (this.props.students.length === 0) {
-      this.props.getStudents();
-    }
+    this.cohortChange = this.cohortChange.bind(this);
   }
 
   pageCheck(check) {
@@ -31,17 +29,25 @@ class Attendance extends Component {
   }
 
   pageChange(check) {
-    const { students } = this.props;
-    switch (check) {
-    case 'Today':
-      return <AttendanceTracker students={students} />;
-    case 'Weekly':
-      return <WeeklyView students={students} />;
-    case 'Aggregate':
-      return <AggregateView students={students} />;
-    default:
-      return <AttendanceTracker students={students} />;
+    if (!this.props.students[0]) {
+      return null;
     }
+    const { students } = this.props;
+    const cohort = this.state.cohort;
+    switch (check) {
+    case 'Weekly':
+      return <WeeklyView students={students[cohort].classSession} />;
+    case 'Aggregate':
+      return <AggregateView students={students[cohort].classSession} />;
+    default:
+      return (
+        <AttendanceTracker students={students[cohort].classSession} />
+      );
+    }
+  }
+
+  cohortChange(cohort) {
+    this.setState({ cohort: parseInt(cohort, 10) });
   }
 
   render() {
@@ -56,13 +62,24 @@ class Attendance extends Component {
       </button>
     ));
     const childPage = this.pageChange(this.state.check);
-    console.log(buttons);
     return (
       <div className="attendance-main-container">
         <h1>
           Add dropdown with choices + ability to view different cohorts based on
           auth level + only view your cohorts
         </h1>
+        <DropDownMenu value={this.state.cohort}>
+          {this.props.students.map((cohort, i) => (
+            <MenuItem
+              key={i}
+              value={i}
+              primaryText={cohort.name}
+              onClick={() => {
+                this.cohortChange(i);
+              }}
+            />
+          ))}
+        </DropDownMenu>
         <div className="attendance-content">
           <div className="attendance-student-tracker">
             {buttons} {childPage}
@@ -74,7 +91,6 @@ class Attendance extends Component {
 }
 
 Attendance.propTypes = {
-  getStudents: PropTypes.func.isRequired,
   students: PropTypes.array.isRequired
 };
 
