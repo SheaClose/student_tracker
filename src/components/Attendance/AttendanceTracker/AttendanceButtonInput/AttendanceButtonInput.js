@@ -50,6 +50,7 @@ export default class AttendanceButtonInput extends Component {
   }
 
   render() {
+    // ADD CHECK HERE. INSESSION FROM REDUX. IF FALSE DEACTIVATE BUTTONS
     const buttons = this.state.timePeriods.map((period, i) => (
       <span key={i}>
         <FlatButton

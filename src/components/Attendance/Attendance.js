@@ -59,6 +59,7 @@ class Attendance extends Component {
   }
 
   render() {
+    console.log(this.props)
     const buttons = (<div className="attendance-page-buttons"> {this.state.pages.map((page, i) => (
       <button
         key={i}
