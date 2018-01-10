@@ -74,55 +74,56 @@ module.exports = {
     }
     return res.status(500).json('User not logged in');
   },
-  getOutliers(req, res) {
-    console.log(req.session.devmtnUser.sessions);
-    const allowedCohorts = req.session.devmtnUser.sessions.map(
-      session => session.name
-    );
-    const db = req.app.get('db');
-    const absencePromise = db.students.get_absence_outliers(allowedCohorts);
-    const tardiesPromise = db.students.get_tardies_outliers(allowedCohorts);
-    const projectPromise = db.students.get_project_outliers(allowedCohorts);
-    const oneononePromise = db.students.get_oneonone_outliers(allowedCohorts);
+  async getOutliers(req, res) {
+    const { devmtnUser } = req.session;
+    if (devmtnUser) {
+      const allowedCohorts = devmtnUser.sessions.map(session => session.name);
+      const db = req.app.get('db');
+      try {
+        const absences = await db.students.get_absence_outliers(allowedCohorts);
+        const tardies = await db.students.get_tardies_outliers(allowedCohorts);
+        const projects = await db.students.get_project_outliers(allowedCohorts);
+        const oneonones = await db.students.get_oneonone_outliers(
+          allowedCohorts
+        );
 
-    Promise.all([
-      absencePromise,
-      tardiesPromise,
-      projectPromise,
-      oneononePromise
-    ]).then(([absences, tardies, projects, oneonones]) => {
-      const attendance = {};
-      absences.forEach(row => {
-        attendance[row.dm_id] = attendance[row.dm_id] || {
-          name: `${row.first_name} ${row.last_name}`
-        };
-        attendance[row.dm_id].absences = attendance[row.dm_id].absences || [];
-        attendance[row.dm_id].absences = [
-          ...attendance[row.dm_id].absences,
-          { date: row.date }
-        ];
-      });
+        const attendance = {};
+        absences.forEach(row => {
+          attendance[row.dm_id] = attendance[row.dm_id] || {
+            name: `${row.first_name} ${row.last_name}`
+          };
+          attendance[row.dm_id].absences = attendance[row.dm_id].absences || [];
+          attendance[row.dm_id].absences = [
+            ...attendance[row.dm_id].absences,
+            { date: row.date }
+          ];
+        });
 
-      tardies.forEach(row => {
-        attendance[row.dm_id] = attendance[row.dm_id] || {};
-        attendance[row.dm_id].tardies = attendance[row.dm_id].tardies || [];
-        attendance[row.dm_id].tardies = [
-          ...attendance[row.dm_id].tardies,
-          {
-            date: row.date,
-            minutes: row.minutes,
-            timeframe: row.timeframe
-          }
-        ];
-      });
+        tardies.forEach(row => {
+          attendance[row.dm_id] = attendance[row.dm_id] || {};
+          attendance[row.dm_id].tardies = attendance[row.dm_id].tardies || [];
+          attendance[row.dm_id].tardies = [
+            ...attendance[row.dm_id].tardies,
+            {
+              date: row.date,
+              minutes: row.minutes,
+              timeframe: row.timeframe
+            }
+          ];
+        });
 
-      const att = Object.keys(attendance).reduce(
-        (acc, cur) => [...acc, { ...attendance[cur], dm_id: cur }],
-        []
-      );
+        const att = Object.keys(attendance).reduce(
+          (acc, cur) => [...acc, { ...attendance[cur], dm_id: cur }],
+          []
+        );
 
-      res.json({ att, projects, oneonones });
-    });
+        return res.json({ att, projects, oneonones });
+      } catch (e) {
+        console.log(e);
+        return res.status(500).json('Async Error');
+      }
+    }
+    return res.status(500).json('User not logged in');
   }
 };
 

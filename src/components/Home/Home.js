@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { PropTypes } from 'prop-types';
-
-/** Go ahead and comment this out, if not in use, so we can keep the console clean */
-// import Overview from './Overview/Overview';
 
 import './Home.css';
 import AttendanceOutliers from './AttendanceOutliers/AttendanceOutliers';
+import ProjectOutliers from './ProjectOutliers/ProjectOutliers';
 
 class Home extends Component {
   render() {
@@ -17,20 +14,12 @@ class Home extends Component {
           src="https://78.media.tumblr.com/6379b40e4a36490c58cae94a474babce/tumblr_o2idih49Md1u69veko1_500.gif"
           style={{ width: '25px', height: 'auto' }}
         />
-
-        {/* this.state.outliers.absences && (
-          <Overview outliers={this.state.outliers} />
-        ) */}
-        {/* {JSON.stringify(this.props.outliers)} */}
         <AttendanceOutliers />
+        <ProjectOutliers />
       </div>
     );
   }
 }
-
-Home.propTypes = {
-  outliers: PropTypes.object
-};
 
 const mapStateToProps = state => ({
   userInfo: state.userInfo,
