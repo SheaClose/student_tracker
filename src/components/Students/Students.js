@@ -14,11 +14,26 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 import './Students.css';
 
 class Students extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedCohortIndex: props.students.findIndex(
+        c => c.name === this.props.defaultCohort
+      )
+    };
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.students.length !== this.props.students.length) {
+      const selectedCohortIndex = nextProps.students.findIndex(
+        c => c.name === this.props.defaultCohort
+      );
+      this.setState({ selectedCohortIndex });
+    }
+  }
+
   render() {
     const { students } = this.props;
-    const selectedCohortIndex = this.props.students.findIndex(
-      c => c.name === this.props.defaultCohort
-    );
+    const { selectedCohortIndex } = this.state;
     const cohorts = students.map((c, i) => (
       <Tab value={i} label={c.name} key={c.name}>
         <div className="cohort_card">
