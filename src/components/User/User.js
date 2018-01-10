@@ -1,40 +1,54 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
-
+import Paper from 'material-ui/Paper';
 import DefaultCohortButton from '../Utils/DefaultCohortButton';
 import './User.css';
 
+const button_style = {
+  display: 'block',
+  margin: '5vh'
+};
+
 class User extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
   handleClick(event) {
     // This prevents ghost click.
     event.preventDefault();
-    this.setState({
-      open: true,
-      anchorEl: event.currentTarget
-    });
   }
   render() {
     return (
       <div className="user_container">
         <div className="user_card_container">
-          <div>
+          <Paper className="paper">
             <DefaultCohortButton className="user_button" />
             <RaisedButton
+              style={button_style}
               className="user_button"
               onClick={this.handleClick}
-              label={'Select default cohort'}
+              label={'Drop Student'}
             />
             <RaisedButton
+              style={button_style}
               className="user_button"
               onClick={this.handleClick}
-              label={'Select default cohort'}
+              label={'Defer Student'}
             />
             <RaisedButton
+              style={button_style}
               className="user_button"
               onClick={this.handleClick}
-              label={'Select default cohort'}
+              label={'Deactivate Class'}
             />
-          </div>
+            <RaisedButton
+              style={button_style}
+              className="user_button"
+              onClick={this.handleClick}
+              label={'Shuffle Seating'}
+            />
+          </Paper>
         </div>
       </div>
     );

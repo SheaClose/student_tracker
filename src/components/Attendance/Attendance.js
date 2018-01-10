@@ -17,7 +17,8 @@ class Attendance extends Component {
     this.state = {
       pages: ['Today', 'Weekly', 'Aggregate'],
       check: '',
-      cohort: 0
+      cohort: 0,
+      default: true
     };
     this.pageCheck = this.pageCheck.bind(this);
     this.pageChange = this.pageChange.bind(this);
@@ -33,16 +34,22 @@ class Attendance extends Component {
       return null;
     }
     const { students } = this.props;
-    const cohort = this.state.cohort;
+    let cohort = this.state.cohort;
+    if (this.props.defaultCohort && this.state.default) {
+      this.setState({ default: false });
+      for (let i = 0; i < students.length; i++) {
+        if (students[i].name === this.props.defaultCohort) {
+          cohort = i;
+        }
+      }
+    }
     switch (check) {
     case 'Weekly':
       return <WeeklyView students={students[cohort].classSession} />;
     case 'Aggregate':
       return <AggregateView students={students[cohort].classSession} />;
     default:
-      return (
-        <AttendanceTracker students={students[cohort].classSession} />
-      );
+      return <AttendanceTracker students={students[cohort].classSession} />;
     }
   }
 
@@ -51,16 +58,20 @@ class Attendance extends Component {
   }
 
   render() {
-    const buttons = this.state.pages.map((page, i) => (
-      <button
-        key={i}
-        onClick={() => {
-          this.pageCheck(page);
-        }}
-      >
-        {page}
-      </button>
-    ));
+    const buttons = (
+      <div className="attendance-page-buttons">
+        {this.state.pages.map((page, i) => (
+          <button
+            key={i}
+            onClick={() => {
+              this.pageCheck(page);
+            }}
+          >
+            {page}
+          </button>
+        ))}
+      </div>
+    );
     const childPage = this.pageChange(this.state.check);
     return (
       <div className="attendance-main-container">
@@ -91,11 +102,15 @@ class Attendance extends Component {
 }
 
 Attendance.propTypes = {
-  students: PropTypes.array.isRequired
+  students: PropTypes.array.isRequired,
+  defaultCohort: PropTypes.string.isRequired
 };
 
-function mapStateToProps({ students }) {
-  return { students };
+function mapStateToProps({ mainReducer }) {
+  return {
+    students: mainReducer.students,
+    defaultCohort: mainReducer.defaultCohort
+  };
 }
 
 export default connect(mapStateToProps, { getStudents })(Attendance);

@@ -8,15 +8,20 @@ export default class AttendanceTracker extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+    };
   }
 
   render() {
+    let disabled = false;
+    if (this.props.students.inSession) {
+      disabled = true;
+    }
     return (
       this.props.students &&
       this.props.students.map((student, i) => (
         <div key={i} className="attendance-tracker-container">
-          <AttendanceButtonInput student={student} />
+          <AttendanceButtonInput student={student} disabled={disabled} />
         </div>
       ))
     );

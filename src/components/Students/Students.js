@@ -22,6 +22,14 @@ class Students extends Component {
       )
     };
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.students.length !== this.props.students.length) {
+      const selectedCohortIndex = nextProps.students.findIndex(
+        c => c.name === this.props.defaultCohort
+      );
+      this.setState({ selectedCohortIndex });
+    }
+  }
 
   render() {
     const { students } = this.props;
@@ -78,10 +86,10 @@ Students.propTypes = {
   defaultCohort: PropTypes.string.isRequired
 };
 
-function mapStateToProps({ students, defaultCohort }) {
+function mapStateToProps({ mainReducer }) {
   return {
-    students,
-    defaultCohort
+    students: mainReducer.students,
+    defaultCohort: mainReducer.defaultCohort
   };
 }
 

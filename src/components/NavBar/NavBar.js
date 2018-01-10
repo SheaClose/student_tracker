@@ -7,7 +7,6 @@ import MenuItem from 'material-ui/MenuItem';
 
 import Logo from '../../images/devLogo.png';
 import './NavBar.css';
-import { rootPath } from '../../resources/resources';
 
 class NavBar extends Component {
   constructor(props) {
@@ -17,9 +16,9 @@ class NavBar extends Component {
   }
   logInLogOut() {
     if (this.props.isAuthed) {
-      return <a href={`${rootPath}/logout`}>Logout</a>;
+      return <a href={`${process.env.REACT_APP_ROOT_PATH}/logout`}>Logout</a>;
     }
-    return <a href={`${rootPath}/auth/devmtn`}>Login</a>;
+    return <a href={`${process.env.REACT_APP_ROOT_PATH}/auth/devmtn`}>Login</a>;
   }
   handleToggle() {
     this.setState({ open: !this.state.open });
@@ -75,8 +74,8 @@ NavBar.propTypes = {
   isAuthed: PropTypes.bool.isRequired
 };
 
-function mapStateToProps({ isAuthed }) {
-  return { isAuthed };
+function mapStateToProps({ mainReducer }) {
+  return { isAuthed: mainReducer.isAuthed };
 }
 
 export default withRouter(connect(mapStateToProps)(NavBar));
