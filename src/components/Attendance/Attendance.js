@@ -49,9 +49,7 @@ class Attendance extends Component {
     case 'Aggregate':
       return <AggregateView students={students[cohort].classSession} />;
     default:
-      return (
-        <AttendanceTracker students={students[cohort].classSession} />
-      );
+      return <AttendanceTracker students={students[cohort].classSession} />;
     }
   }
 
@@ -60,16 +58,20 @@ class Attendance extends Component {
   }
 
   render() {
-    const buttons = (<div className="attendance-page-buttons"> {this.state.pages.map((page, i) => (
-      <button
-        key={i}
-        onClick={() => {
-          this.pageCheck(page);
-        }}
-      >
-        {page}
-      </button>
-    ))} </div>);
+    const buttons = (
+      <div className="attendance-page-buttons">
+        {this.state.pages.map((page, i) => (
+          <button
+            key={i}
+            onClick={() => {
+              this.pageCheck(page);
+            }}
+          >
+            {page}
+          </button>
+        ))}
+      </div>
+    );
     const childPage = this.pageChange(this.state.check);
     return (
       <div className="attendance-main-container">
@@ -104,8 +106,11 @@ Attendance.propTypes = {
   defaultCohort: PropTypes.string.isRequired
 };
 
-function mapStateToProps({ students, defaultCohort }) {
-  return { students, defaultCohort };
+function mapStateToProps({ mainReducer }) {
+  return {
+    students: mainReducer.students,
+    defaultCohort: mainReducer.defaultCohort
+  };
 }
 
 export default connect(mapStateToProps, { getStudents })(Attendance);

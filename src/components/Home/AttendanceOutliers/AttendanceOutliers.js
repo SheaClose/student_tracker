@@ -64,8 +64,8 @@ AttendanceOutliers.propTypes = {
   outliers: PropTypes.object
 };
 
-const mapStateToProps = state => ({
-  outliers: state.outliers
+const mapStateToProps = ({ mainReducer }) => ({
+  outliers: mainReducer.outliers
 });
 
 export default connect(mapStateToProps)(AttendanceOutliers);

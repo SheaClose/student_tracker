@@ -12,7 +12,6 @@ class DefaultCohortButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cohorts: props.students.map(c => c.name),
       snackBarMsg: '',
       openSnackBar: false,
       open: false,
@@ -35,9 +34,9 @@ class DefaultCohortButton extends Component {
 
   setDefaultCohort(_, __, index) {
     const cohortName = this.props.students[index].name;
-    this.props.updateDefaultCohort(cohortName).then(cur => {
+    this.props.updateDefaultCohort(cohortName).then(response => {
       this.setState({
-        snackBarMsg: `UPDATE_DEFAULT_COHORT_FULFILLED: ${cur.value}`,
+        snackBarMsg: `UPDATE_DEFAULT_COHORT_FULFILLED: ${response.value}`,
         openSnackBar: true
       });
     });
@@ -65,9 +64,10 @@ class DefaultCohortButton extends Component {
     });
   }
   render() {
-    const cohorts = this.state.cohorts.map((c, i) => (
-      <MenuItem value={i} key={c} primaryText={c} />
+    const cohorts = this.props.students.map((c, i) => (
+      <MenuItem value={i} key={c.name} primaryText={c.name} />
     ));
+
     const defaultCohortIndex = this.props.students.findIndex(
       c => c.name === this.props.defaultCohort
     );
@@ -105,10 +105,10 @@ DefaultCohortButton.propTypes = {
   defaultCohort: PropTypes.string.isRequired
 };
 
-function mapStateToProps({ students, defaultCohort }) {
+function mapStateToProps({ mainReducer }) {
   return {
-    students,
-    defaultCohort
+    students: mainReducer.students,
+    defaultCohort: mainReducer.defaultCohort
   };
 }
 
