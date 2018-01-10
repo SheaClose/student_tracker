@@ -52,8 +52,8 @@ App.propTypes = {
   location: PropTypes.object.isRequired
 };
 
-function mapStateToProps({ isAuthed }) {
-  return { isAuthed };
+function mapStateToProps({ mainReducer }) {
+  return { isAuthed: mainReducer.isAuthed };
 }
 
 export default withRouter(

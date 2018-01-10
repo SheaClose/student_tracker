@@ -1,9 +1,12 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import promiseMiddleware from 'redux-promise-middleware';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import reducer from './reducer';
+import projectReducer from './projects/reducer';
+
+const reducers = combineReducers({ mainReducer: reducer, projectReducer });
 
 export default createStore(
-  reducer,
+  reducers,
   composeWithDevTools(applyMiddleware(promiseMiddleware()))
 );

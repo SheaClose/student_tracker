@@ -21,10 +21,10 @@ class Home extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  userInfo: state.userInfo,
-  students: state.students,
-  outliers: state.outliers
+const mapStateToProps = ({ mainReducer }) => ({
+  userInfo: mainReducer.userInfo,
+  students: mainReducer.students,
+  outliers: mainReducer.outliers
 });
 
 export default connect(mapStateToProps)(Home);

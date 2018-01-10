@@ -105,10 +105,10 @@ DefaultCohortButton.propTypes = {
   defaultCohort: PropTypes.string.isRequired
 };
 
-function mapStateToProps({ students, defaultCohort }) {
+function mapStateToProps({ mainReducer }) {
   return {
-    students,
-    defaultCohort
+    students: mainReducer.students,
+    defaultCohort: mainReducer.defaultCohort
   };
 }
 

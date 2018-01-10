@@ -34,8 +34,8 @@ Student.propTypes = {
   match: PropTypes.object.isRequired
 };
 
-function mapStateToProps({ students }) {
-  return { students };
+function mapStateToProps({ mainReducer }) {
+  return { students: mainReducer.students };
 }
 
 export default connect(mapStateToProps)(Student);

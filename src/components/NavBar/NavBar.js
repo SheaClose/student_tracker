@@ -74,8 +74,8 @@ NavBar.propTypes = {
   isAuthed: PropTypes.bool.isRequired
 };
 
-function mapStateToProps({ isAuthed }) {
-  return { isAuthed };
+function mapStateToProps({ mainReducer }) {
+  return { isAuthed: mainReducer.isAuthed };
 }
 
 export default withRouter(connect(mapStateToProps)(NavBar));
