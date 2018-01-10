@@ -31,11 +31,7 @@ class DefaultCohortButton extends Component {
       this
     );
   }
-  componentWillReceiveProps(newProps) {
-    if (newProps.students.length !== this.props.students.length) {
-      this.setState({ cohorts: newProps.students.map(c => c.name) });
-    }
-  }
+
   setDefaultCohort(_, __, index) {
     const cohortName = this.props.students[index].name;
     this.props.updateDefaultCohort(cohortName).then(response => {
