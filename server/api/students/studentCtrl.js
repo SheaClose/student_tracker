@@ -74,24 +74,56 @@ module.exports = {
     }
     return res.status(500).json('User not logged in');
   },
-  getOutliers(req, res) {
+  async getOutliers(req, res) {
     const { devmtnUser } = req.session;
     if (devmtnUser) {
-      // should cohort permissions be stored in our database instead?
       const allowedCohorts = devmtnUser.sessions.map(session => session.name);
       const db = req.app.get('db');
-      const absencePromise = db.students.get_absence_outliers(allowedCohorts);
-      const tardiesPromise = db.students.get_tardies_outliers(allowedCohorts);
-      const projectPromise = db.students.get_project_outliers(allowedCohorts);
-      const oneononePromise = db.students.get_oneonone_outliers(allowedCohorts);
+      try {
+        const absences = await db.students.get_absence_outliers(allowedCohorts);
+        const tardies = await db.students.get_tardies_outliers(allowedCohorts);
+        const projects = await db.students.get_project_outliers(allowedCohorts);
+        const oneonones = await db.students.get_oneonone_outliers(
+          allowedCohorts
+        );
 
-      axios
-        .all([absencePromise, tardiesPromise, projectPromise, oneononePromise])
-        .then(([absences, tardies, projects, oneonones]) =>
-          res.status(200).json({ absences, tardies, projects, oneonones })
-        )
-        .catch(console.log);
+        const attendance = {};
+        absences.forEach(row => {
+          attendance[row.dm_id] = attendance[row.dm_id] || {
+            name: `${row.first_name} ${row.last_name}`
+          };
+          attendance[row.dm_id].absences = attendance[row.dm_id].absences || [];
+          attendance[row.dm_id].absences = [
+            ...attendance[row.dm_id].absences,
+            { date: row.date }
+          ];
+        });
+
+        tardies.forEach(row => {
+          attendance[row.dm_id] = attendance[row.dm_id] || {};
+          attendance[row.dm_id].tardies = attendance[row.dm_id].tardies || [];
+          attendance[row.dm_id].tardies = [
+            ...attendance[row.dm_id].tardies,
+            {
+              date: row.date,
+              minutes: row.minutes,
+              timeframe: row.timeframe
+            }
+          ];
+        });
+
+        const att = Object.keys(attendance).reduce(
+          (acc, cur) => [...acc, { ...attendance[cur], dm_id: cur }],
+          []
+        );
+
+        return res.json({ att, projects, oneonones });
+      } catch (e) {
+        console.log(e);
+        return res.status(500).json('Async Error');
+      }
     }
+    return res.status(500).json('User not logged in');
   }
 };
 
