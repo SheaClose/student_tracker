@@ -17,7 +17,8 @@ class Attendance extends Component {
     this.state = {
       pages: ['Today', 'Weekly', 'Aggregate'],
       check: '',
-      cohort: 0
+      cohort: 0,
+      default: true
     };
     this.pageCheck = this.pageCheck.bind(this);
     this.pageChange = this.pageChange.bind(this);
@@ -34,14 +35,14 @@ class Attendance extends Component {
     }
     const { students } = this.props;
     let cohort = this.state.cohort;
-    if (this.props.defaultCohort) {
+    if (this.props.defaultCohort && this.state.default) {
+      this.setState({ default: false });
       for (let i = 0; i < students.length; i++) {
         if (students[i].name === this.props.defaultCohort) {
           cohort = i;
         }
       }
     }
-
     switch (check) {
     case 'Weekly':
       return <WeeklyView students={students[cohort].classSession} />;
@@ -90,7 +91,6 @@ class Attendance extends Component {
         </DropDownMenu>
         <div className="attendance-content">
           <div className="attendance-student-tracker">
-            {this.props.defaultCohort}
             {buttons} {childPage}
           </div>
         </div>
