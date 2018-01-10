@@ -27,7 +27,9 @@ class App extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.isAuthed !== this.props.isAuthed && !newProps.isAuthed) {
-      window.location.href = `${process.env.REACT_APP_ROOT_PATH}/auth/devmtn`;
+      window.location.href = `${
+        process.env.REACT_APP_ROOT_PATH
+      }/auth/devmtn?redirect=${this.props.location.pathname}`;
     }
   }
 
@@ -46,7 +48,8 @@ App.propTypes = {
   getStudents: PropTypes.func.isRequired,
   getUserInfo: PropTypes.func.isRequired,
   verifyLogin: PropTypes.func.isRequired,
-  getOutliers: PropTypes.func.isRequired
+  getOutliers: PropTypes.func.isRequired,
+  location: PropTypes.object.isRequired
 };
 
 function mapStateToProps({ isAuthed }) {

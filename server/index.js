@@ -74,7 +74,14 @@ app.use(devMtnPassport.initialize());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/auth/devmtn', devMtnPassport.authenticate('devmtn'));
+app.get(
+  '/auth/devmtn',
+  (req, res, next) => {
+    req.session.redirect = req.query.redirect.replace(/\//, '');
+    next();
+  },
+  devMtnPassport.authenticate('devmtn')
+);
 app.get(
   '/auth/devmtn/callback',
   devMtnPassport.authenticate('devmtn', { failureRedirect: '/loginFailed' }),
@@ -95,7 +102,7 @@ app.get(
           name: userSession.short_name
         }));
         req.session.devmtnUser = Object.assign({}, req.user, { sessions });
-        return res.redirect(auth_redirect);
+        return res.redirect(`${auth_redirect}${req.session.redirect}`);
       })
       .catch(err => console.log('Cannot get sessions: ', err));
   }
