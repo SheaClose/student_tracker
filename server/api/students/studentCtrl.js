@@ -40,25 +40,30 @@ module.exports = {
                     !student.status.includes('dropped')
                 )
               )
-              .map((classSession, ind) =>
-                /** creating merged objects from sessionPromise and cohortPromise. Mapping them
-                 * together, ex:
-                 *  {
-                 *    id: 81
-                 *    name: "WDL4",
-                 *    classSession: [{...student info}, {...student info}, {...student info}],
-                 *    date_start: '2016-08-03T04:00:00.000Z',
-                 *    date_end: '2016-11-29T04:00:00.000Z' },
-                 *  }
-                 * */
-                Object.assign(
+              /** creating merged objects from sessionPromise and cohortPromise. Mapping them
+               * together, ex:
+               *  {
+               *    id: 81
+               *    name: "WDL4",
+               *    classSession: [{...student info}, {...student info}, {...student info}],
+               *    date_start: '2016-08-03T04:00:00.000Z',
+               *    date_end: '2016-11-29T04:00:00.000Z' },
+               *  }
+               * */
+              .map((classSession, ind) => {
+                const inSession =
+                  new Date(cohortResponse[ind].date_start).getTime() <
+                    Date.now() &&
+                  new Date(cohortResponse[ind].date_end).getTime() > Date.now();
+                return Object.assign(
                   {
                     name: sessions[ind].name,
-                    classSession
+                    classSession,
+                    inSession
                   },
                   cohortResponse[ind]
-                )
-              )
+                );
+              })
               .sort(
                 (a, b) =>
                   +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
