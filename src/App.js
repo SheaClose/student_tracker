@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import NavBar from './components/NavBar/NavBar';
 
 import routes from './routes';
-import { rootPath } from './resources/resources';
 import './App.css';
 
 import {
@@ -28,7 +27,7 @@ class App extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.isAuthed !== this.props.isAuthed && !newProps.isAuthed) {
-      window.location.href = `${rootPath}/auth/devmtn`;
+      window.location.href = `${process.env.REACT_APP_ROOT_PATH}/auth/devmtn`;
     }
   }
 
