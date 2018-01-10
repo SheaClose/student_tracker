@@ -14,18 +14,19 @@ module.exports = {
     if (devmtnUser) {
       const { sessions, id } = devmtnUser;
       const cohortPromises = asyncGetCohorts(sessions, id);
-      const sessionPromises = sessions.map(session =>
+      const sessionPromisesArray = sessions.map(session =>
         axios.get(
           `https://devmountain.com/api/classsession/enrollments/${session.id}`,
           authHeaders
         )
       );
+      const sessionPromises = Promise.all(sessionPromisesArray);
       /**
        * since we are potentially getting multiple sessions, we await all responses
        * before sending back to the front end.
        */
       return axios
-        .all([Promise.all(sessionPromises), cohortPromises])
+        .all([sessionPromises, cohortPromises])
         .then(
           axios.spread((sessionResponse, cohortResponse) => {
             /**
@@ -124,7 +125,6 @@ module.exports = {
 
         return res.json({ att, projects, oneonones });
       } catch (e) {
-        console.log(e);
         return res.status(500).json('Async Error');
       }
     }
@@ -132,18 +132,28 @@ module.exports = {
   }
 };
 
-function asyncGetCohorts(sessions, id) {
-  return axios
-    .get(`https://devmountain.com/api/mentors/${id}/classsessions`, authHeaders)
-    .then(dmCohortData =>
-      dmCohortData.data
-        .map((c, i) => {
-          const { date_start, date_end } = c;
-          return Object.assign({}, sessions[i], {
-            date_start,
-            date_end
-          });
-        })
-        .sort((a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, ''))
-    );
+async function asyncGetCohorts(sessions, id) {
+  try {
+    return await axios
+      .get(
+        `https://devmountain.com/api/mentors/${id}/classsessions`,
+        authHeaders
+      )
+      .then(dmCohortData =>
+        dmCohortData.data
+          .map((c, i) => {
+            const { date_start, date_end } = c;
+            return Object.assign({}, sessions[i], {
+              date_start,
+              date_end
+            });
+          })
+          .sort(
+            (a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
+          )
+      )
+      .catch(console.log);
+  } catch (e) {
+    return e;
+  }
 }
