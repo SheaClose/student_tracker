@@ -19,7 +19,6 @@ class User extends Component {
     event.preventDefault();
   }
   render() {
-    console.log(this.props);
     return (
       <div className="user_container">
         <div className="user_card_container">
