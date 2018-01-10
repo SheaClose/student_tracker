@@ -54,6 +54,7 @@ export default class AttendanceButtonInput extends Component {
     const buttons = this.state.timePeriods.map((period, i) => (
       <span key={i}>
         <FlatButton
+          disabled={this.props.disabled}
           secondary={true}
           onClick={() => {
             this.handleSubmitToggle(period, this.props.student.dmId);
@@ -80,5 +81,6 @@ export default class AttendanceButtonInput extends Component {
 }
 
 AttendanceButtonInput.propTypes = {
-  student: PropTypes.object.isRequired
+  student: PropTypes.object.isRequired,
+  disabled: PropTypes.bool.isRequired
 };
