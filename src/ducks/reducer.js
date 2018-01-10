@@ -5,7 +5,6 @@ import {
   UPDATE_DEFAULT_COHORT,
   GET_OUTLIERS
 } from './actions';
-import { rootPath } from '../resources/resources';
 
 const initialState = {
   isAuthed: false,
@@ -27,7 +26,7 @@ export default function reducer(state = initialState, action) {
       pendingAuth: true
     });
   case `${IS_AUTHED}_REJECTED`:
-    window.location.href = `${rootPath}/loginFailed`;
+    window.location.href = `${process.env.REACT_APP_ROOT_PATH}/loginFailed`;
     return Object.assign({}, state, {
       pendingAuth: false,
       isAuthed: false
