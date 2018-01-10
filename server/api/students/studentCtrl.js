@@ -8,6 +8,36 @@ const axios = require('axios');
  */
 const cohort = require('../../../configs/cohort');
 
+const groupById = (array, obj) => {
+  array.forEach(row => {
+    obj[row.dm_id] = { name: `${row.first_name} ${row.last_name}` };
+  });
+};
+const groupRowData = (array, obj, property) => {
+  array.forEach(row => {
+    obj[row.dm_id][property] = obj[row.dm_id][property] || [];
+    obj[row.dm_id][property] = [
+      ...obj[row.dm_id][property],
+      { ...row }
+      // { date: row.date, minutes: row.minutes, timeframe: row.timeframe }
+    ];
+  });
+};
+const objToArray = obj =>
+  Object.keys(obj).reduce(
+    (acc, cur) => [...acc, { ...obj[cur], dm_id: cur }],
+    []
+  );
+const formatAttendanceData = (absences, tardies) => {
+  const attendance = {};
+  groupById(absences, attendance);
+  groupById(tardies, attendance);
+  groupRowData(absences, attendance, 'absences');
+  groupRowData(tardies, attendance, 'tardies');
+
+  return objToArray(attendance);
+};
+
 module.exports = {
   getstudents(req, res) {
     const { devmtnUser } = req.session;
@@ -92,38 +122,23 @@ module.exports = {
         const oneonones = await db.students.get_oneonone_outliers(
           allowedCohorts
         );
+        const attendance = formatAttendanceData(absences, tardies);
 
-        const attendance = {};
-        absences.forEach(row => {
-          attendance[row.dm_id] = attendance[row.dm_id] || {
-            name: `${row.first_name} ${row.last_name}`
-          };
-          attendance[row.dm_id].absences = attendance[row.dm_id].absences || [];
-          attendance[row.dm_id].absences = [
-            ...attendance[row.dm_id].absences,
-            { date: row.date }
-          ];
+        const formattedProjects = {};
+        groupById(projects, formattedProjects);
+        groupRowData(projects, formattedProjects, 'projects');
+
+        const formattedOneonones = {};
+        groupById(oneonones, formattedOneonones);
+        groupRowData(oneonones, formattedOneonones, 'oneonones');
+
+        return res.json({
+          attendance,
+          projects,
+          formattedProjects,
+          formattedOneonones,
+          oneonones
         });
-
-        tardies.forEach(row => {
-          attendance[row.dm_id] = attendance[row.dm_id] || {};
-          attendance[row.dm_id].tardies = attendance[row.dm_id].tardies || [];
-          attendance[row.dm_id].tardies = [
-            ...attendance[row.dm_id].tardies,
-            {
-              date: row.date,
-              minutes: row.minutes,
-              timeframe: row.timeframe
-            }
-          ];
-        });
-
-        const att = Object.keys(attendance).reduce(
-          (acc, cur) => [...acc, { ...attendance[cur], dm_id: cur }],
-          []
-        );
-
-        return res.json({ att, projects, oneonones });
       } catch (e) {
         return res.status(500).json('Async Error');
       }
