@@ -11,9 +11,8 @@ import {
 } from 'material-ui/Table';
 
 const ProjectOutliers = props => {
-  const { outliers = { att: [] } } = props;
-  const { att } = outliers;
-  console.log(props);
+  const { outliers = { attendance: [] } } = props;
+  const { attendance } = outliers;
 
   return (
     <Table>
@@ -30,7 +29,7 @@ const ProjectOutliers = props => {
         </TableRow>
       </TableHeader>
       <TableBody displayRowCheckbox={false}>
-        {att.map(student => (
+        {attendance.map(student => (
           <TableRow key={student.name}>
             <TableRowColumn>{student.name}</TableRowColumn>
             <TableRowColumn>
