@@ -1,19 +1,25 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import ProjectsTable from "./ProjectsTable/ProjectsTable";
+import { ConfigToolbar } from "./Toolbar/Toolbar";
+import { AddProject } from "./AddProject/AddProject";
+import { getProjects } from "./../../../ducks/projects/actions";
 
-import { ConfigToolbar } from './Toolbar/Toolbar';
-import ProjectsTable from './ProjectsTable/ProjectsTable';
-import { AddProject } from './AddProject/AddProject';
+import "./styles.css";
 
-import './styles.css';
-
-export default class Configuration extends Component {
+export class Configuration extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       addProject: false,
-      selected: ''
+      selected: "",
+      selectedCohort: "",
     };
+  }
+
+  componentDidMount() {
+    // getProjects(this.state.selectedCohort || 'WDL10');
   }
 
   render() {
@@ -22,6 +28,9 @@ export default class Configuration extends Component {
         <ConfigToolbar
           addProject={() => {
             this.setState({ addProject: !this.state.addProject });
+          }}
+          selectCohort={val => {
+            this.setState({ selectedCohort: val });
           }}
         />
         {this.state.addProject && (
@@ -36,3 +45,7 @@ export default class Configuration extends Component {
     );
   }
 }
+
+const mapStateToProps = state => state;
+
+export default connect(mapStateToProps, getProjects)(Configuration);

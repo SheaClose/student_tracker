@@ -8,12 +8,7 @@ import NavBar from './components/NavBar/NavBar';
 import routes from './routes';
 import './App.css';
 
-import {
-  getStudents,
-  getUserInfo,
-  verifyLogin,
-  getOutliers
-} from './ducks/actions';
+import { getStudents, getUserInfo, verifyLogin, getOutliers } from './ducks/actions';
 
 class App extends Component {
   componentDidMount() {

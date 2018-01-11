@@ -23,11 +23,7 @@ const groupRowData = (array, obj, property) => {
     ];
   });
 };
-const objToArray = obj =>
-  Object.keys(obj).reduce(
-    (acc, cur) => [...acc, { ...obj[cur], dm_id: cur }],
-    []
-  );
+const objToArray = obj => Object.keys(obj).reduce((acc, cur) => [...acc, { ...obj[cur], dm_id: cur }], []);
 const formatAttendanceData = (absences, tardies) => {
   const attendance = {};
   groupById(absences, attendance);
@@ -45,10 +41,7 @@ module.exports = {
       const { sessions, id } = devmtnUser;
       const cohortPromises = asyncGetCohorts(sessions, id);
       const sessionPromisesArray = sessions.map(session =>
-        axios.get(
-          `https://devmountain.com/api/classsession/enrollments/${session.id}`,
-          authHeaders
-        )
+        axios.get(`https://devmountain.com/api/classsession/enrollments/${session.id}`, authHeaders)
       );
       const sessionPromises = Promise.all(sessionPromisesArray);
       /**
@@ -83,8 +76,7 @@ module.exports = {
                * */
               .map((classSession, ind) => {
                 const inSession =
-                  new Date(cohortResponse[ind].date_start).getTime() <
-                    Date.now() &&
+                  new Date(cohortResponse[ind].date_start).getTime() < Date.now() &&
                   new Date(cohortResponse[ind].date_end).getTime() > Date.now();
                 return Object.assign(
                   {
@@ -95,10 +87,7 @@ module.exports = {
                   cohortResponse[ind]
                 );
               })
-              .sort(
-                (a, b) =>
-                  +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
-              );
+              .sort((a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, ''));
             /** adding dummy data for development */
             if (process.env.NODE_ENV !== 'production') {
               activeStudents.push(cohort);
@@ -119,9 +108,7 @@ module.exports = {
         const absences = await db.students.get_absence_outliers(allowedCohorts);
         const tardies = await db.students.get_tardies_outliers(allowedCohorts);
         const projects = await db.students.get_project_outliers(allowedCohorts);
-        const oneonones = await db.students.get_oneonone_outliers(
-          allowedCohorts
-        );
+        const oneonones = await db.students.get_oneonone_outliers(allowedCohorts);
         const attendance = formatAttendanceData(absences, tardies);
 
         const formattedProjects = {};
@@ -150,10 +137,7 @@ module.exports = {
 async function asyncGetCohorts(sessions, id) {
   try {
     return await axios
-      .get(
-        `https://devmountain.com/api/mentors/${id}/classsessions`,
-        authHeaders
-      )
+      .get(`https://devmountain.com/api/mentors/${id}/classsessions`, authHeaders)
       .then(dmCohortData =>
         dmCohortData.data
           .map((c, i) => {
@@ -163,9 +147,7 @@ async function asyncGetCohorts(sessions, id) {
               date_end
             });
           })
-          .sort(
-            (a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
-          )
+          .sort((a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, ''))
       )
       .catch(console.log);
   } catch (e) {

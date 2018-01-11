@@ -33,8 +33,7 @@ export class ConfigToolbar extends Component {
   }
 
   handleChange(event, index, value) {
-    console.log(value);
-    this.setState({ selectedCohortName: value });
+    this.props.selectCohort(value);
   }
 
   render() {
@@ -54,5 +53,6 @@ export class ConfigToolbar extends Component {
 }
 
 ConfigToolbar.propTypes = {
-  addProject: PropTypes.func
+  addProject: PropTypes.func,
+  selectCohort: PropTypes.func
 };
