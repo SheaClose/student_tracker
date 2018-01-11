@@ -59,7 +59,6 @@ class Attendance extends Component {
   }
 
   render() {
-    console.log(this.props);
     const buttons = (
       <div className="attendance-page-buttons">
         {' '}
