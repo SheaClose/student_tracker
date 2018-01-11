@@ -105,13 +105,6 @@ module.exports = {
       const allowedCohorts = devmtnUser.sessions.map(session => session.name);
       const db = req.app.get('db');
       try {
-<<<<<<< Updated upstream
-        const absences = await db.students.get_absence_outliers(allowedCohorts);
-        const tardies = await db.students.get_tardies_outliers(allowedCohorts);
-        const projects = await db.students.get_project_outliers(allowedCohorts);
-        const oneonones = await db.students.get_oneonone_outliers(allowedCohorts);
-        const attendance = formatAttendanceData(absences, tardies);
-=======
         const absencesData = await db.students.get_absence_outliers(
           allowedCohorts
         );
@@ -125,7 +118,6 @@ module.exports = {
           allowedCohorts
         );
         const attendance = formatAttendanceData(absencesData, tardiesData);
->>>>>>> Stashed changes
 
         const formattedProjects = {};
         groupById(projectsData, formattedProjects);

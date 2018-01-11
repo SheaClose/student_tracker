@@ -13,7 +13,6 @@ import {
 const ProjectOutliers = props => {
   const { outliers = { attendance: [], projects: [] } } = props;
   const { projects } = outliers;
-  console.log(props);
   return (
     <Table>
       <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
