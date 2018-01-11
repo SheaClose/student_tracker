@@ -11,9 +11,8 @@ import {
 } from 'material-ui/Table';
 
 const ProjectOutliers = props => {
-  const { outliers = { attendance: [] } } = props;
-  const { attendance } = outliers;
-
+  const { outliers = { attendance: [], projects: [] } } = props;
+  const { projects } = outliers;
   return (
     <Table>
       <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
@@ -24,34 +23,25 @@ const ProjectOutliers = props => {
         </TableRow>
         <TableRow>
           <TableHeaderColumn>Student</TableHeaderColumn>
-          <TableHeaderColumn>Tardies</TableHeaderColumn>
-          <TableHeaderColumn>Absences</TableHeaderColumn>
+          <TableHeaderColumn>projects</TableHeaderColumn>
+          <TableHeaderColumn>projects</TableHeaderColumn>
         </TableRow>
       </TableHeader>
       <TableBody displayRowCheckbox={false}>
-        {attendance.map(student => (
+        {projects.map(student => (
           <TableRow key={student.name}>
             <TableRowColumn>{student.name}</TableRowColumn>
             <TableRowColumn>
-              <div>
-                {student.tardies.length} (
-                {student.tardies.reduce(
-                  (acc, tardy) => +acc + +tardy.minutes,
-                  0
-                )}
-                min total)
-              </div>
-              <div>
-                {student.tardies.map(
-                  tardy => `${new Date(tardy.date).toDateString()}, `
-                )}
-              </div>
+              <div>{student.projects.length} </div>
             </TableRowColumn>
             <TableRowColumn>
-              <div>{student.absences.length}</div>
-              {student.absences.map(
-                absence => `${new Date(absence.date).toDateString()}, `
-              )}
+              {student.projects.map(project => (
+                <div key={project.name}>
+                  {`${project.name} (${new Date(
+                    project.due_date
+                  ).toDateString()}) - ${project.status}`}
+                </div>
+              ))}
             </TableRowColumn>
           </TableRow>
         ))}

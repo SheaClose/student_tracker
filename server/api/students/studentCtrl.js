@@ -105,19 +105,29 @@ module.exports = {
       const allowedCohorts = devmtnUser.sessions.map(session => session.name);
       const db = req.app.get('db');
       try {
-        const absences = await db.students.get_absence_outliers(allowedCohorts);
-        const tardies = await db.students.get_tardies_outliers(allowedCohorts);
-        const projects = await db.students.get_project_outliers(allowedCohorts);
-        const oneonones = await db.students.get_oneonone_outliers(allowedCohorts);
-        const attendance = formatAttendanceData(absences, tardies);
+        const absencesData = await db.students.get_absence_outliers(
+          allowedCohorts
+        );
+        const tardiesData = await db.students.get_tardies_outliers(
+          allowedCohorts
+        );
+        const projectsData = await db.students.get_project_outliers(
+          allowedCohorts
+        );
+        const oneononesData = await db.students.get_oneonone_outliers(
+          allowedCohorts
+        );
+        const attendance = formatAttendanceData(absencesData, tardiesData);
 
         const formattedProjects = {};
-        groupById(projects, formattedProjects);
-        groupRowData(projects, formattedProjects, 'projects');
+        groupById(projectsData, formattedProjects);
+        groupRowData(projectsData, formattedProjects, 'projects');
+        const projects = objToArray(formattedProjects);
 
         const formattedOneonones = {};
-        groupById(oneonones, formattedOneonones);
-        groupRowData(oneonones, formattedOneonones, 'oneonones');
+        groupById(oneononesData, formattedOneonones);
+        groupRowData(oneononesData, formattedOneonones, 'oneonones');
+        const oneonones = objToArray(formattedOneonones);
 
         return res.json({
           attendance,
