@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import './Home.css';
 import AttendanceOutliers from './AttendanceOutliers/AttendanceOutliers';
 import ProjectOutliers from './ProjectOutliers/ProjectOutliers';
+import OneOnOneOutliers from './OneOnOneOutliers/OneOnOneOutliers';
 
 class Home extends Component {
   render() {
@@ -16,6 +17,7 @@ class Home extends Component {
         />
         <AttendanceOutliers />
         <ProjectOutliers />
+        <OneOnOneOutliers />
       </div>
     );
   }
