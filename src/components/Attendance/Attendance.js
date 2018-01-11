@@ -17,12 +17,21 @@ class Attendance extends Component {
     this.state = {
       pages: ['Today', 'Weekly', 'Aggregate'],
       check: '',
-      cohort: 0,
-      default: true
+      cohort: 0
     };
     this.pageCheck = this.pageCheck.bind(this);
     this.pageChange = this.pageChange.bind(this);
     this.cohortChange = this.cohortChange.bind(this);
+  }
+
+  componentWillMount() {
+    if (this.props.defaultCohort) {
+      for (let i = 0; i < this.props.students.length; i++) {
+        if (this.props.students[i].name === this.props.defaultCohort) {
+          this.setState({ cohort: i });
+        }
+      }
+    }
   }
 
   pageCheck(check) {
@@ -33,23 +42,15 @@ class Attendance extends Component {
     if (!this.props.students[0]) {
       return null;
     }
-    const { students } = this.props;
-    let cohort = this.state.cohort;
-    if (this.props.defaultCohort && this.state.default) {
-      this.setState({ default: false });
-      for (let i = 0; i < students.length; i++) {
-        if (students[i].name === this.props.defaultCohort) {
-          cohort = i;
-        }
-      }
-    }
     switch (check) {
     case 'Weekly':
-      return <WeeklyView students={students[cohort].classSession} />;
+      return <WeeklyView students={this.props.students[this.state.cohort].classSession} />;
     case 'Aggregate':
-      return <AggregateView students={students[cohort].classSession} />;
+      return <AggregateView students={this.props.students[this.state.cohort].classSession} />;
     default:
-      return <AttendanceTracker students={students[cohort].classSession} />;
+      return (
+        <AttendanceTracker students={this.props.students[this.state.cohort].classSession} />
+      );
     }
   }
 
@@ -58,8 +59,10 @@ class Attendance extends Component {
   }
 
   render() {
+    console.log(this.props);
     const buttons = (
       <div className="attendance-page-buttons">
+        {' '}
         {this.state.pages.map((page, i) => (
           <button
             key={i}
@@ -69,7 +72,7 @@ class Attendance extends Component {
           >
             {page}
           </button>
-        ))}
+        ))}{' '}
       </div>
     );
     const childPage = this.pageChange(this.state.check);
