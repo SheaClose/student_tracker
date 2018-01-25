@@ -3,8 +3,7 @@ import {
   GET_STUDENTS,
   GET_USER_INFO,
   UPDATE_DEFAULT_COHORT,
-  GET_OUTLIERS,
-  SELECT_COHORT
+  GET_OUTLIERS
 } from './actions';
 
 const initialState = {
@@ -12,8 +11,7 @@ const initialState = {
   pendingAuth: false,
   students: [],
   userInfo: {},
-  defaultCohort: '',
-  selectedCohort: ''
+  defaultCohort: ''
 };
 
 export default function reducer(state = initialState, action) {
@@ -49,8 +47,6 @@ export default function reducer(state = initialState, action) {
     });
   case `${GET_OUTLIERS}_FULFILLED`:
     return Object.assign({}, state, { outliers: action.payload });
-  case `${SELECT_COHORT}`:
-    return Object.assign({}, state, { selectedCohort: action.payload });
   default:
     return state;
   }
