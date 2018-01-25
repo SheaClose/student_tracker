@@ -5,6 +5,7 @@ export const GET_STUDENTS = 'GET_STUDENTS';
 export const GET_USER_INFO = 'GET_USER_INFO';
 export const UPDATE_DEFAULT_COHORT = 'UPDATE_DEFAULT_COHORT';
 export const GET_OUTLIERS = 'GET_OUTLIERS';
+export const SELECT_COHORT = 'SELECT_COHORT';
 
 export function verifyLogin() {
   return {
@@ -53,5 +54,12 @@ export function getOutliers() {
       .get('/api/outliers')
       .then(res => res.data)
       .catch(console.log)
+  };
+}
+
+export function selectCohort(cohort) {
+  return {
+    type: SELECT_COHORT,
+    payload: cohort
   };
 }
