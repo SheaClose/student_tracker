@@ -1,4 +1,9 @@
-import { GET_PROJECTS } from './actions';
+import {
+  GET_PROJECTS,
+  ADD_PROJECT,
+  UPDATE_PROJECT,
+  REMOVE_PROJECT
+} from './actions';
 
 const initialState = {
   loading: true,
