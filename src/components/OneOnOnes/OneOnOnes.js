@@ -16,15 +16,11 @@ class OneOnOnes extends Component {
     };
   }
 
-  componentDidMount() {
-    // this.props.getOneOnOnes(this.props.defaultCohort);
-  }
   render() {
     const students =
       this.props.students.filter(
         session => session.name === this.props.defaultCohort
       )[0] || [{ classSession: [] }][0];
-    console.log(students);
     return (
       <div>
         {students.classSession.map(student => <div>{student.first_name}</div>)}

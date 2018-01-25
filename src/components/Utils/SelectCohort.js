@@ -15,11 +15,18 @@ const SelectCohort = props => (
     ))}
   </DropDownMenu>
 );
-const mapStateToProps = state => ({
-  cohorts: state.mainReducer.students,
-  selectedCohort: state.mainReducer.selectedCohort,
-  defaultCohort: state.mainReducer.defaultCohort
-});
+const mapStateToProps = state => {
+  const {
+    students: cohorts,
+    selectedCohort,
+    defaultCohort
+  } = state.mainReducer;
+  return {
+    cohorts,
+    selectedCohort,
+    defaultCohort
+  };
+};
 
 SelectCohort.propTypes = {
   selectedCohort: PropTypes.string,
