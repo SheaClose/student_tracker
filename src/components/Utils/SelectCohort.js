@@ -24,8 +24,8 @@ const mapStateToProps = state => ({
 SelectCohort.propTypes = {
   selectedCohort: PropTypes.string,
   defaultCohort: PropTypes.string,
-  cohorts: PropTypes.array,
-  selectCohort: PropTypes.func
+  selectCohort: PropTypes.func,
+  cohorts: PropTypes.array
 };
 
 export default connect(mapStateToProps, { selectCohort })(SelectCohort);
