@@ -23,7 +23,11 @@ const groupRowData = (array, obj, property) => {
     ];
   });
 };
-const objToArray = obj => Object.keys(obj).reduce((acc, cur) => [...acc, { ...obj[cur], dm_id: cur }], []);
+const objToArray = obj =>
+  Object.keys(obj).reduce(
+    (acc, cur) => [...acc, { ...obj[cur], dm_id: cur }],
+    []
+  );
 const formatAttendanceData = (absences, tardies) => {
   const attendance = {};
   groupById(absences, attendance);
@@ -41,7 +45,10 @@ module.exports = {
       const { sessions, id } = devmtnUser;
       const cohortPromises = asyncGetCohorts(sessions, id);
       const sessionPromisesArray = sessions.map(session =>
-        axios.get(`https://devmountain.com/api/classsession/enrollments/${session.id}`, authHeaders)
+        axios.get(
+          `https://devmountain.com/api/classsession/enrollments/${session.id}`,
+          authHeaders
+        )
       );
       const sessionPromises = Promise.all(sessionPromisesArray);
       /**
@@ -76,7 +83,8 @@ module.exports = {
                * */
               .map((classSession, ind) => {
                 const inSession =
-                  new Date(cohortResponse[ind].date_start).getTime() < Date.now() &&
+                  new Date(cohortResponse[ind].date_start).getTime() <
+                    Date.now() &&
                   new Date(cohortResponse[ind].date_end).getTime() > Date.now();
                 return Object.assign(
                   {
@@ -87,7 +95,10 @@ module.exports = {
                   cohortResponse[ind]
                 );
               })
-              .sort((a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, ''));
+              .sort(
+                (a, b) =>
+                  +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
+              );
             /** adding dummy data for development */
             if (process.env.NODE_ENV !== 'production') {
               activeStudents.push(cohort);
@@ -141,13 +152,29 @@ module.exports = {
       }
     }
     return res.status(500).json('User not logged in');
+  },
+  dropStudent(req, res) {
+    const { id } = req.params;
+    const db = req.app.get('db');
+    db.students
+      .drop_student(id)
+      .then(resp => {
+        if (resp.length) {
+          return res.status(200).json(id);
+        }
+        return res.status(204).json(id);
+      })
+      .catch(console.log);
   }
 };
 
 async function asyncGetCohorts(sessions, id) {
   try {
     return await axios
-      .get(`https://devmountain.com/api/mentors/${id}/classsessions`, authHeaders)
+      .get(
+        `https://devmountain.com/api/mentors/${id}/classsessions`,
+        authHeaders
+      )
       .then(dmCohortData =>
         dmCohortData.data
           .map((c, i) => {
@@ -157,7 +184,9 @@ async function asyncGetCohorts(sessions, id) {
               date_end
             });
           })
-          .sort((a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, ''))
+          .sort(
+            (a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
+          )
       )
       .catch(console.log);
   } catch (e) {

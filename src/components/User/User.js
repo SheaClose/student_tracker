@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
+
 import DefaultCohortButton from '../Utils/DefaultCohortButton';
+import DropStudent from './DropStudent/DropStudent';
+
 import './User.css';
 
 const button_style = {
@@ -10,26 +13,13 @@ const button_style = {
 };
 
 class User extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-  handleClick(event) {
-    // This prevents ghost click.
-    event.preventDefault();
-  }
   render() {
     return (
       <div className="user_container">
         <div className="user_card_container">
           <Paper className="paper">
             <DefaultCohortButton className="user_button" />
-            <RaisedButton
-              style={button_style}
-              className="user_button"
-              onClick={this.handleClick}
-              label={'Drop Student'}
-            />
+            <DropStudent className="user_button" />
             <RaisedButton
               style={button_style}
               className="user_button"
@@ -54,4 +44,5 @@ class User extends Component {
     );
   }
 }
+
 export default User;
