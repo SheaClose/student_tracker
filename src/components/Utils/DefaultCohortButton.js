@@ -30,17 +30,34 @@ class DefaultCohortButton extends Component {
     this.handleSnackBarRequestClose = this.handleSnackBarRequestClose.bind(
       this
     );
+    this.handleOpenSnackBar = this.handleOpenSnackBar.bind(this);
   }
 
   setDefaultCohort(_, __, index) {
     const cohortName = this.props.students[index].name;
-    this.props.updateDefaultCohort(cohortName).then(response => {
-      this.setState({
-        snackBarMsg: `UPDATE_DEFAULT_COHORT_FULFILLED: ${response.value}`,
-        openSnackBar: true
+    this.props
+      .updateDefaultCohort(cohortName)
+      .then(response => {
+        this.handleOpenSnackBar(
+          `Updated default cohort value: ${response.value}`,
+          { backgroundColor: 'green' }
+        );
+      })
+      .catch(res => {
+        this.handleOpenSnackBar(
+          `Unable to update default cohort: ${res.value}`,
+          { backgroundColor: 'red' }
+        );
       });
-    });
     this.setState({ open: false });
+  }
+
+  handleOpenSnackBar(snackBarMsg, snackBarStyle) {
+    this.setState({
+      openSnackBar: true,
+      snackBarMsg,
+      snackBarStyle
+    });
   }
 
   handleClick(event) {
@@ -89,6 +106,7 @@ class DefaultCohortButton extends Component {
           </Menu>
         </Popover>
         <Snackbar
+          bodyStyle={this.state.snackBarStyle}
           open={this.state.openSnackBar}
           message={this.state.snackBarMsg}
           autoHideDuration={3005}
