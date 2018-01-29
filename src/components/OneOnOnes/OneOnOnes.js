@@ -23,7 +23,9 @@ class OneOnOnes extends Component {
       )[0] || [{ classSession: [] }][0];
     return (
       <div>
-        {students.classSession.map(student => <div>{student.first_name}</div>)}
+        {students.classSession.map(student => (
+          <div key={student.dmId}>{student.first_name}</div>
+        ))}
         <button
           onClick={() => this.setState(oldState => ({ open: !oldState.open }))}
         >
@@ -37,6 +39,11 @@ class OneOnOnes extends Component {
     );
   }
 }
+
+OneOnOnes.propTypes = {
+  students: PropTypes.array
+};
+
 const mapStateToProps = ({ mainReducer }) => ({
   students: mainReducer.students,
   defaultCohort: mainReducer.defaultCohort
