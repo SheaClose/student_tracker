@@ -4,9 +4,18 @@ import { PropTypes } from 'prop-types';
 import Dialog from 'material-ui/Dialog';
 import AddOneOnOne from '../Utils/AddOneOnOne';
 import FlatButton from 'material-ui/FlatButton';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn
+} from 'material-ui/Table';
+import { IconButton } from 'material-ui';
+import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import SelectCohort from '../Utils/SelectCohort';
-
-const actions = [<FlatButton label="Cancel" primary={true} />];
+// import { getOneOnOnes } from '../../ducks/actions';
 
 class OneOnOnes extends Component {
   constructor(props) {
@@ -14,25 +23,58 @@ class OneOnOnes extends Component {
     this.state = {
       open: false
     };
+    this.toggleDialog = this.toggleDialog.bind(this);
+    this.actions = [
+      <FlatButton label="Cancel" primary={true} onClick={this.toggleDialog} />
+    ];
+  }
+  componentDidMount() {
+    // this.props.getOneOnOnes(
+    //   this.props.selectedCohort || this.props.defaultCohort
+    // );
+  }
+  toggleDialog() {
+    this.setState(prev => ({
+      open: !prev.open
+    }));
   }
 
   render() {
-    const students =
-      this.props.students.filter(
-        session => session.name === this.props.defaultCohort
-      )[0] || [{ classSession: [] }][0];
+    const students = this.props.students.find(
+      session =>
+        session.name === (this.props.selectedCohort || this.props.defaultCohort)
+    ) || { classSession: [] };
     return (
       <div>
-        {students.classSession.map(student => (
-          <div key={student.dmId}>{student.first_name}</div>
-        ))}
-        <button
-          onClick={() => this.setState(oldState => ({ open: !oldState.open }))}
-        >
-          Toggle
-        </button>
         <SelectCohort />
-        <Dialog title="Add One on One" open={this.state.open} actions={actions}>
+        <Table>
+          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+            <TableRow>
+              <TableHeaderColumn>Name</TableHeaderColumn>
+              <TableHeaderColumn>Latest One-on-One</TableHeaderColumn>
+              <TableHeaderColumn>Skill</TableHeaderColumn>
+              <TableHeaderColumn>Confidence</TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false}>
+            {students.classSession.map(student => (
+              <TableRow key={student.dmId}>
+                <TableRowColumn>
+                  {student.first_name}
+                  <IconButton onClick={this.toggleDialog}>
+                    <AddCircleOutline />
+                  </IconButton>
+                </TableRowColumn>
+                <TableRowColumn>{JSON.stringify(student)}</TableRowColumn>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <Dialog
+          title="Add One on One"
+          open={this.state.open}
+          actions={this.actions}
+        >
           <AddOneOnOne />
         </Dialog>
       </div>
@@ -41,12 +83,15 @@ class OneOnOnes extends Component {
 }
 
 OneOnOnes.propTypes = {
-  students: PropTypes.array
+  students: PropTypes.array,
+  selectedCohort: PropTypes.string,
+  defaultCohort: PropTypes.string
 };
 
 const mapStateToProps = ({ mainReducer }) => ({
   students: mainReducer.students,
-  defaultCohort: mainReducer.defaultCohort
+  defaultCohort: mainReducer.defaultCohort,
+  selectedCohort: mainReducer.selectedCohort
 });
 
 export default connect(mapStateToProps)(OneOnOnes);
