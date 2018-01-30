@@ -165,6 +165,11 @@ module.exports = {
         return res.status(204).json(id);
       })
       .catch(console.log);
+  },
+  getOneOnOnes(req, res) {
+    const db = req.app.get('db');
+    const { cohort } = req.query;
+    db.students.get_oneonones(cohort).then(response => res.json(response));
   }
 };
 

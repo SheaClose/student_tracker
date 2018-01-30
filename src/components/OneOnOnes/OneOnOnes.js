@@ -29,6 +29,11 @@ class OneOnOnes extends Component {
     ];
   }
 
+  componentDidMount() {
+    this.props.getOneOnOnes(
+      this.props.selectedCohort || this.props.defaultCohort
+    );
+  }
   toggleDialog() {
     this.setState(prev => ({
       open: !prev.open
@@ -36,10 +41,12 @@ class OneOnOnes extends Component {
   }
 
   render() {
-    const students = this.props.students.find(
-      session =>
-        session.name === (this.props.selectedCohort || this.props.defaultCohort)
-    ) || { classSession: [] };
+    const { oneonones } = this.props;
+    // const students = this.props.students.find(
+    //   session =>
+    //     session.name === (this.props.selectedCohort || this.props.defaultCohort)
+    // ) || { classSession: [] };
+    const students = { classSession: [] };
     return (
       <div>
         <SelectCohort update={this.props.getOneOnOnes} />
