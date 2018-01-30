@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import Dialog from 'material-ui/Dialog';
-import AddOneOnOne from '../Utils/AddOneOnOne';
 import FlatButton from 'material-ui/FlatButton';
 import {
   Table,
@@ -15,7 +14,8 @@ import {
 import { IconButton } from 'material-ui';
 import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import SelectCohort from '../Utils/SelectCohort';
-// import { getOneOnOnes } from '../../ducks/actions';
+import AddOneOnOne from '../Utils/AddOneOnOne';
+import { getOneOnOnes } from '../../ducks/actions';
 
 class OneOnOnes extends Component {
   constructor(props) {
@@ -28,11 +28,7 @@ class OneOnOnes extends Component {
       <FlatButton label="Cancel" primary={true} onClick={this.toggleDialog} />
     ];
   }
-  componentDidMount() {
-    // this.props.getOneOnOnes(
-    //   this.props.selectedCohort || this.props.defaultCohort
-    // );
-  }
+
   toggleDialog() {
     this.setState(prev => ({
       open: !prev.open
@@ -46,7 +42,7 @@ class OneOnOnes extends Component {
     ) || { classSession: [] };
     return (
       <div>
-        <SelectCohort />
+        <SelectCohort update={this.props.getOneOnOnes} />
         <Table>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
@@ -60,12 +56,11 @@ class OneOnOnes extends Component {
             {students.classSession.map(student => (
               <TableRow key={student.dmId}>
                 <TableRowColumn>
-                  {student.first_name}
                   <IconButton onClick={this.toggleDialog}>
                     <AddCircleOutline />
                   </IconButton>
+                  {student.first_name}
                 </TableRowColumn>
-                <TableRowColumn>{JSON.stringify(student)}</TableRowColumn>
               </TableRow>
             ))}
           </TableBody>
@@ -94,4 +89,4 @@ const mapStateToProps = ({ mainReducer }) => ({
   selectedCohort: mainReducer.selectedCohort
 });
 
-export default connect(mapStateToProps)(OneOnOnes);
+export default connect(mapStateToProps, { getOneOnOnes })(OneOnOnes);
