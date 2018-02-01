@@ -1,3 +1,3 @@
 UPDATE attendance
     SET $1 = $2
-    WHERE student_id = $3;
+    WHERE dm_id = $3;
