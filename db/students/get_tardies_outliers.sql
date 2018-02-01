@@ -1,13 +1,13 @@
 WITH 
 	tardies AS (
-		SELECT date, student_id, minutes, timeframe
+		SELECT date, dm_id, minutes, timeframe
 		FROM attendance  
 		WHERE minutes > 0 AND date > CURRENT_DATE - interval '2 weeks'
 		), 
 	totals AS (
-		SELECT count(minutes), sum(minutes), student_id 
+		SELECT count(minutes), sum(minutes), dm_id 
 		FROM tardies 
-		GROUP BY student_id
+		GROUP BY dm_id
 		), 
 	outliers AS (
 		SELECT * 
@@ -16,8 +16,8 @@ WITH
 
 
 SELECT * FROM tardies 
-	JOIN students ON student_id = dm_id 
-	WHERE student_id IN (
-		SELECT student_id FROM outliers
+	JOIN students ON students.dm_id = tardies.dm_id 
+	WHERE students.dm_id IN (
+		SELECT dm_id FROM outliers
 		) 
 	AND cohort_id IN ($1:csv);

@@ -6,9 +6,9 @@ WITH
 		)
 		,
 	totals AS (
-		SELECT count(id), student_id
+		SELECT count(id), dm_id
 		FROM incompletes
-		GROUP BY student_id
+		GROUP BY dm_id
 		)
 		,
 
@@ -17,8 +17,8 @@ WITH
 		)
 		
 SELECT * FROM incompletes
-	JOIN students ON student_id = dm_id
-	WHERE student_id IN (
-		SELECT student_id FROM outliers
+	JOIN students ON students.dm_id = incompletes.dm_id
+	WHERE students.dm_id IN (
+		SELECT dm_id FROM outliers
 		)
 	AND cohort_id IN ($1:csv);

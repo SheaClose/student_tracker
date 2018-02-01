@@ -1,15 +1,15 @@
 WITH 
 	absences AS (
-		SELECT date, student_id, absent
+		SELECT date, dm_id, absent
 		FROM attendance  
 		WHERE absent IS TRUE AND date > CURRENT_DATE - interval '2 weeks'
-		GROUP BY date, student_id, absent
+		GROUP BY date, dm_id, absent
 		)
 		, 
 	totals AS (
-		SELECT count(absent), student_id 
+		SELECT count(absent), dm_id 
 		FROM absences 
-		GROUP BY student_id
+		GROUP BY dm_id
 		)
 		, 
 	outliers AS (
@@ -19,8 +19,8 @@ WITH
 
 
 SELECT * FROM absences 
-	JOIN students ON student_id = dm_id 
-	WHERE student_id IN (
-		SELECT student_id FROM outliers
+	JOIN students ON students.dm_id = absences.dm_id 
+	WHERE students.dm_id IN (
+		SELECT dm_id FROM outliers
 		) 
 	AND cohort_id IN ($1:csv);
