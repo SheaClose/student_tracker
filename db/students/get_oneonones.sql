@@ -1,7 +1,10 @@
-SELECT * FROM oneonones t1 
-	JOIN students ON student_id = dm_id
-	WHERE t1.date = (
-		SELECT MAX(t2.date) FROM oneonones t2 
-		WHERE t2.student_id = t1.student_id
-		)
-	AND cohort_id = $1
+SELECT oneonones.*, students.first_name, students.last_name
+FROM students
+	LEFT JOIN 
+		(SELECT max(id) as maxid, student_id 
+		FROM oneonones 
+		GROUP BY student_id) 
+		AS x
+	ON student_id=dm_id
+	LEFT JOIN oneonones
+	ON x.maxid=oneonones.id
