@@ -23,12 +23,13 @@ class OneOnOnes extends Component {
     super(props);
     this.state = {
       open: false,
-      name: '',
-      dm_id: ''
+      student: {}
     };
     this.toggleDialog = this.toggleDialog.bind(this);
+    this.updateOneOnOne = this.updateOneOnOne.bind(this);
     this.actions = [
-      <FlatButton label="Cancel" primary={true} onClick={this.toggleDialog} />
+      <FlatButton label="Cancel" primary={false} onClick={this.toggleDialog} />,
+      <FlatButton label="Submit" primary={true} onClick={this.handleSubmit} />
     ];
   }
 
@@ -38,12 +39,19 @@ class OneOnOnes extends Component {
     );
   }
 
-  toggleDialog(dm_id, name) {
+  toggleDialog(student = {}) {
     this.setState(prev => ({
       open: !prev.open,
-      dm_id,
-      name
+      student
     }));
+  }
+
+  updateOneOnOne(val) {
+    this.setState(val);
+  }
+
+  handleSubmit() {
+    this.props.addOneOnOne(this.state.oneonone);
   }
 
   render() {
@@ -57,7 +65,7 @@ class OneOnOnes extends Component {
     return (
       <div>
         <SelectCohort update={this.props.getOneOnOnes} />
-        <Table onCellClick={console.log}>
+        <Table>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
               <TableHeaderColumn>Name</TableHeaderColumn>
@@ -70,11 +78,7 @@ class OneOnOnes extends Component {
             {oneOnOnes.map(student => (
               <TableRow rowNumber={student.dm_id} key={student.dm_id}>
                 <TableRowColumn>
-                  <IconButton
-                    onClick={() =>
-                      this.toggleDialog(student.dm_id, student.first_name)
-                    }
-                  >
+                  <IconButton onClick={() => this.toggleDialog(student)}>
                     <AddCircleOutline />
                   </IconButton>
                   <Link to={`/student/${student.dm_id}`}>
@@ -82,7 +86,9 @@ class OneOnOnes extends Component {
                   </Link>
                 </TableRowColumn>
                 <TableRowColumn>
-                  {new Date(student.date).toDateString()}
+                  {student.date
+                    ? new Date(student.date).toDateString()
+                    : 'No Data Found'}
                 </TableRowColumn>
                 <TableRowColumn>{student.skill}</TableRowColumn>
                 <TableRowColumn>{student.confidence_skill}</TableRowColumn>
@@ -90,13 +96,17 @@ class OneOnOnes extends Component {
             ))}
           </TableBody>
         </Table>
-        <Dialog
+        {/* <Dialog
           title={`Add One on One for ${this.state.name}`}
           open={this.state.open}
           actions={this.actions}
-        >
-          <AddOneOnOne student={this.state.dm_id} />
-        </Dialog>
+        > */}
+        <AddOneOnOne
+          toggleDialog={this.toggleDialog}
+          open={this.state.open}
+          student={this.state.student}
+        />
+        {/* </Dialog> */}
       </div>
     );
   }

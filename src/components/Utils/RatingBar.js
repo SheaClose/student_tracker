@@ -11,26 +11,27 @@ import SentimentVerySatisfied from 'material-ui/svg-icons/social/sentiment-very-
 
 const RatingBar = props => (
   <div>
-    <IconButton onClick={props.handleClick}>
+    <IconButton onClick={() => props.onClick(props.property, 1)}>
       <SentimentVeryDissatisfied />
     </IconButton>
-    <IconButton onClick={props.handleClick}>
+    <IconButton onClick={() => props.onClick(props.property, 2)}>
       <SentimentDissatisfied />
     </IconButton>
-    <IconButton onClick={props.handleClick}>
+    <IconButton onClick={() => props.onClick(props.property, 3)}>
       <SentimentNeutral />
     </IconButton>
-    <IconButton onClick={props.handleClick}>
+    <IconButton onClick={() => props.onClick(props.property, 4)}>
       <SentimentSatisfied />
     </IconButton>
-    <IconButton onClick={props.handleClick}>
+    <IconButton onClick={() => props.onClick(props.property, 5)}>
       <SentimentVerySatisfied />
     </IconButton>
   </div>
 );
 
 RatingBar.propTypes = {
-  handleClick: PropTypes.func
+  onClick: PropTypes.func,
+  property: PropTypes.string
 };
 
 export default RatingBar;
