@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
+import { Link } from 'react-router-dom';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import {
@@ -21,7 +22,9 @@ class OneOnOnes extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
+      name: '',
+      dm_id: ''
     };
     this.toggleDialog = this.toggleDialog.bind(this);
     this.actions = [
@@ -34,23 +37,27 @@ class OneOnOnes extends Component {
       this.props.selectedCohort || this.props.defaultCohort
     );
   }
-  toggleDialog() {
+
+  toggleDialog(dm_id, name) {
     this.setState(prev => ({
-      open: !prev.open
+      open: !prev.open,
+      dm_id,
+      name
     }));
   }
 
   render() {
-    const { oneonones } = this.props;
+    const { oneOnOnes = [] } = this.props;
+
     // const students = this.props.students.find(
     //   session =>
     //     session.name === (this.props.selectedCohort || this.props.defaultCohort)
     // ) || { classSession: [] };
-    const students = { classSession: [] };
+    console.log(oneOnOnes);
     return (
       <div>
         <SelectCohort update={this.props.getOneOnOnes} />
-        <Table>
+        <Table onCellClick={console.log}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
               <TableHeaderColumn>Name</TableHeaderColumn>
@@ -60,24 +67,35 @@ class OneOnOnes extends Component {
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
-            {students.classSession.map(student => (
-              <TableRow key={student.dmId}>
+            {oneOnOnes.map(student => (
+              <TableRow rowNumber={student.dm_id} key={student.dm_id}>
                 <TableRowColumn>
-                  <IconButton onClick={this.toggleDialog}>
+                  <IconButton
+                    onClick={() =>
+                      this.toggleDialog(student.dm_id, student.first_name)
+                    }
+                  >
                     <AddCircleOutline />
                   </IconButton>
-                  {student.first_name}
+                  <Link to={`/student/${student.dm_id}`}>
+                    {student.first_name}
+                  </Link>
                 </TableRowColumn>
+                <TableRowColumn>
+                  {new Date(student.date).toDateString()}
+                </TableRowColumn>
+                <TableRowColumn>{student.skill}</TableRowColumn>
+                <TableRowColumn>{student.confidence_skill}</TableRowColumn>
               </TableRow>
             ))}
           </TableBody>
         </Table>
         <Dialog
-          title="Add One on One"
+          title={`Add One on One for ${this.state.name}`}
           open={this.state.open}
           actions={this.actions}
         >
-          <AddOneOnOne />
+          <AddOneOnOne student={this.state.dm_id} />
         </Dialog>
       </div>
     );
@@ -90,10 +108,14 @@ OneOnOnes.propTypes = {
   defaultCohort: PropTypes.string
 };
 
-const mapStateToProps = ({ mainReducer }) => ({
-  students: mainReducer.students,
-  defaultCohort: mainReducer.defaultCohort,
-  selectedCohort: mainReducer.selectedCohort
-});
+const mapStateToProps = ({ mainReducer }) => {
+  const { students, defaultCohort, selectedCohort, oneOnOnes } = mainReducer;
+  return {
+    students,
+    defaultCohort,
+    selectedCohort,
+    oneOnOnes
+  };
+};
 
 export default connect(mapStateToProps, { getOneOnOnes })(OneOnOnes);
