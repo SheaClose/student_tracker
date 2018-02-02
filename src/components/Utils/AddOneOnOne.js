@@ -1,37 +1,150 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { PropTypes } from 'prop-types';
 import {
   TextField,
-  RaisedButton,
   DatePicker,
   RadioButtonGroup,
-  RadioButton
+  RadioButton,
+  Dialog,
+  FlatButton
 } from 'material-ui';
 
+import { addOneOnOne } from '../../ducks/actions';
 import RatingBar from './RatingBar';
 
 class AddOneOnOne extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      attitude: null,
+      skill: null,
+      confidence_skill: null,
+      confidence_personal: null,
+      worried: false,
+      date: new Date()
+    };
+    this.handleUpdate = this.handleUpdate.bind(this);
+    this.addOneOnOne = this.addOneOnOne.bind(this);
+  }
+
+  handleUpdate(property, val) {
+    this.setState({ [property]: val });
+  }
+  addOneOnOne() {
+    this.props.addOneOnOne({
+      ...this.state,
+      dm_id: this.props.student.dm_id
+    });
+    this.props.toggleDialog();
+  }
+
   render() {
+    const styles = {
+      container: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%'
+      },
+      rating: {
+        minWidth: '75%',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }
+    };
+    // console.log(this.state);
     return (
-      <div style={{ textAlign: 'center' }}>
-        <DatePicker
-          formatDate={d => d.toLocaleDateString()}
-          defaultDate={new Date()}
-          mode="landscape"
-        />
-        <RatingBar title="Attitude" handleClick={() => null} />
-        <RatingBar title="Skill" handleClick={() => null} />
-        <RatingBar title="Confidence (skill)" handleClick={() => null} />
-        <RatingBar title="Confidence (personal)" handleClick={() => null} />
-        Worried?
-        <RadioButtonGroup name="worried">
-          <RadioButton value={true} label="Yes" />
-          <RadioButton value={false} label="No" />
-        </RadioButtonGroup>
-        <TextField hintText="Add notes" multiLine={true} />
-        <RaisedButton label="Submit" />
-      </div>
+      <Dialog
+        title={`Add One on One for ${this.props.student.first_name}`}
+        open={this.props.open}
+        actions={[
+          <FlatButton
+            label="Cancel"
+            primary={false}
+            onClick={this.props.toggleDialog}
+          />,
+          <FlatButton
+            label="Submit"
+            primary={true}
+            onClick={this.addOneOnOne}
+          />
+        ]}
+      >
+        <div style={styles.container}>
+          <DatePicker
+            formatDate={d => d.toLocaleDateString()}
+            defaultDate={new Date()}
+            mode="landscape"
+            onChange={(e, val) => this.handleUpdate('date', val)}
+          />
+          <div style={styles.rating}>
+            <p>Attitude</p>
+            <RatingBar
+              title="Attitude"
+              property="attitude"
+              onClick={this.handleUpdate}
+            />
+          </div>
+          <div style={styles.rating}>
+            <p>Skill</p>
+            <RatingBar
+              title="Skill"
+              property="skill"
+              onClick={this.handleUpdate}
+            />
+          </div>
+          <div style={styles.rating}>
+            <p>Confidence (skill)</p>
+            <RatingBar
+              title="Confidence (skill)"
+              property="confidence_skill"
+              onClick={this.handleUpdate}
+            />
+          </div>
+          <div style={styles.rating}>
+            <p>Confidence (personal)</p>
+            <RatingBar
+              title="Confidence (personal)"
+              property="confidence_personal"
+              onClick={this.handleUpdate}
+            />
+          </div>
+          <div style={styles.rating}>
+            <p>Worried?</p>
+            <RadioButtonGroup
+              name="worried"
+              onChange={(e, val) => this.handleUpdate('worried', val)}
+              style={{ display: 'flex', flexDirection: 'row', padding: '5px' }}
+            >
+              <RadioButton value={true} label="Yes " />
+              <RadioButton value={false} label="No " />
+            </RadioButtonGroup>
+          </div>
+          <TextField
+            name={`notes-${this.props.student.dm_id}`}
+            floatingLabelText="Add notes"
+            multiLine={true}
+            rows={4}
+            rowsMax={4}
+            onChange={(e, newValue) => this.handleUpdate('notes', newValue)}
+            value={this.state.notes}
+            style={{ minWidth: '75%' }}
+          />
+        </div>
+      </Dialog>
     );
   }
 }
 
-export default AddOneOnOne;
+AddOneOnOne.propTypes = {
+  open: PropTypes.bool,
+  student: PropTypes.object,
+  addOneOnOne: PropTypes.func,
+  toggleDialog: PropTypes.func
+};
+
+export default connect(null, { addOneOnOne })(AddOneOnOne);

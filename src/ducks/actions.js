@@ -6,6 +6,8 @@ export const GET_USER_INFO = 'GET_USER_INFO';
 export const UPDATE_DEFAULT_COHORT = 'UPDATE_DEFAULT_COHORT';
 export const GET_OUTLIERS = 'GET_OUTLIERS';
 export const SELECT_COHORT = 'SELECT_COHORT';
+export const GET_ONEONONES = 'GET_ONEONONES';
+export const ADD_ONEONONE = 'ADD_ONEONONE';
 
 export function verifyLogin() {
   return {
@@ -61,5 +63,19 @@ export function selectCohort(cohort) {
   return {
     type: SELECT_COHORT,
     payload: cohort
+  };
+}
+
+export function getOneOnOnes(cohort) {
+  return {
+    type: GET_ONEONONES,
+    payload: axios.get(`/api/oneonones?cohort=${cohort}`)
+  };
+}
+
+export function addOneOnOne(data) {
+  return {
+    type: ADD_ONEONONE,
+    payload: data
   };
 }
