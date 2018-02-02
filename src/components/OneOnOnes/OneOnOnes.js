@@ -66,7 +66,7 @@ class OneOnOnes extends Component {
                     <AddCircleOutline />
                   </IconButton>
                   <Link to={`/student/${student.dm_id}`}>
-                    {student.first_name}
+                    {`${student.first_name} ${student.last_name}`}
                   </Link>
                 </TableRowColumn>
                 <TableRowColumn>
