@@ -91,9 +91,10 @@ class OneOnOnes extends Component {
 }
 
 OneOnOnes.propTypes = {
-  students: PropTypes.array,
   selectedCohort: PropTypes.string,
-  defaultCohort: PropTypes.string
+  defaultCohort: PropTypes.string,
+  getOneOnOnes: PropTypes.func,
+  oneOnOnes: PropTypes.array
 };
 
 const mapStateToProps = ({ mainReducer }) => {
