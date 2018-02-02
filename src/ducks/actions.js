@@ -69,13 +69,19 @@ export function selectCohort(cohort) {
 export function getOneOnOnes(cohort) {
   return {
     type: GET_ONEONONES,
-    payload: axios.get(`/api/oneonones?cohort=${cohort}`)
+    payload: axios
+      .get(`/api/oneonones?cohort=${cohort}`)
+      .then(res => res.data)
+      .catch(console.log)
   };
 }
 
 export function addOneOnOne(data) {
   return {
     type: ADD_ONEONONE,
-    payload: data
+    payload: axios
+      .post('/api/oneonones', data)
+      .then(res => res.data)
+      .catch(console.log)
   };
 }

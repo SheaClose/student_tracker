@@ -21,7 +21,12 @@ class AddOneOnOne extends Component {
       skill: null,
       confidence_skill: null,
       confidence_personal: null,
+      defer_drop_concern: null,
       worried: false,
+      notes: '',
+      personal_project_ability: null,
+      group_project_ability: null,
+      mentor_id: null,
       date: new Date()
     };
     this.handleUpdate = this.handleUpdate.bind(this);
@@ -34,7 +39,8 @@ class AddOneOnOne extends Component {
   addOneOnOne() {
     this.props.addOneOnOne({
       ...this.state,
-      dm_id: this.props.student.dm_id
+      dm_id: this.props.student.dm_id,
+      mentor_id: this.props.userInfo.id
     });
     this.props.toggleDialog();
   }
@@ -76,6 +82,7 @@ class AddOneOnOne extends Component {
       >
         <div style={styles.container}>
           <DatePicker
+            id="date"
             formatDate={d => d.toLocaleDateString()}
             defaultDate={new Date()}
             mode="landscape"
@@ -125,7 +132,6 @@ class AddOneOnOne extends Component {
             </RadioButtonGroup>
           </div>
           <TextField
-            name={`notes-${this.props.student.dm_id}`}
             floatingLabelText="Add notes"
             multiLine={true}
             rows={4}
@@ -144,7 +150,13 @@ AddOneOnOne.propTypes = {
   open: PropTypes.bool,
   student: PropTypes.object,
   addOneOnOne: PropTypes.func,
-  toggleDialog: PropTypes.func
+  toggleDialog: PropTypes.func,
+  userInfo: PropTypes.object
 };
 
-export default connect(null, { addOneOnOne })(AddOneOnOne);
+const mapStateToProps = ({ mainReducer }) => {
+  const { userInfo } = mainReducer;
+  return { userInfo };
+};
+
+export default connect(mapStateToProps, { addOneOnOne })(AddOneOnOne);
