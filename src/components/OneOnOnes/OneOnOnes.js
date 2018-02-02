@@ -83,6 +83,7 @@ class OneOnOnes extends Component {
         <AddOneOnOne
           toggleDialog={this.toggleDialog}
           open={this.state.open}
+          cohort={this.props.selectedCohort || this.props.defaultCohort}
           student={this.state.student}
         />
       </div>

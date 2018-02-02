@@ -173,7 +173,11 @@ module.exports = {
   },
   addOneOnOne(req, res) {
     const db = req.app.get('db');
-    db.students.add_oneonone(req.body).then(response => res.json(response));
+    db.students.add_oneonone(req.body).then(() => {
+      db.students
+        .get_oneonones(req.body.cohort)
+        .then(response => res.json(response));
+    });
   }
 };
 
