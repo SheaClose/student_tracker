@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   TextField,
   RaisedButton,
@@ -9,6 +10,7 @@ import {
   FlatButton
 } from 'material-ui';
 
+import { addOneOnOne } from '../../ducks/actions';
 import RatingBar from './RatingBar';
 
 class AddOneOnOne extends Component {
@@ -23,13 +25,37 @@ class AddOneOnOne extends Component {
       date: new Date()
     };
     this.handleUpdate = this.handleUpdate.bind(this);
+    this.addOneOnOne = this.addOneOnOne.bind(this);
   }
 
   handleUpdate(property, val) {
     this.setState({ [property]: val });
   }
+  addOneOnOne() {
+    this.props.addOneOnOne({
+      ...this.state,
+      student: this.props.student.dm_id
+    });
+    this.props.toggleDialog();
+  }
 
   render() {
+    const styles = {
+      container: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%'
+      },
+      rating: {
+        minWidth: '75%',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }
+    };
     // console.log(this.state);
     return (
       <Dialog
@@ -40,51 +66,72 @@ class AddOneOnOne extends Component {
             label="Cancel"
             primary={false}
             onClick={this.props.toggleDialog}
+          />,
+          <FlatButton
+            label="Submit"
+            primary={true}
+            onClick={this.addOneOnOne}
           />
         ]}
       >
-        <div style={{ textAlign: 'center' }}>
+        <div style={styles.container}>
           <DatePicker
             formatDate={d => d.toLocaleDateString()}
             defaultDate={new Date()}
             mode="landscape"
             onChange={(e, val) => this.handleUpdate('date', val)}
           />
-          <RatingBar
-            title="Attitude"
-            property="attitude"
-            onClick={this.handleUpdate}
-          />
-          <RatingBar
-            title="Skill"
-            property="skill"
-            onClick={this.handleUpdate}
-          />
-          <RatingBar
-            title="Confidence (skill)"
-            property="confidence_skill"
-            onClick={this.handleUpdate}
-          />
-          <RatingBar
-            title="Confidence (personal)"
-            property="confidence_personal"
-            onClick={this.handleUpdate}
-          />
-          Worried?
-          <RadioButtonGroup
-            name="worried"
-            onChange={(e, val) => this.handleUpdate('worried', val)}
-          >
-            <RadioButton value={true} label="Yes" />
-            <RadioButton value={false} label="No" />
-          </RadioButtonGroup>
+          <div style={styles.rating}>
+            <p>Attitude</p>
+            <RatingBar
+              title="Attitude"
+              property="attitude"
+              onClick={this.handleUpdate}
+            />
+          </div>
+          <div style={styles.rating}>
+            <p>Skill</p>
+            <RatingBar
+              title="Skill"
+              property="skill"
+              onClick={this.handleUpdate}
+            />
+          </div>
+          <div style={styles.rating}>
+            <p>Confidence (skill)</p>
+            <RatingBar
+              title="Confidence (skill)"
+              property="confidence_skill"
+              onClick={this.handleUpdate}
+            />
+          </div>
+          <div style={styles.rating}>
+            <p>Confidence (personal)</p>
+            <RatingBar
+              title="Confidence (personal)"
+              property="confidence_personal"
+              onClick={this.handleUpdate}
+            />
+          </div>
+          <div style={styles.rating}>
+            <p>Worried?</p>
+            <RadioButtonGroup
+              name="worried"
+              onChange={(e, val) => this.handleUpdate('worried', val)}
+              style={{ display: 'flex', flexDirection: 'row', padding: '5px' }}
+            >
+              <RadioButton value={true} label="Yes " />
+              <RadioButton value={false} label="No " />
+            </RadioButtonGroup>
+          </div>
           <TextField
-            hintText="Add notes"
+            floatingLabelText="Add notes"
             multiLine={true}
             rows={4}
             rowsMax={4}
             onChange={(e, newValue) => this.handleUpdate('notes', newValue)}
             value={this.state.notes}
+            style={{ minWidth: '75%' }}
           />
         </div>
       </Dialog>
@@ -92,4 +139,4 @@ class AddOneOnOne extends Component {
   }
 }
 
-export default AddOneOnOne;
+export default connect(null, { addOneOnOne })(AddOneOnOne);

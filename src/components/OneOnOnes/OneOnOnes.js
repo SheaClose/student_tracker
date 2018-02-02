@@ -26,7 +26,6 @@ class OneOnOnes extends Component {
       student: {}
     };
     this.toggleDialog = this.toggleDialog.bind(this);
-    this.updateOneOnOne = this.updateOneOnOne.bind(this);
     this.actions = [
       <FlatButton label="Cancel" primary={false} onClick={this.toggleDialog} />,
       <FlatButton label="Submit" primary={true} onClick={this.handleSubmit} />
@@ -44,14 +43,6 @@ class OneOnOnes extends Component {
       open: !prev.open,
       student
     }));
-  }
-
-  updateOneOnOne(val) {
-    this.setState(val);
-  }
-
-  handleSubmit() {
-    this.props.addOneOnOne(this.state.oneonone);
   }
 
   render() {
