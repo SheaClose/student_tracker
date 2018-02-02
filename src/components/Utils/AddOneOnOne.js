@@ -76,6 +76,7 @@ class AddOneOnOne extends Component {
       >
         <div style={styles.container}>
           <DatePicker
+            id="date"
             formatDate={d => d.toLocaleDateString()}
             defaultDate={new Date()}
             mode="landscape"
@@ -125,7 +126,6 @@ class AddOneOnOne extends Component {
             </RadioButtonGroup>
           </div>
           <TextField
-            name={`notes-${this.props.student.dm_id}`}
             floatingLabelText="Add notes"
             multiLine={true}
             rows={4}
