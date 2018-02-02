@@ -1,5 +1,5 @@
 SELECT * FROM oneonones t1 
-	JOIN students ON t1.dm_id = students.dm_id
+	JOIN students ON students.dm_id = t1.dm_id
 	WHERE t1.date = (
 		SELECT MAX(t2.date) FROM oneonones t2 
 		WHERE t2.dm_id = t1.dm_id
