@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import { Link } from 'react-router-dom';
-import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import {
   Table,
@@ -47,12 +46,6 @@ class OneOnOnes extends Component {
 
   render() {
     const { oneOnOnes = [] } = this.props;
-
-    // const students = this.props.students.find(
-    //   session =>
-    //     session.name === (this.props.selectedCohort || this.props.defaultCohort)
-    // ) || { classSession: [] };
-    console.log(oneOnOnes);
     return (
       <div>
         <SelectCohort update={this.props.getOneOnOnes} />
@@ -87,17 +80,11 @@ class OneOnOnes extends Component {
             ))}
           </TableBody>
         </Table>
-        {/* <Dialog
-          title={`Add One on One for ${this.state.name}`}
-          open={this.state.open}
-          actions={this.actions}
-        > */}
         <AddOneOnOne
           toggleDialog={this.toggleDialog}
           open={this.state.open}
           student={this.state.student}
         />
-        {/* </Dialog> */}
       </div>
     );
   }

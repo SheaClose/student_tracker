@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { PropTypes } from 'prop-types';
 import {
   TextField,
-  RaisedButton,
   DatePicker,
   RadioButtonGroup,
   RadioButton,
@@ -34,7 +34,7 @@ class AddOneOnOne extends Component {
   addOneOnOne() {
     this.props.addOneOnOne({
       ...this.state,
-      student: this.props.student.dm_id
+      dm_id: this.props.student.dm_id
     });
     this.props.toggleDialog();
   }
@@ -125,6 +125,7 @@ class AddOneOnOne extends Component {
             </RadioButtonGroup>
           </div>
           <TextField
+            name={`notes-${this.props.student.dm_id}`}
             floatingLabelText="Add notes"
             multiLine={true}
             rows={4}
@@ -138,5 +139,12 @@ class AddOneOnOne extends Component {
     );
   }
 }
+
+AddOneOnOne.propTypes = {
+  open: PropTypes.bool,
+  student: PropTypes.object,
+  addOneOnOne: PropTypes.func,
+  toggleDialog: PropTypes.func
+};
 
 export default connect(null, { addOneOnOne })(AddOneOnOne);
