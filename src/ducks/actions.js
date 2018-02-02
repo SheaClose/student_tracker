@@ -76,6 +76,6 @@ export function getOneOnOnes(cohort) {
 export function addOneOnOne(data) {
   return {
     type: ADD_ONEONONE,
-    payload: data
+    payload: axios.post('/api/oneonones', data)
   };
 }

@@ -170,6 +170,10 @@ module.exports = {
     const db = req.app.get('db');
     const { cohort } = req.query;
     db.students.get_oneonones(cohort).then(response => res.json(response));
+  },
+  addOneOnOne(req, res) {
+    const db = req.app.get('db');
+    db.students.add_oneonone(req.body).then(response => res.json(response));
   }
 };
 
