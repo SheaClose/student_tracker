@@ -3,26 +3,24 @@ import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import { Link } from 'react-router-dom';
 import FlatButton from 'material-ui/FlatButton';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn
-} from 'material-ui/Table';
+import { List, ListItem } from 'material-ui/List';
+import Divider from 'material-ui/Divider';
 import { IconButton } from 'material-ui';
 import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import SelectCohort from '../Utils/SelectCohort';
 import AddOneOnOne from '../Utils/AddOneOnOne';
 import { getOneOnOnes } from '../../ducks/actions';
+import { Table, TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
+import { Card, CardHeader, CardText } from 'material-ui/Card';
+import Paper from 'material-ui/Paper';
 
 class OneOnOnes extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      student: {}
+      addStudent: {},
+      viewStudent: {}
     };
     this.toggleDialog = this.toggleDialog.bind(this);
     this.actions = [
@@ -37,38 +35,28 @@ class OneOnOnes extends Component {
     );
   }
 
-  toggleDialog(student = {}) {
+  toggleDialog(addStudent = {}) {
     this.setState(prev => ({
       open: !prev.open,
-      student
+      addStudent
     }));
   }
 
   render() {
     const { oneOnOnes = [] } = this.props;
     return (
-      <div>
-        <SelectCohort update={this.props.getOneOnOnes} />
-        <Table>
-          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-            <TableRow>
-              <TableHeaderColumn>Name</TableHeaderColumn>
-              <TableHeaderColumn>Latest One-on-One</TableHeaderColumn>
-              <TableHeaderColumn>Skill</TableHeaderColumn>
-              <TableHeaderColumn>Confidence</TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody displayRowCheckbox={false}>
-            {oneOnOnes.map(student => (
-              <TableRow rowNumber={student.dm_id} key={student.dm_id}>
-                <TableRowColumn>
-                  <IconButton onClick={() => this.toggleDialog(student)}>
+      <Paper>
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          {/* <SelectCohort update={this.props.getOneOnOnes} /> */}
+
+          <List>
+            {/* <IconButton onClick={() => this.toggleDialog(student)}>
                     <AddCircleOutline />
                   </IconButton>
                   <Link to={`/student/${student.dm_id}`}>
                     {`${student.first_name} ${student.last_name}`}
-                  </Link>
-                </TableRowColumn>
+                  </Link> */}
+            {/* </TableRowColumn>
                 <TableRowColumn>
                   {student.date
                     ? new Date(student.date).toDateString()
@@ -76,17 +64,45 @@ class OneOnOnes extends Component {
                 </TableRowColumn>
                 <TableRowColumn>{student.skill}</TableRowColumn>
                 <TableRowColumn>{student.confidence_skill}</TableRowColumn>
-              </TableRow>
+              </TableRow> */}
+            {oneOnOnes.map(student => (
+              <React.Fragment key={student.dm_id}>
+                <ListItem
+                  leftIcon={
+                    <AddCircleOutline
+                      onClick={e => {
+                        e.stopPropagation();
+                        this.toggleDialog(student);
+                      }}
+                    />
+                  }
+                  onClick={() => this.setState({ viewStudent: student })}
+                  primaryText={`${student.first_name} ${student.last_name} (${
+                    student.date
+                      ? new Date(student.date).toDateString()
+                      : 'No Data'
+                  })`}
+                  secondaryText={<p>{student.notes}</p>}
+                />
+                <Divider />
+              </React.Fragment>
             ))}
-          </TableBody>
-        </Table>
-        <AddOneOnOne
-          toggleDialog={this.toggleDialog}
-          open={this.state.open}
-          cohort={this.props.selectedCohort || this.props.defaultCohort}
-          student={this.state.student}
-        />
-      </div>
+            {/* </TableBody>
+        </Table> */}
+          </List>
+
+          <div>
+            <p>{this.state.viewStudent.first_name} </p>
+            <p>{this.state.viewStudent.notes}</p>
+          </div>
+          <AddOneOnOne
+            toggleDialog={this.toggleDialog}
+            open={this.state.open}
+            cohort={this.props.selectedCohort || this.props.defaultCohort}
+            student={this.state.addStudent}
+          />
+        </div>
+      </Paper>
     );
   }
 }
