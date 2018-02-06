@@ -38,8 +38,8 @@ class OneOnOnes extends Component {
   }
 
   toggleDialog(student = {}) {
-    this.setState(prev => ({
-      open: !prev.open,
+    this.setState(state => ({
+      open: !state.open,
       student
     }));
   }

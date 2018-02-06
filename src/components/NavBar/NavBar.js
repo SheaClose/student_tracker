@@ -12,7 +12,6 @@ class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = { open: false };
-    this.handleToggle = this.handleToggle.bind(this);
   }
   logInLogOut() {
     if (this.props.isAuthed) {
@@ -20,22 +19,16 @@ class NavBar extends Component {
     }
     return <a href={`${process.env.REACT_APP_ROOT_PATH}/auth/devmtn`}>Login</a>;
   }
-  handleToggle() {
-    this.setState({ open: !this.state.open });
-  }
 
   render() {
     return (
       <div className="navbar-side">
         <div>
-          <i onClick={this.handleToggle} className="material-icons nav_icon">
-            &#xE5D2;
-          </i>
           <Drawer
             docked={false}
             width={200}
-            open={this.state.open}
-            onRequestChange={open => this.setState({ open })}
+            open={this.props.open}
+            onRequestChange={this.props.toggleDrawer}
           >
             <Link to="/">
               <MenuItem
@@ -45,22 +38,25 @@ class NavBar extends Component {
                   justifyContent: 'center',
                   paddingTop: '20px'
                 }}
-                onClick={this.handleToggle}
+                onClick={this.props.toggleDrawer}
               >
                 <img className="navImage" src={Logo} alt="logo" />
               </MenuItem>
             </Link>
             <Link to="/projects">
-              <MenuItem onClick={this.handleToggle}>Projects</MenuItem>
+              <MenuItem onClick={this.props.toggleDrawer}>Projects</MenuItem>
             </Link>
             <Link to="/students">
-              <MenuItem onClick={this.handleToggle}>Students</MenuItem>
+              <MenuItem onClick={this.props.toggleDrawer}>Students</MenuItem>
             </Link>
             <Link to="/attendance">
-              <MenuItem onClick={this.handleToggle}>Attendace</MenuItem>
+              <MenuItem onClick={this.props.toggleDrawer}>Attendace</MenuItem>
+            </Link>
+            <Link to="/oneonones">
+              <MenuItem onClick={this.props.toggleDrawer}>One on Ones</MenuItem>
             </Link>
             <Link to="/user">
-              <MenuItem onClick={this.handleToggle}>User Info</MenuItem>
+              <MenuItem onClick={this.props.toggleDrawer}>User Info</MenuItem>
             </Link>
             <MenuItem>{this.logInLogOut()}</MenuItem>
           </Drawer>
