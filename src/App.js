@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { NavigationMenu } from 'material-ui/svg-icons';
+import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
 
 import NavBar from './components/NavBar/NavBar';
 
@@ -14,9 +16,6 @@ import {
   verifyLogin,
   getOutliers
 } from './ducks/actions';
-import { Toolbar } from 'material-ui/Toolbar';
-import { ToolbarGroup } from 'material-ui';
-import { NavigationMenu } from 'material-ui/svg-icons';
 import SelectCohort from './components/Utils/SelectCohort';
 
 class App extends Component {
