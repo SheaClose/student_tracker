@@ -2,15 +2,30 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { NavigationMenu } from 'material-ui/svg-icons';
+import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
 
 import NavBar from './components/NavBar/NavBar';
 
 import routes from './routes';
 import './App.css';
 
-import { getStudents, getUserInfo, verifyLogin, getOutliers } from './ducks/actions';
+import {
+  getStudents,
+  getUserInfo,
+  verifyLogin,
+  getOutliers
+} from './ducks/actions';
+import SelectCohort from './components/Utils/SelectCohort';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false
+    };
+    this.toggleDrawer = this.toggleDrawer.bind(this);
+  }
   componentDidMount() {
     if (!this.props.isAuthed) {
       this.props.verifyLogin();
@@ -28,10 +43,22 @@ class App extends Component {
     }
   }
 
+  toggleDrawer() {
+    this.setState(state => ({ open: !state.open }));
+  }
+
   render() {
     return (
       <div>
-        <NavBar />
+        <Toolbar>
+          <ToolbarGroup>
+            <NavigationMenu onClick={this.toggleDrawer} />
+          </ToolbarGroup>
+          <ToolbarGroup>
+            <SelectCohort />
+          </ToolbarGroup>
+        </Toolbar>
+        <NavBar open={this.state.open} toggleDrawer={this.toggleDrawer} />
         {this.props.isAuthed && routes}
       </div>
     );
