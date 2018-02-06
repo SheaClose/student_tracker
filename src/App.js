@@ -44,7 +44,7 @@ class App extends Component {
   }
 
   toggleDrawer() {
-    this.setState(prev => ({ open: !prev.open }));
+    this.setState(state => ({ open: !state.open }));
   }
 
   render() {
