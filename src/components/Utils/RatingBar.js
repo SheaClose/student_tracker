@@ -17,13 +17,15 @@ class RatingBar extends Component {
   }
 
   handleClick(property, selected) {
+    if (this.props.selected) return false;
     this.setState({ selected });
     this.props.onClick(property, selected);
+    return true;
   }
 
   render() {
     const { property } = this.props;
-    const { selected } = this.state;
+    const selected = this.props.selected || this.state.selected;
     return (
       <div>
         <IconButton onClick={() => this.handleClick(property, 1)}>
@@ -47,7 +49,8 @@ class RatingBar extends Component {
 }
 RatingBar.propTypes = {
   onClick: PropTypes.func,
-  property: PropTypes.string
+  property: PropTypes.string,
+  selected: PropTypes.number
 };
 
 export default RatingBar;
