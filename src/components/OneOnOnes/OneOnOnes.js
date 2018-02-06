@@ -38,8 +38,8 @@ class OneOnOnes extends Component {
   }
 
   toggleDialog(student = {}) {
-    this.setState(prev => ({
-      open: !prev.open,
+    this.setState(state => ({
+      open: !state.open,
       student
     }));
   }
@@ -66,7 +66,7 @@ class OneOnOnes extends Component {
                     <AddCircleOutline />
                   </IconButton>
                   <Link to={`/student/${student.dm_id}`}>
-                    {student.first_name}
+                    {`${student.first_name} ${student.last_name}`}
                   </Link>
                 </TableRowColumn>
                 <TableRowColumn>
@@ -83,6 +83,7 @@ class OneOnOnes extends Component {
         <AddOneOnOne
           toggleDialog={this.toggleDialog}
           open={this.state.open}
+          cohort={this.props.selectedCohort || this.props.defaultCohort}
           student={this.state.student}
         />
       </div>
@@ -91,9 +92,10 @@ class OneOnOnes extends Component {
 }
 
 OneOnOnes.propTypes = {
-  students: PropTypes.array,
   selectedCohort: PropTypes.string,
-  defaultCohort: PropTypes.string
+  defaultCohort: PropTypes.string,
+  getOneOnOnes: PropTypes.func,
+  oneOnOnes: PropTypes.array
 };
 
 const mapStateToProps = ({ mainReducer }) => {

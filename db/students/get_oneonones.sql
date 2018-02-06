@@ -8,3 +8,4 @@ FROM students
 	ON students.dm_id=x.dm_id
 	LEFT JOIN oneonones
 	ON x.maxid=oneonones.id
+ORDER BY first_name, last_name
