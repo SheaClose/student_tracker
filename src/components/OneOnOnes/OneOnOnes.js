@@ -8,9 +8,11 @@ import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import { Card, CardText, CardTitle } from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 
-import AddOneOnOne from '../Utils/AddOneOnOne';
 import { getOneOnOnes } from '../../ducks/actions';
+
+import AddOneOnOne from '../Utils/AddOneOnOne';
 import OneOnOneDetail from './OneOnOneDetail';
+import refreshDetails from '../Utils/refreshDetails';
 
 class OneOnOnes extends Component {
   constructor(props) {
@@ -28,6 +30,9 @@ class OneOnOnes extends Component {
     this.props.getOneOnOnes(
       this.props.selectedCohort || this.props.defaultCohort
     );
+  }
+  componentWillReceiveProps(nextProps) {
+    refreshDetails(this.props, nextProps, 'getOneOnOnes');
   }
 
   showAdd(selectedStudent) {
