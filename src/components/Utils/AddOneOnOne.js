@@ -6,7 +6,6 @@ import {
   DatePicker,
   RadioButtonGroup,
   RadioButton,
-  Dialog,
   FlatButton
 } from 'material-ui';
 
@@ -37,12 +36,15 @@ class AddOneOnOne extends Component {
     this.setState({ [property]: val });
   }
   addOneOnOne() {
-    this.props.addOneOnOne({
+    const newOneOnOne = {
       ...this.state,
+      first_name: this.props.student.first_name,
+      last_name: this.props.student.last_name,
       dm_id: this.props.student.dm_id,
       mentor_id: this.props.userInfo.id
-    });
-    this.props.toggleDialog();
+    };
+    this.props.addOneOnOne(newOneOnOne);
+    this.props.hideAdd(newOneOnOne);
   }
 
   render() {
@@ -62,24 +64,8 @@ class AddOneOnOne extends Component {
         justifyContent: 'space-between'
       }
     };
-    // console.log(this.state);
     return (
-      <Dialog
-        title={`Add One on One for ${this.props.student.first_name}`}
-        open={this.props.open}
-        actions={[
-          <FlatButton
-            label="Cancel"
-            primary={false}
-            onClick={this.props.toggleDialog}
-          />,
-          <FlatButton
-            label="Submit"
-            primary={true}
-            onClick={this.addOneOnOne}
-          />
-        ]}
-      >
+      <div>
         <div style={styles.container}>
           <DatePicker
             id="date"
@@ -140,17 +126,27 @@ class AddOneOnOne extends Component {
             value={this.state.notes}
             style={{ minWidth: '75%' }}
           />
+          <div>
+            <FlatButton
+              label="Cancel"
+              onClick={() => this.props.hideAdd(this.props.student)}
+            />
+            <FlatButton
+              label="Submit"
+              primary={true}
+              onClick={this.addOneOnOne}
+            />
+          </div>
         </div>
-      </Dialog>
+      </div>
     );
   }
 }
 
 AddOneOnOne.propTypes = {
-  open: PropTypes.bool,
   student: PropTypes.object,
   addOneOnOne: PropTypes.func,
-  toggleDialog: PropTypes.func,
+  hideAdd: PropTypes.func,
   userInfo: PropTypes.object
 };
 
