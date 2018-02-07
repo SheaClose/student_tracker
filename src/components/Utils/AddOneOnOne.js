@@ -36,12 +36,15 @@ class AddOneOnOne extends Component {
     this.setState({ [property]: val });
   }
   addOneOnOne() {
-    this.props.addOneOnOne({
+    const newOneOnOne = {
       ...this.state,
+      first_name: this.props.student.first_name,
+      last_name: this.props.student.last_name,
       dm_id: this.props.student.dm_id,
       mentor_id: this.props.userInfo.id
-    });
-    this.props.toggleDialog();
+    };
+    this.props.addOneOnOne(newOneOnOne);
+    this.props.hideAdd(newOneOnOne);
   }
 
   render() {
@@ -124,7 +127,10 @@ class AddOneOnOne extends Component {
             style={{ minWidth: '75%' }}
           />
           <div>
-            <FlatButton label="Cancel" onClick={this.props.toggleDialog} />
+            <FlatButton
+              label="Cancel"
+              onClick={() => this.props.hideAdd(this.props.student)}
+            />
             <FlatButton
               label="Submit"
               primary={true}
@@ -140,7 +146,7 @@ class AddOneOnOne extends Component {
 AddOneOnOne.propTypes = {
   student: PropTypes.object,
   addOneOnOne: PropTypes.func,
-  toggleDialog: PropTypes.func,
+  hideAdd: PropTypes.func,
   userInfo: PropTypes.object
 };
 
