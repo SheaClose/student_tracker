@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import { ListItem } from 'material-ui/List';
@@ -10,7 +11,6 @@ import MajorProjects from './MajorProjects/MajorProjects';
 import { MasterDetail, Master, Detail } from '../Utils/MasterDetail';
 
 import { getProjects } from '../../ducks/projects/actions';
-import refreshDetails from '../Utils/refreshDetails';
 import Rating from '../Utils/Rating';
 // import Configuration from './Configuration/Configuration';
 
@@ -27,7 +27,11 @@ class Projects extends Component {
     );
   }
   componentWillReceiveProps(nextProps) {
-    refreshDetails(this.props, nextProps, 'getProjects');
+    if (nextProps.selectedCohort !== this.props.selectedCohort) {
+      nextProps.getProjects(nextProps.selectedCohort);
+    } else if (nextProps.defaultCohort !== this.props.defaultCohort) {
+      nextProps.getProjects(nextProps.defaultCohort);
+    }
   }
 
   render() {
@@ -64,20 +68,14 @@ class Projects extends Component {
       </MasterDetail>
     );
   }
-  // render() {
-  //   return (
-  //     <Tabs>
-  //       <Tab label="Afternoon Projects">
-  //         <AfternoonProjects />
-  //       </Tab>
-  //       {/* list, primary = name, second = 1. number complete 7/12, 2. oldest incomplete */}
-  //       <Tab label="Major Projects">
-  //         <MajorProjects />
-  //       </Tab>
-  //     </Tabs>
-  //   );
-  // }
 }
+
+Projects.propTypes = {
+  projects: PropTypes.array,
+  getProjects: PropTypes.func,
+  selectedCohort: PropTypes.string,
+  defaultCohort: PropTypes.string
+};
 const mapStateToProps = ({ projectsReducer, mainReducer }) => {
   const { projects } = projectsReducer;
   const { selectedCohort, defaultCohort } = mainReducer;
