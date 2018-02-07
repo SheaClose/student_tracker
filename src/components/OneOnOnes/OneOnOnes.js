@@ -8,8 +8,9 @@ import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import { Card, CardText, CardTitle } from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 
-import AddOneOnOne from '../Utils/AddOneOnOne';
 import { getOneOnOnes } from '../../ducks/actions';
+
+import AddOneOnOne from '../Utils/AddOneOnOne';
 import OneOnOneDetail from './OneOnOneDetail';
 import { MasterDetail, Master, Detail } from '../Utils/MasterDetail';
 import refreshDetails from '../Utils/refreshDetails';
