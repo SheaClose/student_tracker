@@ -11,6 +11,7 @@ import TextField from 'material-ui/TextField';
 import AddOneOnOne from '../Utils/AddOneOnOne';
 import { getOneOnOnes } from '../../ducks/actions';
 import OneOnOneDetail from './OneOnOneDetail';
+import { MasterDetail, Master, Detail } from '../Utils/MasterDetail';
 
 class OneOnOnes extends Component {
   constructor(props) {
@@ -72,51 +73,31 @@ class OneOnOnes extends Component {
     );
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <List
-          style={{
-            height: 'calc(100vh - 56px)',
-            overflowY: 'auto',
-            flexBasis: '30%',
-            borderRight: '1px solid rgb(224, 224, 224)'
-          }}
+      <MasterDetail>
+        <Master list={oneOnOnes} renderMethod={renderOneOnOnes} />
+        <Detail
+          title={`${selectedStudent.first_name} ${selectedStudent.last_name}`}
+          subtitle={
+            <span onClick={() => this.showAdd(selectedStudent)}>Add new +</span>
+          }
         >
-          <TextField
-            id="filter"
-            style={{ margin: '0 auto' }}
-            placeholder="Search"
-            onChange={e => this.setState({ filter: e.target.value })}
-          />
-          {oneOnOnes.filter(filterOneOnOnes).map(renderOneOnOnes)}
-        </List>
-        <Card zDepth={0} style={{ flexBasis: '70%' }}>
-          <CardTitle
-            title={`${selectedStudent.first_name} ${selectedStudent.last_name}`}
-            subtitle={
-              <span onClick={() => this.showAdd(selectedStudent)}>
-                Add new +
-              </span>
-            }
-          />
-          <CardText>
-            <List>
-              {this.state.open && (
-                <AddOneOnOne
-                  hideAdd={this.hideAdd}
-                  cohort={this.props.selectedCohort || this.props.defaultCohort}
-                  student={this.state.selectedStudent}
-                />
-              )}
-              <OneOnOneDetail detail={selectedStudent} />
-              <Divider />
-              <div style={{ textAlign: 'center' }}>
-                {/* Eventually this button will load previous one on ones for the same student */}
-                <FlatButton secondary={true}>Load Previous...</FlatButton>
-              </div>
-            </List>
-          </CardText>
-        </Card>
-      </div>
+          <List>
+            {this.state.open && (
+              <AddOneOnOne
+                hideAdd={this.hideAdd}
+                cohort={this.props.selectedCohort || this.props.defaultCohort}
+                student={this.state.selectedStudent}
+              />
+            )}
+            <OneOnOneDetail detail={selectedStudent} />
+            <Divider />
+            <div style={{ textAlign: 'center' }}>
+              {/* Eventually this button will load previous one on ones for the same student */}
+              <FlatButton secondary={true}>Load Previous...</FlatButton>
+            </div>
+          </List>
+        </Detail>
+      </MasterDetail>
     );
   }
 }
