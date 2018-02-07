@@ -8,4 +8,5 @@ FROM students
 	ON students.dm_id=x.dm_id
 	LEFT JOIN oneonones
 	ON x.maxid=oneonones.id
+WHERE cohort_id IN (${cohort_id})
 ORDER BY first_name, last_name
