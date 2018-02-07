@@ -1,3 +1,5 @@
+const { groupById, groupRowData, objToArray } = require('../utils/groupData');
+
 const configPath = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
 const { authHeaders } = require(`../../../configs/${configPath}.config`);
 const axios = require('axios');
@@ -8,26 +10,6 @@ const axios = require('axios');
  */
 const cohort = require('../../../configs/cohort');
 
-const groupById = (array, obj) => {
-  array.forEach(row => {
-    obj[row.dm_id] = { name: `${row.first_name} ${row.last_name}` };
-  });
-};
-const groupRowData = (array, obj, property) => {
-  array.forEach(row => {
-    obj[row.dm_id][property] = obj[row.dm_id][property] || [];
-    obj[row.dm_id][property] = [
-      ...obj[row.dm_id][property],
-      { ...row }
-      // { date: row.date, minutes: row.minutes, timeframe: row.timeframe }
-    ];
-  });
-};
-const objToArray = obj =>
-  Object.keys(obj).reduce(
-    (acc, cur) => [...acc, { ...obj[cur], dm_id: cur }],
-    []
-  );
 const formatAttendanceData = (absences, tardies) => {
   const attendance = {};
   groupById(absences, attendance);
