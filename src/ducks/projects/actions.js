@@ -9,7 +9,7 @@ export function getProjects(cohortid) {
   return {
     type: GET_PROJECTS,
     payload: axios
-      .get(`/api/projects/getProjects${cohortid}`)
+      .get(`/api/projects/${cohortid}`)
       .then(res => res.data)
       .catch(console.log)
   };
@@ -18,6 +18,6 @@ export function getProjects(cohortid) {
 export function addProjects(cohortid, project) {
   return {
     type: ADD_PROJECT,
-    payload: axios.post('/api/projects/addProjects', { cohortid, project })
+    payload: axios.post('/api/projects/', { cohortid, project })
   };
 }
