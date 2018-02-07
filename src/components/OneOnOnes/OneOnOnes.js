@@ -12,6 +12,7 @@ import AddOneOnOne from '../Utils/AddOneOnOne';
 import { getOneOnOnes } from '../../ducks/actions';
 import OneOnOneDetail from './OneOnOneDetail';
 import { MasterDetail, Master, Detail } from '../Utils/MasterDetail';
+import refreshDetails from '../Utils/refreshDetails';
 
 class OneOnOnes extends Component {
   constructor(props) {
@@ -29,6 +30,9 @@ class OneOnOnes extends Component {
     this.props.getOneOnOnes(
       this.props.selectedCohort || this.props.defaultCohort
     );
+  }
+  componentWillReceiveProps(nextProps) {
+    refreshDetails(this.props, nextProps, 'getOneOnOnes');
   }
 
   showAdd(selectedStudent) {

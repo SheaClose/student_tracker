@@ -3,25 +3,31 @@ import { connect } from 'react-redux';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
+import FlatButton from 'material-ui/FlatButton';
 
 import AfternoonProjects from './AfternoonProjects/AfternoonProjects';
 import MajorProjects from './MajorProjects/MajorProjects';
 import { MasterDetail, Master, Detail } from '../Utils/MasterDetail';
 
 import { getProjects } from '../../ducks/projects/actions';
+import refreshDetails from '../Utils/refreshDetails';
+import Rating from '../Utils/Rating';
 // import Configuration from './Configuration/Configuration';
 
 class Projects extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedStudent: {}
+      selectedStudent: { projects: [] }
     };
   }
   componentDidMount() {
     this.props.getProjects(
       this.props.selectedCohort || this.props.defaultCohort
     );
+  }
+  componentWillReceiveProps(nextProps) {
+    refreshDetails(this.props, nextProps, 'getProjects');
   }
 
   render() {
@@ -46,15 +52,14 @@ class Projects extends Component {
     console.log(this.props);
     const { projects = [] } = this.props;
     const { selectedStudent } = this.state;
+    console.log(selectedStudent);
     return (
       <MasterDetail>
         <Master list={projects} renderMethod={renderStudents} />
-        <Detail
-          title={
-            <a href={selectedStudent.github_link}>{selectedStudent.name}</a>
-          }
-        >
-          {JSON.stringify(this.state.selectedStudent.projects)}
+        <Detail title={selectedStudent.name}>
+          {selectedStudent.projects.map(project => (
+            <Rating value={project.status} title={project.name} />
+          ))}
         </Detail>
       </MasterDetail>
     );

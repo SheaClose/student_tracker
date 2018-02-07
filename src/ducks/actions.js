@@ -66,11 +66,11 @@ export function selectCohort(cohort) {
   };
 }
 
-export function getOneOnOnes(cohort) {
+export function getOneOnOnes(cohort_id) {
   return {
     type: GET_ONEONONES,
     payload: axios
-      .get(`/api/oneonones?cohort=${cohort}`)
+      .get(`/api/oneonones?cohort_id=${cohort_id}`)
       .then(res => res.data)
       .catch(console.log)
   };
