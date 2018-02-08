@@ -15,7 +15,7 @@ const Rating = ({ value, title }) => (
   </div>
 );
 Rating.propTypes = {
-  value: PropTypes.string,
+  value: PropTypes.node,
   title: PropTypes.node
 };
 export default Rating;
