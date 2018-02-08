@@ -6,11 +6,11 @@ module.exports = {
     const { cohort_id } = req.params;
     db.projects.getProjectsByCohort({ cohort_id }).then(result => {
       const projects = {};
-      groupById(result, projects, 'total', 'min');
+      groupById(result, projects, 'total_incomplete');
       groupRowData(result, projects, 'projects');
       objToArray(projects);
       // group by student
-      console.log(projects);
+
       res.json(objToArray(projects));
     });
     console.log(req.body, req.params);

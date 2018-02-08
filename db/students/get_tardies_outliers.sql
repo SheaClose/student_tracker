@@ -20,4 +20,4 @@ SELECT * FROM tardies
 	WHERE students.dm_id IN (
 		SELECT dm_id FROM outliers
 		) 
-	AND cohort_id IN ($1:csv);
+	AND cohort_id IN (${allowedCohorts:csv});

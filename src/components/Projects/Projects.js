@@ -34,6 +34,7 @@ class Projects extends Component {
       nextProps.getProjects(nextProps.defaultCohort);
     }
   }
+  showEdit() {}
 
   render() {
     const styles = {
@@ -47,21 +48,18 @@ class Projects extends Component {
       <React.Fragment key={student.dm_id}>
         <ListItem
           onClick={() => this.setState({ selectedStudent: student })}
-          primaryText={`${student.name} (${student.total || 0})`}
+          primaryText={student.name}
           secondaryText={
             <p>
-              Oldest Incomplete:
-              {student.min
-                ? ` ${new Date(student.min).toDateString()}`
-                : ' None'}
+              {student.total_incomplete} incomplete project{student.total_incomplete !=
+                1 && 's'}
             </p>
           }
-          secondaryTextLines={2}
         />
         <Divider />
       </React.Fragment>
     );
-    console.log(this.props);
+
     const { projects = [] } = this.props;
     const { selectedStudent } = this.state;
     console.log(selectedStudent);
@@ -73,11 +71,11 @@ class Projects extends Component {
             {selectedStudent.projects.map(project => (
               <Rating
                 key={project.id}
-                value={project.name}
+                value={<a href={project.github_link}>{project.name}</a>}
                 title={
                   <Fragment>
                     <p className="editLink">
-                      {project.status}
+                      {project.completion}
                       <a onClick={() => this.showEdit(project.id)}> edit</a>
                     </p>
                     <p>{new Date(project.due_date).toDateString()}</p>
