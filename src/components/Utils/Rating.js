@@ -11,11 +11,11 @@ const Rating = ({ value, title }) => (
     }}
   >
     <h1>{value}</h1>
-    <p>{title}</p>
+    {title}
   </div>
 );
 Rating.propTypes = {
-  value: PropTypes.number,
-  title: PropTypes.string
+  value: PropTypes.string,
+  title: PropTypes.node
 };
 export default Rating;
