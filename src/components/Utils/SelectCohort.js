@@ -5,12 +5,11 @@ import MenuItem from 'material-ui/MenuItem';
 import { connect } from 'react-redux';
 import { selectCohort } from '../../ducks/actions';
 
-const SelectCohort = ({ update = () => true, ...props }) => (
+const SelectCohort = props => (
   <DropDownMenu
     value={props.selectedCohort || props.defaultCohort}
     onChange={(e, idx, value) => {
       props.selectCohort(value);
-      update(value);
     }}
   >
     {props.cohorts.map(x => (
