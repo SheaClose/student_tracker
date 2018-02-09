@@ -40,6 +40,7 @@ const formatAttendanceData = (absences, tardies) => {
 
 module.exports = {
   getstudents(req, res) {
+    const db = req.app.get('db');
     const { devmtnUser } = req.session;
     if (devmtnUser) {
       const { sessions, id } = devmtnUser;
@@ -86,7 +87,7 @@ module.exports = {
                   new Date(cohortResponse[ind].date_start).getTime() <
                     Date.now() &&
                   new Date(cohortResponse[ind].date_end).getTime() > Date.now();
-                return Object.assign(
+                const studentInfo = Object.assign(
                   {
                     name: sessions[ind].name,
                     classSession,
@@ -94,6 +95,8 @@ module.exports = {
                   },
                   cohortResponse[ind]
                 );
+                // addNewStudentsByCohort(studentInfo.classSession, studentInfo.name, db)
+                return studentInfo;
               })
               .sort(
                 (a, b) =>
@@ -205,4 +208,16 @@ async function asyncGetCohorts(sessions, id) {
   } catch (e) {
     return e;
   }
+}
+
+/** move to cron job */
+
+function addNewStudentsByCohort(session, name, db) {
+  session.forEach(student => {
+    const { first_name, last_name, email, dmId } = student;
+    return db.run(
+      'insert into students (dm_id, first_name, last_name, email, cohort_id) values ($1, $2, $3, $4, $5)',
+      [dmId, first_name, last_name, email, name]
+    );
+  });
 }
