@@ -22,6 +22,7 @@ const formatAttendanceData = (absences, tardies) => {
 
 module.exports = {
   getstudents(req, res) {
+    const db = req.app.get('db');
     const { devmtnUser } = req.session;
     if (devmtnUser) {
       const { sessions, id } = devmtnUser;
@@ -68,7 +69,7 @@ module.exports = {
                   new Date(cohortResponse[ind].date_start).getTime() <
                     Date.now() &&
                   new Date(cohortResponse[ind].date_end).getTime() > Date.now();
-                return Object.assign(
+                const studentInfo = Object.assign(
                   {
                     name: sessions[ind].name,
                     classSession,
@@ -76,6 +77,8 @@ module.exports = {
                   },
                   cohortResponse[ind]
                 );
+                // addNewStudentsByCohort(studentInfo.classSession, studentInfo.name, db)
+                return studentInfo;
               })
               .sort(
                 (a, b) =>
@@ -125,7 +128,7 @@ module.exports = {
         groupRowData(oneononesData, formattedOneonones, 'oneonones');
         const oneonones = objToArray(formattedOneonones);
 
-        return res.json({
+        return res.status(200).json({
           attendance,
           projects,
           formattedProjects,
@@ -154,7 +157,9 @@ module.exports = {
   getOneOnOnes(req, res) {
     const db = req.app.get('db');
     const { cohort } = req.query;
-    db.students.get_oneonones(cohort).then(response => res.json(response));
+    db.students
+      .get_oneonones(cohort)
+      .then(response => res.status(200).json(response));
   },
   addOneOnOne(req, res) {
     const db = req.app.get('db');
@@ -162,7 +167,7 @@ module.exports = {
     db.students.add_oneonone(req.body).then(() => {
       db.students
         .get_oneonones(req.body.cohort)
-        .then(response => res.json(response));
+        .then(response => res.status(200).json(response));
     });
   }
 };
@@ -191,4 +196,16 @@ async function asyncGetCohorts(sessions, id) {
   } catch (e) {
     return e;
   }
+}
+
+/** move to cron job */
+
+function addNewStudentsByCohort(session, name, db) {
+  session.forEach(student => {
+    const { first_name, last_name, email, dmId } = student;
+    return db.run(
+      'insert into students (dm_id, first_name, last_name, email, cohort_id) values ($1, $2, $3, $4, $5)',
+      [dmId, first_name, last_name, email, name]
+    );
+  });
 }

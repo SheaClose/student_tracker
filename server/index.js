@@ -7,8 +7,8 @@ const express = require('express'),
   axios = require('axios'),
   path = require('path'),
   { Strategy: DevmtnStrategy } = require('devmtn-auth'),
-  devMtnPassport = new passport.Passport(),
-  { authMiddleware } = require('./api/user/userCtrl');
+  devMtnPassport = new passport.Passport();
+// { authMiddleware } = require('./api/user/userCtrl');
 require('dotenv').config();
 
 const app = express();
@@ -44,6 +44,7 @@ passport.deserializeUser((user, done) => {
   const db = app.get('db');
   db.dm_users
     .getUser([user.id])
+    // eslint-disable-next-line
     .then(dbUser => {
       if (dbUser.length) {
         const existingUser = dbUser[0];
