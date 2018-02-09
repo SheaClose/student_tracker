@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-
 import NavigationCheck from 'material-ui/svg-icons/navigation/check';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
-const updateCompletion = () => true;
+import { updateCompletion } from '../../ducks/projects/actions';
 
 class ProjectDetail extends Component {
   constructor(props) {
@@ -22,7 +21,8 @@ class ProjectDetail extends Component {
   updateCompletion() {
     this.props.updateCompletion(
       this.props.project.id,
-      this.state.newCompletion
+      this.state.newCompletion,
+      this.props.project.cohort_id
     );
   }
   render() {

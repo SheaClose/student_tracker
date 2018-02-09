@@ -1,4 +1,4 @@
-import { GET_PROJECTS } from './actions';
+import { GET_PROJECTS, UPDATE_COMPLETION } from './actions';
 
 const initialState = {
   loading: true,
@@ -20,6 +20,11 @@ export default function projectsReducer(state = initialState, action) {
     return Object.assign({}, state, {
       loading: true
     });
+  case `${UPDATE_COMPLETION}_FULFILLED`:
+    return Object.assign({}, state, {
+      projects: action.payload
+    });
+
   default:
     return state;
   }

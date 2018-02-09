@@ -64,7 +64,7 @@ class Projects extends Component {
           <div style={styles.container}>
             {selectedStudent.projects.map(project => (
               <ProjectDetail
-                key={project.id + project.dm_id}
+                key={project.id}
                 style={{ width: '24%' }}
                 project={project}
               />
