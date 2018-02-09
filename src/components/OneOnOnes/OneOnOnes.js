@@ -5,8 +5,6 @@ import FlatButton from 'material-ui/FlatButton';
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
-import { Card, CardText, CardTitle } from 'material-ui/Card';
-import TextField from 'material-ui/TextField';
 
 import { getOneOnOnes } from '../../ducks/actions';
 
@@ -19,8 +17,7 @@ class OneOnOnes extends Component {
     super(props);
     this.state = {
       open: false,
-      selectedStudent: {},
-      filter: ''
+      selectedStudent: {}
     };
     this.showAdd = this.showAdd.bind(this);
     this.hideAdd = this.hideAdd.bind(this);
@@ -54,8 +51,6 @@ class OneOnOnes extends Component {
     const selectedStudent = this.state.selectedStudent.dm_id
       ? this.state.selectedStudent
       : oneOnOnes[0] || {};
-    const filterOneOnOnes = oneOnOne =>
-      oneOnOne.first_name.toLowerCase().includes(this.state.filter);
     const renderOneOnOnes = student => (
       <React.Fragment key={student.dm_id}>
         <ListItem

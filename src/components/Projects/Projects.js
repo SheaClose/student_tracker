@@ -1,19 +1,11 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import { Tabs, Tab } from 'material-ui/Tabs';
 import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
-// import FlatButton from 'material-ui/FlatButton';
-
-// import AfternoonProjects from './AfternoonProjects/AfternoonProjects';
-// import MajorProjects from './MajorProjects/MajorProjects';
 import { MasterDetail, Master, Detail } from '../Utils/MasterDetail';
-
 import { getProjects } from '../../ducks/projects/actions';
-import Rating from '../Utils/Rating';
-// import Configuration from './Configuration/Configuration';
-import './projects.css';
+import ProjectDetail from './ProjectDetail';
 
 class Projects extends Component {
   constructor(props) {
@@ -34,7 +26,6 @@ class Projects extends Component {
       nextProps.getProjects(nextProps.defaultCohort);
     }
   }
-  showEdit() {}
 
   render() {
     const styles = {
@@ -51,8 +42,9 @@ class Projects extends Component {
           primaryText={student.name}
           secondaryText={
             <p>
-              {student.total_incomplete} incomplete project{student.total_incomplete !=
-                1 && 's'}
+              {student.total_incomplete}
+              incomplete project
+              {student.total_incomplete !== '1' && 's'}
             </p>
           }
         />
@@ -61,26 +53,20 @@ class Projects extends Component {
     );
 
     const { projects = [] } = this.props;
-    const { selectedStudent } = this.state;
-    console.log(selectedStudent);
+    const selectedStudent = this.state.selectedStudent.dm_id
+      ? this.state.selectedStudent
+      : projects[0] || { projects: [] };
+
     return (
       <MasterDetail>
         <Master list={projects} renderMethod={renderStudents} />
         <Detail title={selectedStudent.name}>
           <div style={styles.container}>
             {selectedStudent.projects.map(project => (
-              <Rating
-                key={project.id}
-                value={<a href={project.github_link}>{project.name}</a>}
-                title={
-                  <Fragment>
-                    <p className="editLink">
-                      {project.completion}
-                      <a onClick={() => this.showEdit(project.id)}> edit</a>
-                    </p>
-                    <p>{new Date(project.due_date).toDateString()}</p>
-                  </Fragment>
-                }
+              <ProjectDetail
+                key={project.id + project.dm_id}
+                style={{ width: '24%' }}
+                project={project}
               />
             ))}
           </div>
