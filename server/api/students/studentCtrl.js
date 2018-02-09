@@ -128,7 +128,7 @@ module.exports = {
         groupRowData(oneononesData, formattedOneonones, 'oneonones');
         const oneonones = objToArray(formattedOneonones);
 
-        return res.json({
+        return res.status(200).json({
           attendance,
           projects,
           formattedProjects,
@@ -157,7 +157,9 @@ module.exports = {
   getOneOnOnes(req, res) {
     const db = req.app.get('db');
     const { cohort } = req.query;
-    db.students.get_oneonones(cohort).then(response => res.json(response));
+    db.students
+      .get_oneonones(cohort)
+      .then(response => res.status(200).json(response));
   },
   addOneOnOne(req, res) {
     const db = req.app.get('db');
@@ -165,7 +167,7 @@ module.exports = {
     db.students.add_oneonone(req.body).then(() => {
       db.students
         .get_oneonones(req.body.cohort)
-        .then(response => res.json(response));
+        .then(response => res.status(200).json(response));
     });
   }
 };

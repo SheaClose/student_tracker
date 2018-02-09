@@ -11,7 +11,7 @@ module.exports = {
 
       // group by student
 
-      res.json(objToArray(projects));
+      res.status(200).json(objToArray(projects));
     });
   },
   updateCompletion(req, res) {
@@ -29,7 +29,7 @@ module.exports = {
 
         // group by student
 
-        res.json(objToArray(projects));
+        res.status(200).json(objToArray(projects));
       });
   },
   saveCohortRepo(req, res) {
