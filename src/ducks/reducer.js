@@ -38,11 +38,7 @@ export default function reducer(state = initialState, action) {
     });
   case `${GET_STUDENTS}_FULFILLED`:
     return Object.assign({}, state, {
-      students: [
-        ...action.payload,
-        { name: 'WDL5', classSession: [] },
-        { name: 'WDL6', classSession: [] }
-      ]
+      students: action.payload
     });
   case `${GET_USER_INFO}_FULFILLED`:
     return Object.assign({}, state, {
