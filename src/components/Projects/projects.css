@@ -1,8 +1,8 @@
-.view-container {
-	position: absolute;
-	right: 5vw;
-	width: 85vw;
-	margin-left: 5vw;
-	margin-top: 5vh;
-	background-color: #fafafa;
+.editLink a {
+  opacity: 0;
+  transition: all 100ms;
+}
+
+.editLink:hover a {
+  opacity: 1;
 }
