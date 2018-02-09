@@ -98,7 +98,6 @@ module.exports = {
       let allowedCohorts = devmtnUser.sessions.map(session => session.name);
       if (process.env.NOD_ENV !== 'production') {
         allowedCohorts = [...allowedCohorts, 'WDL99', 'WDL6', 'WDL7'];
-        console.log(allowedCohorts);
       }
       const db = req.app.get('db');
       try {
