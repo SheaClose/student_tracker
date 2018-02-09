@@ -1,24 +1,12 @@
-WITH 
-	incompletes AS (
-		SELECT * FROM projects 
-		WHERE due_date < CURRENT_DATE 
-		AND status IN ('incomplete', 'redo')
-		)
-		,
-	totals AS (
-		SELECT count(id), dm_id
-		FROM incompletes
-		GROUP BY dm_id
-		)
-		,
-
-	outliers AS (
-		SELECT * from totals WHERE count > 2
-		)
-		
-SELECT * FROM incompletes
-	JOIN students ON students.dm_id = incompletes.dm_id
-	WHERE students.dm_id IN (
-		SELECT dm_id FROM outliers
-		)
-	AND cohort_id IN ($1:csv);
+SELECT * FROM 
+	(SELECT s.first_name, s.last_name, s.dm_id, p.name, p.due_date, pc.completion,
+		(SELECT COUNT(project_id) FROM project_completion pc 
+			WHERE pc.dm_id=s.dm_id 
+			AND completion != 'complete'
+		) AS total_incomplete 
+	FROM students s
+		JOIN project_completion pc ON pc.dm_id = s.dm_id
+		JOIN projects p ON p.id = pc.project_id
+	WHERE s.cohort_id IN (${allowedCohorts:csv}) and completion != 'complete') 
+AS incompletes 
+WHERE total_incomplete > 2

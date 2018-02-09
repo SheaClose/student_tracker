@@ -1,3 +1,5 @@
+const { groupById, groupRowData, objToArray } = require('../utils/groupData');
+
 const configPath = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
 const { authHeaders } = require(`../../../configs/${configPath}.config`);
 const axios = require('axios');
@@ -8,26 +10,6 @@ const axios = require('axios');
  */
 const cohort = require('../../../configs/cohort');
 
-const groupById = (array, obj) => {
-  array.forEach(row => {
-    obj[row.dm_id] = { name: `${row.first_name} ${row.last_name}` };
-  });
-};
-const groupRowData = (array, obj, property) => {
-  array.forEach(row => {
-    obj[row.dm_id][property] = obj[row.dm_id][property] || [];
-    obj[row.dm_id][property] = [
-      ...obj[row.dm_id][property],
-      { ...row }
-      // { date: row.date, minutes: row.minutes, timeframe: row.timeframe }
-    ];
-  });
-};
-const objToArray = obj =>
-  Object.keys(obj).reduce(
-    (acc, cur) => [...acc, { ...obj[cur], dm_id: cur }],
-    []
-  );
 const formatAttendanceData = (absences, tardies) => {
   const attendance = {};
   groupById(absences, attendance);
@@ -116,21 +98,24 @@ module.exports = {
   async getOutliers(req, res) {
     const { devmtnUser } = req.session;
     if (devmtnUser) {
-      const allowedCohorts = devmtnUser.sessions.map(session => session.name);
+      let allowedCohorts = devmtnUser.sessions.map(session => session.name);
+      if (process.env.NOD_ENV !== 'production') {
+        allowedCohorts = [...allowedCohorts, 'WDL99', 'WDL6', 'WDL7'];
+      }
       const db = req.app.get('db');
       try {
-        const absencesData = await db.students.get_absence_outliers(
+        const absencesData = await db.students.get_absence_outliers({
           allowedCohorts
-        );
-        const tardiesData = await db.students.get_tardies_outliers(
+        });
+        const tardiesData = await db.students.get_tardies_outliers({
           allowedCohorts
-        );
-        const projectsData = await db.students.get_project_outliers(
+        });
+        const projectsData = await db.students.get_project_outliers({
           allowedCohorts
-        );
-        const oneononesData = await db.students.get_oneonone_outliers(
+        });
+        const oneononesData = await db.students.get_oneonone_outliers({
           allowedCohorts
-        );
+        });
         const attendance = formatAttendanceData(absencesData, tardiesData);
 
         const formattedProjects = {};
@@ -176,6 +161,7 @@ module.exports = {
   },
   addOneOnOne(req, res) {
     const db = req.app.get('db');
+
     db.students.add_oneonone(req.body).then(() => {
       db.students
         .get_oneonones(req.body.cohort)
