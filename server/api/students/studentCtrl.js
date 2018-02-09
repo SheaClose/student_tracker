@@ -158,7 +158,7 @@ module.exports = {
   },
   addOneOnOne(req, res) {
     const db = req.app.get('db');
-    console.log(req.body);
+
     db.students.add_oneonone(req.body).then(() => {
       db.students
         .get_oneonones(req.body.cohort)

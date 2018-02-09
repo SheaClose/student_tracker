@@ -13,13 +13,12 @@ module.exports = {
 
       res.json(objToArray(projects));
     });
-    console.log(req.body, req.params);
   },
   updateCompletion(req, res) {
     const db = req.app.get('db');
     const { id } = req.params;
     const { completion, cohort_id } = req.body;
-    console.log(id, completion);
+
     db.projects
       .updateCompletion({ id, completion })
       .then(() => db.projects.getProjectsByCohort({ cohort_id }))
@@ -27,7 +26,7 @@ module.exports = {
         const projects = {};
         groupById(result, projects, 'total_incomplete');
         groupRowData(result, projects, 'projects');
-        console.log(projects);
+
         // group by student
 
         res.json(objToArray(projects));
