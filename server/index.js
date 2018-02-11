@@ -90,9 +90,10 @@ app.get(
       )
       .then(sessionResponse => {
         /**
-         * Currently only adding sesssion id and short_name, however in the future
-         * if there is any other information that is needed about the classes that
-         * the mentor/instructor was over, this is where we'd want to add it.
+         * Currently only adding sesssion id and short_name,
+         * however in the future if there is any other information
+         *  that is needed about the classes that the mentor/instructor
+         * was over, this is where we'd want to add it.
          */
         const sessions = sessionResponse.data.map(userSession => ({
           id: userSession.id,

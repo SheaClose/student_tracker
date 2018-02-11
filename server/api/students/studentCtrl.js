@@ -18,7 +18,6 @@ const formatAttendanceData = (absences, tardies) => {
 
 module.exports = {
   getstudents(req, res) {
-    console.log('req.user: ', req.user);
     const db = req.app.get('db');
     /** get list of cohorts for current user */
     db
