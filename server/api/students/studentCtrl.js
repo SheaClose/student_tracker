@@ -18,6 +18,7 @@ const formatAttendanceData = (absences, tardies) => {
 
 module.exports = {
   getstudents(req, res) {
+    console.log('req.user: ', req.user);
     const db = req.app.get('db');
     /** get list of cohorts for current user */
     db
@@ -25,7 +26,7 @@ module.exports = {
         `select cohort_id from user_cohort where user_id = (
         select id from users where devmountain_id = $1
       )`,
-        req.user.id
+        req.user.devmountain_id
       )
       .then(ids => ids.map(cur => cur.cohort_id))
       .then(cohortIds => {
@@ -142,7 +143,6 @@ module.exports = {
   },
   addOneOnOne(req, res) {
     const db = req.app.get('db');
-    console.log('req.body: ', req.body);
     db.students
       .add_oneonone(req.body)
       .then(() => {
