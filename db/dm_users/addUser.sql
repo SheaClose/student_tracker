@@ -1,3 +1,3 @@
 INSERT INTO users (devmountain_id, first_name, last_name)
-    VALUES ($1, $2, $3)
+    VALUES (${id}, ${first_name}, ${last_name})
     RETURNING devmountain_id;

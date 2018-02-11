@@ -1,9 +1,4 @@
 module.exports = {
-  authMiddleware(req, res, next) {
-    const userIsAuthed = verifyAuth(req.session.devmtnUser);
-    if (userIsAuthed) return next();
-    return res.redirect('/auth/devmtn');
-  },
   getUser(req, res) {
     res.status(200).json(req.user);
   },

@@ -7,8 +7,8 @@ const express = require('express'),
   axios = require('axios'),
   path = require('path'),
   { Strategy: DevmtnStrategy } = require('devmtn-auth'),
-  devMtnPassport = new passport.Passport();
-// { authMiddleware } = require('./api/user/userCtrl');
+  devMtnPassport = new passport.Passport(),
+  syncStudents = require('./studentSyncCronJob');
 require('dotenv').config();
 
 const app = express();
@@ -40,29 +40,7 @@ devMtnPassport.use(
 
 passport.serializeUser((user, done) => done(null, user));
 
-passport.deserializeUser((user, done) => {
-  const db = app.get('db');
-  db.dm_users
-    .getUser([user.id])
-    // eslint-disable-next-line
-    .then(dbUser => {
-      if (dbUser.length) {
-        const existingUser = dbUser[0];
-        return done(null, existingUser);
-      }
-      db.dm_users
-        .addUser([user.id, user.first_name, user.last_name])
-        .then(newDbUser => {
-          const newUser = newDbUser[0];
-          return done(null, newUser);
-        })
-        .catch(error => done(error, null));
-    })
-    .catch(err => {
-      console.log('Could not find user, creating new User');
-      return done(err, null);
-    });
-});
+passport.deserializeUser((user, done) => done(null, user));
 
 app.use(devMtnPassport.initialize());
 
@@ -83,25 +61,53 @@ app.get(
   '/auth/devmtn/callback',
   devMtnPassport.authenticate('devmtn', { failureRedirect: '/loginFailed' }),
   (req, res) => {
-    axios
-      .get(
-        `https://devmountain.com/api/mentors/${req.user.id}/classsessions`,
-        authHeaders
-      )
-      .then(sessionResponse => {
-        /**
-         * Currently only adding sesssion id and short_name, however in the future
-         * if there is any other information that is needed about the classes that
-         * the mentor/instructor was over, this is where we'd want to add it.
-         */
-        const sessions = sessionResponse.data.map(userSession => ({
-          id: userSession.id,
-          name: userSession.short_name
-        }));
-        req.session.devmtnUser = Object.assign({}, req.user, { sessions });
-        return res.redirect(`${auth_redirect}${req.session.redirect}`);
+    const db = app.get('db');
+    db.dm_users
+      .getUser([req.user.id])
+      .then(dbUser => {
+        if (dbUser.length) {
+          req.session.devmtnUser = Object.assign({}, req.user);
+          return res.redirect(`${auth_redirect}${req.session.redirect}`);
+        }
+        return axios
+          .get(
+            `https://devmountain.com/api/mentors/${req.user.id}/classsessions`,
+            authHeaders
+          )
+          .then(sessionResponse => {
+            const sessions = sessionResponse.data.map(userSession => ({
+              id: userSession.id,
+              name: userSession.short_name
+            }));
+            req.session.devmtnUser = Object.assign({}, req.user, { sessions });
+            req.user.sessions = sessions;
+            db.dm_users
+              .addUser(req.user)
+              .then(() => {
+                const cohorts = req.user.sessions.map(c =>
+                  db.cohorts
+                    .create_cohort([c.id, c.name])
+                    .then(() => {})
+                    .catch(console.log)
+                );
+                Promise.all(cohorts)
+                  .then(() =>
+                    res.redirect(`${auth_redirect}${req.session.redirect}`)
+                  )
+                  .catch(err => {
+                    console.log('Error inserting Cohorts: ', err);
+                    return res.redirect(
+                      `${auth_redirect}${req.session.redirect}`
+                    );
+                  });
+              })
+              .catch(console.log);
+          })
+          .catch(err => console.log('Cannot get sessions: ', err));
       })
-      .catch(err => console.log('Cannot get sessions: ', err));
+      .catch(err => {
+        console.log('Could not find user, creating new User: ', err);
+      });
   }
 );
 
@@ -111,14 +117,17 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// app.use('*', authMiddleware);
-
 masterRoutes(app);
+syncStudents(app);
 
 switch (process.env.npm_lifecycle_event) {
 case 'build':
   break;
 case 'start':
+  app.use('/', express.static(`${__dirname}/../src`));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/../public/index.html'));
+  });
   break;
 default:
   app.use('/', express.static(`${__dirname}/../build`));
