@@ -1,9 +1,5 @@
 const { groupById, groupRowData, objToArray } = require('../utils/groupData');
 
-const configPath = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
-const { authHeaders } = require(`../../../configs/${configPath}.config`);
-const axios = require('axios');
-
 /**
  * This is purely for development. Provides a dummy session for mentors who've
  * only mentored once (to see what it would look like with multiple cohorts.)
@@ -22,7 +18,60 @@ const formatAttendanceData = (absences, tardies) => {
 
 module.exports = {
   getstudents(req, res) {
-    return res.status(200).json('these are some students');
+    const db = req.app.get('db');
+    /** get list of cohorts for current user */
+    db
+      .run(
+        `select cohort_id from user_cohort where user_id = (
+        select id from users where devmountain_id = $1
+      )`,
+        req.user.id
+      )
+      .then(ids => ids.map(cur => cur.cohort_id))
+      .then(cohortIds => {
+        const cohortPromisese = cohortIds.map(async cohortid => {
+          const cohorts = await db.run(
+            `select * from cohorts 
+                where cohort_id = $1`,
+            cohortid
+          );
+          const cohortPromises = cohorts.map(
+            ({ id, date_start, date_end, name }) => {
+              const inSession =
+                new Date(date_start).getTime() < Date.now() &&
+                new Date(date_end).getTime() > Date.now();
+              return db
+                .run('select * from students where cohort_id = $1', name)
+                .then(studentList => ({
+                  inSession,
+                  id,
+                  date_start,
+                  date_end,
+                  name,
+                  classSession: studentList.map(
+                    ({ dm_id, first_name, last_name, email }) => ({
+                      dm_id,
+                      first_name,
+                      last_name,
+                      email
+                    })
+                  )
+                }))
+                .catch(console.log);
+            }
+          );
+          return Promise.all(cohortPromises).then(c => c[0]);
+        });
+        Promise.all(cohortPromisese)
+          .then(cohorts =>
+            [...cohorts, dummyCohort].sort(
+              (a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
+            )
+          )
+          .then(cohorts => res.json(cohorts))
+          .catch(console.log);
+      })
+      .catch(console.log);
   },
   async getOutliers(req, res) {
     const { devmtnUser } = req.session;
@@ -88,15 +137,20 @@ module.exports = {
     const { cohort } = req.query;
     db.students
       .get_oneonones(cohort)
-      .then(response => res.status(200).json(response));
+      .then(response => res.status(200).json(response))
+      .catch(console.log);
   },
   addOneOnOne(req, res) {
     const db = req.app.get('db');
-
-    db.students.add_oneonone(req.body).then(() => {
-      db.students
-        .get_oneonones(req.body.cohort)
-        .then(response => res.status(200).json(response));
-    });
+    console.log('req.body: ', req.body);
+    db.students
+      .add_oneonone(req.body)
+      .then(() => {
+        db.students
+          .get_oneonones(req.body.cohort)
+          .then(response => res.status(200).json(response))
+          .catch(console.log);
+      })
+      .catch(console.log);
   }
 };
