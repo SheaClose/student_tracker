@@ -21,12 +21,7 @@ module.exports = {
     const db = req.app.get('db');
     /** get list of cohorts for current user */
     db
-      .run(
-        `select cohort_id from user_cohort where user_id = (
-        select id from users where devmountain_id = $1
-      )`,
-        req.user.devmountain_id
-      )
+      .run('select cohort_id from user_cohort where user_id = $1', req.user.id)
       .then(ids => ids.map(cur => cur.cohort_id))
       .then(cohortIds => {
         const cohortPromisese = cohortIds.map(async cohortid => {
