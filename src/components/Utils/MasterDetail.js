@@ -16,6 +16,7 @@ const Master = props => (
       borderRight: '1px solid rgb(224, 224, 224)'
     }}
   >
+    {props.children}
     {/*
           Might be able to implement this at some point
           <TextField
@@ -40,7 +41,8 @@ MasterDetail.propTypes = {
 };
 Master.propTypes = {
   list: PropTypes.array,
-  renderMethod: PropTypes.func
+  renderMethod: PropTypes.func,
+  children: PropTypes.node
 };
 Detail.propTypes = {
   title: PropTypes.string,
