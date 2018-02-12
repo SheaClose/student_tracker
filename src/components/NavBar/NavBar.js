@@ -49,7 +49,7 @@ class NavBar extends Component {
             <MenuItem onClick={this.props.toggleDrawer}>Students</MenuItem>
           </Link>
           <Link to="/attendance">
-            <MenuItem onClick={this.props.toggleDrawer}>Attendace</MenuItem>
+            <MenuItem onClick={this.props.toggleDrawer}>Attendance</MenuItem>
           </Link>
           <Link to="/oneonones">
             <MenuItem onClick={this.props.toggleDrawer}>One on Ones</MenuItem>

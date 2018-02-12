@@ -1,14 +1,10 @@
 const { groupById, groupRowData, objToArray } = require('../utils/groupData');
 
-const configPath = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
-const { authHeaders } = require(`../../../configs/${configPath}.config`);
-const axios = require('axios');
-
 /**
  * This is purely for development. Provides a dummy session for mentors who've
  * only mentored once (to see what it would look like with multiple cohorts.)
  */
-const cohort = require('../../../configs/cohort');
+const dummyCohort = require('../../../configs/cohort');
 
 const formatAttendanceData = (absences, tardies) => {
   const attendance = {};
@@ -23,77 +19,54 @@ const formatAttendanceData = (absences, tardies) => {
 module.exports = {
   getstudents(req, res) {
     const db = req.app.get('db');
-    const { devmtnUser } = req.session;
-    if (devmtnUser) {
-      const { sessions, id } = devmtnUser;
-      const cohortPromises = asyncGetCohorts(sessions, id);
-      const sessionPromisesArray = sessions.map(session =>
-        axios.get(
-          `https://devmountain.com/api/classsession/enrollments/${session.id}`,
-          authHeaders
-        )
-      );
-      const sessionPromises = Promise.all(sessionPromisesArray);
-      /**
-       * since we are potentially getting multiple sessions, we await all responses
-       * before sending back to the front end.
-       */
-      return axios
-        .all([sessionPromises, cohortPromises])
-        .then(
-          axios.spread((sessionResponse, cohortResponse) => {
-            /**
-             * remove dropped/withdrawn students before returning
-             */
-            const activeStudents = sessionResponse
-              .map(studentSessionResponse =>
-                studentSessionResponse.data.filter(
-                  student =>
-                    !student.status.includes('Dropped') &&
-                    !student.status.includes('Withdrawn') &&
-                    !student.status.includes('dropped')
-                )
-              )
-              /** creating merged objects from sessionPromise and cohortPromise. Mapping them
-               * together, ex:
-               *  {
-               *    id: 81
-               *    name: "WDL4",
-               *    classSession: [{...student info}, {...student info}, {...student info}],
-               *    date_start: '2016-08-03T04:00:00.000Z',
-               *    date_end: '2016-11-29T04:00:00.000Z' },
-               *  }
-               * */
-              .map((classSession, ind) => {
-                const inSession =
-                  new Date(cohortResponse[ind].date_start).getTime() <
-                    Date.now() &&
-                  new Date(cohortResponse[ind].date_end).getTime() > Date.now();
-                const studentInfo = Object.assign(
-                  {
-                    name: sessions[ind].name,
-                    classSession,
-                    inSession
-                  },
-                  cohortResponse[ind]
-                );
-                // addNewStudentsByCohort(studentInfo.classSession, studentInfo.name, db)
-                return studentInfo;
-              })
-              .sort(
-                (a, b) =>
-                  +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
-              );
-            /** adding dummy data for development */
-            if (process.env.NODE_ENV !== 'production') {
-              activeStudents.push(cohort);
+    /** get list of cohorts for current user */
+    db
+      .run('select cohort_id from user_cohort where user_id = $1', req.user.id)
+      .then(ids => ids.map(cur => cur.cohort_id))
+      .then(cohortIds => {
+        const cohortPromisese = cohortIds.map(async cohortid => {
+          const cohorts = await db.run(
+            `select * from cohorts 
+                where cohort_id = $1`,
+            cohortid
+          );
+          const cohortPromises = cohorts.map(
+            ({ id, date_start, date_end, name }) => {
+              const inSession =
+                new Date(date_start).getTime() < Date.now() &&
+                new Date(date_end).getTime() > Date.now();
+              return db
+                .run('select * from students where cohort_id = $1', name)
+                .then(studentList => ({
+                  inSession,
+                  id,
+                  date_start,
+                  date_end,
+                  name,
+                  classSession: studentList.map(
+                    ({ dm_id, first_name, last_name, email }) => ({
+                      dm_id,
+                      first_name,
+                      last_name,
+                      email
+                    })
+                  )
+                }))
+                .catch(console.log);
             }
-            return res.status(200).json(activeStudents);
-          })
-        )
-        .catch(console.log);
-    }
-    return res.status(500).json('User not logged in');
+          );
+          return Promise.all(cohortPromises).then(c => c[0]);
+        });
+        Promise.all(cohortPromisese)
+          .then(cohorts =>
+            [...cohorts, dummyCohort].sort(
+              (a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
+            )
+          )
+          .then(cohorts => res.json(cohorts))
+          .catch(console.log);
+      })
+      .catch(console.log);
   },
   async getOutliers(req, res) {
     const { devmtnUser } = req.session;
@@ -159,53 +132,19 @@ module.exports = {
     const { cohort } = req.query;
     db.students
       .get_oneonones(cohort)
-      .then(response => res.status(200).json(response));
+      .then(response => res.status(200).json(response))
+      .catch(console.log);
   },
   addOneOnOne(req, res) {
     const db = req.app.get('db');
-
-    db.students.add_oneonone(req.body).then(() => {
-      db.students
-        .get_oneonones(req.body.cohort)
-        .then(response => res.status(200).json(response));
-    });
+    db.students
+      .add_oneonone(req.body)
+      .then(() => {
+        db.students
+          .get_oneonones(req.body.cohort)
+          .then(response => res.status(200).json(response))
+          .catch(console.log);
+      })
+      .catch(console.log);
   }
 };
-
-async function asyncGetCohorts(sessions, id) {
-  try {
-    return await axios
-      .get(
-        `https://devmountain.com/api/mentors/${id}/classsessions`,
-        authHeaders
-      )
-      .then(dmCohortData =>
-        dmCohortData.data
-          .map((c, i) => {
-            const { date_start, date_end } = c;
-            return Object.assign({}, sessions[i], {
-              date_start,
-              date_end
-            });
-          })
-          .sort(
-            (a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
-          )
-      )
-      .catch(console.log);
-  } catch (e) {
-    return e;
-  }
-}
-
-/** move to cron job */
-
-function addNewStudentsByCohort(session, name, db) {
-  session.forEach(student => {
-    const { first_name, last_name, email, dmId } = student;
-    return db.run(
-      'insert into students (dm_id, first_name, last_name, email, cohort_id) values ($1, $2, $3, $4, $5)',
-      [dmId, first_name, last_name, email, name]
-    );
-  });
-}

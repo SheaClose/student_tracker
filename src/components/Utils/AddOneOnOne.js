@@ -148,7 +148,8 @@ AddOneOnOne.propTypes = {
   student: PropTypes.object,
   addOneOnOne: PropTypes.func,
   hideAdd: PropTypes.func,
-  userInfo: PropTypes.object
+  userInfo: PropTypes.object,
+  cohort: PropTypes.string
 };
 
 const mapStateToProps = ({ mainReducer }) => {

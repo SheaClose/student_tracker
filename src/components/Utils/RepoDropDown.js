@@ -26,7 +26,6 @@ class RepoDropDown extends Component {
   }
 
   handleSelect(selected) {
-    console.log('selected: ', this.state.repos.find(c => c.name === selected));
     this.setState(
       {
         selected: this.state.repos.find(c => c.name === selected)

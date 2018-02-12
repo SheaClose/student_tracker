@@ -7,8 +7,8 @@ const express = require('express'),
   axios = require('axios'),
   path = require('path'),
   { Strategy: DevmtnStrategy } = require('devmtn-auth'),
-  devMtnPassport = new passport.Passport();
-// { authMiddleware } = require('./api/user/userCtrl');
+  devMtnPassport = new passport.Passport(),
+  syncStudents = require('./studentSyncCronJob');
 require('dotenv').config();
 
 const app = express();
@@ -35,34 +35,21 @@ massive(connectionString)
 
 devMtnPassport.use(
   'devmtn',
-  new DevmtnStrategy(devmtnAuth, (jwtoken, user, done) => done(null, user))
+  new DevmtnStrategy(devmtnAuth, (jwtoken, user, done) => {
+    const db = app.get('db');
+
+    return db.dm_users.addUser(user).then(dbUser => {
+      dbUser[0].roles = user.roles;
+      done(null, dbUser[0]);
+    });
+    // db.dm_users.getUser([user.id]).then(dbUser => done(null, dbUser[0]));
+    // return done(null, user);
+  })
 );
 
 passport.serializeUser((user, done) => done(null, user));
 
-passport.deserializeUser((user, done) => {
-  const db = app.get('db');
-  db.dm_users
-    .getUser([user.id])
-    // eslint-disable-next-line
-    .then(dbUser => {
-      if (dbUser.length) {
-        const existingUser = dbUser[0];
-        return done(null, existingUser);
-      }
-      db.dm_users
-        .addUser([user.id, user.first_name, user.last_name])
-        .then(newDbUser => {
-          const newUser = newDbUser[0];
-          return done(null, newUser);
-        })
-        .catch(error => done(error, null));
-    })
-    .catch(err => {
-      console.log('Could not find user, creating new User');
-      return done(err, null);
-    });
-});
+passport.deserializeUser((user, done) => done(null, user));
 
 app.use(devMtnPassport.initialize());
 
@@ -85,14 +72,17 @@ app.get(
   (req, res) => {
     axios
       .get(
-        `https://devmountain.com/api/mentors/${req.user.id}/classsessions`,
+        `https://devmountain.com/api/mentors/${
+          req.user.devmountain_id
+        }/classsessions`,
         authHeaders
       )
       .then(sessionResponse => {
         /**
-         * Currently only adding sesssion id and short_name, however in the future
-         * if there is any other information that is needed about the classes that
-         * the mentor/instructor was over, this is where we'd want to add it.
+         * Currently only adding sesssion id and short_name,
+         * however in the future if there is any other information
+         *  that is needed about the classes that the mentor/instructor
+         * was over, this is where we'd want to add it.
          */
         const sessions = sessionResponse.data.map(userSession => ({
           id: userSession.id,
@@ -114,6 +104,7 @@ app.get('/logout', (req, res) => {
 // app.use('*', authMiddleware);
 
 masterRoutes(app);
+syncStudents(app);
 
 switch (process.env.npm_lifecycle_event) {
 case 'build':
