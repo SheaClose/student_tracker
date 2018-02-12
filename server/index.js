@@ -35,34 +35,21 @@ massive(connectionString)
 
 devMtnPassport.use(
   'devmtn',
-  new DevmtnStrategy(devmtnAuth, (jwtoken, user, done) => done(null, user))
+  new DevmtnStrategy(devmtnAuth, (jwtoken, user, done) => {
+    const db = app.get('db');
+
+    return db.dm_users.addUser(user).then(dbUser => {
+      dbUser[0].roles = user.roles;
+      done(null, dbUser[0]);
+    });
+    // db.dm_users.getUser([user.id]).then(dbUser => done(null, dbUser[0]));
+    // return done(null, user);
+  })
 );
 
 passport.serializeUser((user, done) => done(null, user));
 
-passport.deserializeUser((user, done) => {
-  const db = app.get('db');
-  db.dm_users
-    .getUser([user.id])
-    // eslint-disable-next-line
-    .then(dbUser => {
-      if (dbUser.length) {
-        const existingUser = dbUser[0];
-        return done(null, existingUser);
-      }
-      db.dm_users
-        .addUser([user.id, user.first_name, user.last_name])
-        .then(newDbUser => {
-          const newUser = newDbUser[0];
-          return done(null, newUser);
-        })
-        .catch(error => done(error, null));
-    })
-    .catch(err => {
-      console.log('Could not find user, creating new User');
-      return done(err, null);
-    });
-});
+passport.deserializeUser((user, done) => done(null, user));
 
 app.use(devMtnPassport.initialize());
 
@@ -85,7 +72,9 @@ app.get(
   (req, res) => {
     axios
       .get(
-        `https://devmountain.com/api/mentors/${req.user.id}/classsessions`,
+        `https://devmountain.com/api/mentors/${
+          req.user.devmountain_id
+        }/classsessions`,
         authHeaders
       )
       .then(sessionResponse => {

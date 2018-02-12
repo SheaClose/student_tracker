@@ -36,7 +36,7 @@ class Attendance extends Component {
         <Divider />
       </React.Fragment>
     );
-    console.log(this.state.attendance);
+    
     return (
       <MasterDetail>
         <Master list={this.state.attendance} renderMethod={renderStudents}>

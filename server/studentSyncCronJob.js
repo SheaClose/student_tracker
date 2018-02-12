@@ -5,7 +5,7 @@ const cron = require('node-cron'),
 
 module.exports = app => {
   /** Run at Midnight Saturday into Sunday */
-  cron.schedule('* * 0 * * Sun', async () => {
+  cron.schedule('*/30 * * * * *', async () => {
     const db = app.get('db');
     try {
       const users = await db.dm_users.getAllUsers();
