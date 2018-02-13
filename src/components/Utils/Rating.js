@@ -8,7 +8,7 @@ const Rating = ({ value, title, style }) => (
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      paddingBottom: '25px'
+      padding: '5px'
     }}
   >
     <h3>{value}</h3>
