@@ -1,1 +1,1 @@
-SELECT * FROM users WHERE devmountain_id = $1;
+SELECT * FROM users WHERE user_id = $1;

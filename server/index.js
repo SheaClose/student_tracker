@@ -72,9 +72,7 @@ app.get(
   (req, res) => {
     axios
       .get(
-        `https://devmountain.com/api/mentors/${
-          req.user.devmountain_id
-        }/classsessions`,
+        `https://devmountain.com/api/mentors/${req.user.user_id}/classsessions`,
         authHeaders
       )
       .then(sessionResponse => {

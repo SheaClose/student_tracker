@@ -14,7 +14,7 @@ module.exports = app => {
         try {
           const session = await axios.get(
             `https://devmountain.com/api/mentors/${
-              user.devmountain_id
+              user.user_id
             }/classsessions`,
             authHeaders
           );
