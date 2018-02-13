@@ -10,14 +10,9 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <img
-          alt="unicorn"
-          src="https://78.media.tumblr.com/6379b40e4a36490c58cae94a474babce/tumblr_o2idih49Md1u69veko1_500.gif"
-          style={{ width: '25px', height: 'auto' }}
-        />
-        <AttendanceOutliers />
-        <ProjectOutliers />
-        <OneOnOneOutliers />
+        <AttendanceOutliers style={{ margin: '25px' }} />
+        <ProjectOutliers style={{ margin: '25px' }} />
+        <OneOnOneOutliers style={{ margin: '25px' }} />
       </div>
     );
   }

@@ -13,17 +13,16 @@ module.exports = app => {
       const sessionPromises = users.map(async user => {
         try {
           const session = await axios.get(
-            `https://devmountain.com/api/mentors/${
-              user.devmountain_id
-            }/classsessions`,
+            `https://devmountain.com/api/mentors/${user.user_id}/classsessions`,
             authHeaders
           );
+
           return session.data.map(
             ({ short_name, id, date_start, date_end }) => {
               /** While we have reference to user and cohort, create
                * a link to them both in the Db, if not exists.
                */
-              db.user_cohort.link_user_cohort(user.id, id);
+              db.user_cohort.link_user_cohort(user.user_id, id);
               /** Only need to save the name, id, start and end date from each cohort */
               return { short_name, id, date_start, date_end };
             }
