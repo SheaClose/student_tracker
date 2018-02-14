@@ -19,12 +19,15 @@ export function verifyLogin() {
   };
 }
 
-export function getStudents() {
+export function getStudents(cohort) {
   return {
     type: GET_STUDENTS,
     payload: axios
-      .get('/api/students/')
-      .then(res => res.data)
+      .get(`/api/students?cohort=${cohort}`)
+      .then(res => {
+        console.log(res);
+        return res.data;
+      })
       .catch(console.log)
   };
 }
