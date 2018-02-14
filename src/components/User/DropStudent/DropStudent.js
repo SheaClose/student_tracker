@@ -90,8 +90,8 @@ class DropStudent extends Component {
   }
 
   render() {
-    const cohorts = this.props.cohorts.filter(c => c.inSession).map(c => {
-      const students = c.classSession.map(student => (
+    const cohorts = this.props.cohorts.filter(c => c.inSession).map(cohort => {
+      const students = cohort.classSession.map(student => (
         <MenuItem
           onClick={e => this.handleMenuSelection(e, student)}
           primaryText={`${student.first_name} ${student.last_name}`}
@@ -99,8 +99,8 @@ class DropStudent extends Component {
       ));
       return (
         <MenuItem
-          key={c.id}
-          primaryText={c.name}
+          key={cohort.id}
+          primaryText={cohort.name}
           rightIcon={<ArrowDropRight />}
           menuItems={students}
         />

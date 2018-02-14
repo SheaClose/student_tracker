@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
+import axios from 'axios';
 
 import { MasterDetail, Master, Detail } from '../Utils/MasterDetail';
-
-import axios from 'axios';
 
 class Attendance extends Component {
   constructor(props) {
@@ -36,7 +35,7 @@ class Attendance extends Component {
         <Divider />
       </React.Fragment>
     );
-    
+
     return (
       <MasterDetail>
         <Master list={this.state.attendance} renderMethod={renderStudents}>
@@ -50,6 +49,7 @@ class Attendance extends Component {
         <Detail title={selected.name}>
           {this.state.attendance.map(student => (
             <div
+              key={student.dm_id}
               style={{
                 display: 'flex',
                 flexDirection: 'row'
@@ -57,7 +57,7 @@ class Attendance extends Component {
             >
               <div style={{ width: '30%' }}>{student.name}</div>
               {student.attendance.map(stamp => (
-                <div style={{ width: '30%' }}>
+                <div key={stamp.id} style={{ width: '30%' }}>
                   {stamp.timeframe + stamp.minutes}
                 </div>
               ))}
