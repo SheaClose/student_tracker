@@ -8,7 +8,8 @@ const express = require('express'),
   path = require('path'),
   { Strategy: DevmtnStrategy } = require('devmtn-auth'),
   devMtnPassport = new passport.Passport(),
-  syncStudents = require('./studentSyncCronJob');
+  syncStudents = require('./studentSyncCronJob'),
+  { groupById, groupRowData, objToArray } = require('./api/utils/groupData');
 require('dotenv').config();
 
 const app = express();
@@ -38,10 +39,23 @@ devMtnPassport.use(
   new DevmtnStrategy(devmtnAuth, (jwtoken, user, done) => {
     const db = app.get('db');
 
-    return db.dm_users.addUser(user).then(dbUser => {
-      dbUser[0].roles = user.roles;
-      done(null, dbUser[0]);
-    });
+    return db.dm_users
+      .addUser(user)
+      .then(dbUser => {
+        console.log(dbUser);
+        const finalUser = dbUser.reduce(
+          (acc, cur) => ({
+            cohorts: [...acc.cohorts, cur.name],
+            name: `${cur.first_name} ${cur.last_name}`,
+            user_id: cur.user_id,
+            default_cohort_id: cur.default_cohort_id
+          }),
+          { cohorts: [] }
+        );
+        finalUser.roles = user.roles;
+        done(null, finalUser);
+      })
+      .catch(console.log);
     // db.dm_users.getUser([user.id]).then(dbUser => done(null, dbUser[0]));
     // return done(null, user);
   })
