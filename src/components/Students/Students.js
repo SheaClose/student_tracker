@@ -10,9 +10,12 @@ import {
   TableRow,
   TableRowColumn
 } from 'material-ui/Table';
+import { ListItem } from 'material-ui/List';
+import Divider from 'material-ui/Divider';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import { getStudents } from '../../ducks/actions';
 import './Students.css';
+import { MasterDetail, Master, Detail } from '../Utils/MasterDetail';
 
 class Students extends Component {
   constructor(props) {
@@ -39,39 +42,23 @@ class Students extends Component {
 
   render() {
     const { students } = this.props;
-    const { selectedCohortIndex } = this.state;
-    const cohorts = students.map((c, i) => (
-      <div className="cohort_card">
-        <h2 style={{ textAlign: 'center' }}>{c.name}</h2>
-        <Table>
-          <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-            <TableRow>
-              <TableHeaderColumn>First Name</TableHeaderColumn>
-              <TableHeaderColumn>Last Name</TableHeaderColumn>
-              <TableHeaderColumn>Email</TableHeaderColumn>
-              <TableHeaderColumn>Status</TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody displayRowCheckbox={false} stripedRows={true}>
-            <TableRow selectable={true} striped={true} key={i}>
-              <TableRowColumn>
-                <Link to={`/student/${c.dmId}`}>{c.first_name}</Link>
-              </TableRowColumn>
-              <TableRowColumn>
-                <Link to={`/student/${c.dmId}`}>{c.last_name}</Link>
-              </TableRowColumn>
-              <TableRowColumn>
-                <Link to={`/student/${c.dmId}`}>{c.email}</Link>
-              </TableRowColumn>
-              <TableRowColumn>
-                <Link to={`/student/${c.dmId}`}>{c.status}</Link>
-              </TableRowColumn>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
-    ));
-    return cohorts;
+
+    const renderStudents = student => (
+      <React.Fragment key={student.dm_id}>
+        <ListItem
+          onClick={() => this.setState({ selectedStudent: student })}
+          primaryText={`${student.first_name} ${student.last_name}`}
+          secondaryText={<p>{student.email}</p>}
+        />
+        <Divider />
+      </React.Fragment>
+    );
+
+    return (
+      <MasterDetail>
+        <Master list={students} renderMethod={renderStudents} />
+      </MasterDetail>
+    );
   }
 }
 
