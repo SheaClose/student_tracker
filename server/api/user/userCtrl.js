@@ -3,10 +3,10 @@ module.exports = {
     res.status(200).json(req.user);
   },
   getUserRoles(req, res) {
-    return res.status(200).json(req.session.devmtnUser.roles);
+    return res.status(200).json(req.user.roles);
   },
   isLoggedIn(req, res) {
-    const userIsAuthed = verifyAuth(req.session.devmtnUser);
+    const userIsAuthed = verifyAuth(req.user);
     if (userIsAuthed) {
       return res.status(200).json(userIsAuthed);
     }

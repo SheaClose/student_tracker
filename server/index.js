@@ -42,7 +42,6 @@ devMtnPassport.use(
     return db.dm_users
       .addUser(user)
       .then(dbUser => {
-        console.log(dbUser);
         const finalUser = dbUser.reduce(
           (acc, cur) => ({
             cohorts: [...acc.cohorts, cur.name],
@@ -55,9 +54,7 @@ devMtnPassport.use(
         finalUser.roles = user.roles;
         done(null, finalUser);
       })
-      .catch(console.log);
-    // db.dm_users.getUser([user.id]).then(dbUser => done(null, dbUser[0]));
-    // return done(null, user);
+      .catch(err => console.log('Could not add or select user', err));
   })
 );
 
@@ -101,9 +98,9 @@ app.get(
           name: userSession.short_name
         }));
         req.session.devmtnUser = Object.assign({}, req.user, { sessions });
-        return res.redirect(`${auth_redirect}${req.session.redirect}`);
       })
       .catch(err => console.log('Cannot get sessions: ', err));
+    return res.redirect(`${auth_redirect}${req.session.redirect}`);
   }
 );
 

@@ -52,7 +52,7 @@ module.exports = {
                     })
                   )
                 }))
-                .catch(console.log);
+                .catch(err => console.log('Problem  getting students', err));
             }
           );
           return Promise.all(cohortPromises).then(c => c[0]);
@@ -69,25 +69,22 @@ module.exports = {
       .catch(console.log);
   },
   async getOutliers(req, res) {
-    const { devmtnUser } = req.session;
-    if (devmtnUser) {
-      let allowedCohorts = devmtnUser.sessions.map(session => session.name);
-      if (process.env.NOD_ENV !== 'production') {
-        allowedCohorts = [...allowedCohorts, 'WDL99', 'WDL6', 'WDL7'];
-      }
+    if (req.user) {
+      const { cohorts } = req.user;
+
       const db = req.app.get('db');
       try {
         const absencesData = await db.students.get_absence_outliers({
-          allowedCohorts
+          cohorts
         });
         const tardiesData = await db.students.get_tardies_outliers({
-          allowedCohorts
+          cohorts
         });
         const projectsData = await db.students.get_project_outliers({
-          allowedCohorts
+          cohorts
         });
         const oneononesData = await db.students.get_oneonone_outliers({
-          allowedCohorts
+          cohorts
         });
         const attendance = formatAttendanceData(absencesData, tardiesData);
 
