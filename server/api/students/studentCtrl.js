@@ -20,11 +20,56 @@ module.exports = {
   getstudents(req, res) {
     const db = req.app.get('db');
     /** get list of cohorts for current user */
-    console.log(req.query);
-    db.students
-      .get_students(req.query.cohort)
-      .then(students => res.json(students))
-      .catch(err => console.log('Error getting students', err));
+    db
+      .run(
+        'select cohort_id from user_cohort where user_id = $1',
+        req.user.user_id
+      )
+      .then(ids => ids.map(cur => cur.cohort_id))
+      .then(cohortIds => {
+        const cohortPromisese = cohortIds.map(async cohortid => {
+          const cohorts = await db.run(
+            `select * from cohorts 
+                where cohort_id = $1`,
+            cohortid
+          );
+          const cohortPromises = cohorts.map(
+            ({ id, date_start, date_end, name }) => {
+              const inSession =
+                new Date(date_start).getTime() < Date.now() &&
+                new Date(date_end).getTime() > Date.now();
+              return db
+                .run('select * from students where cohort_id = $1', name)
+                .then(studentList => ({
+                  inSession,
+                  id,
+                  date_start,
+                  date_end,
+                  name,
+                  classSession: studentList.map(
+                    ({ dm_id, first_name, last_name, email }) => ({
+                      dm_id,
+                      first_name,
+                      last_name,
+                      email
+                    })
+                  )
+                }))
+                .catch(console.log);
+            }
+          );
+          return Promise.all(cohortPromises).then(c => c[0]);
+        });
+        Promise.all(cohortPromisese)
+          .then(cohorts =>
+            [...cohorts, dummyCohort].sort(
+              (a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
+            )
+          )
+          .then(cohorts => res.json(cohorts))
+          .catch(console.log);
+      })
+      .catch(console.log);
   },
   async getOutliers(req, res) {
     if (req.user) {

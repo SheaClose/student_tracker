@@ -28,7 +28,8 @@ const OneOnOneOutliers = props => {
 };
 
 OneOnOneOutliers.propTypes = {
-  outliers: PropTypes.object
+  outliers: PropTypes.object,
+  style: PropTypes.object
 };
 
 const mapStateToProps = ({ mainReducer }) => ({
