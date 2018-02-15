@@ -13,6 +13,8 @@ const Master = props => (
       height: 'calc(100vh - 56px)',
       overflowY: 'auto',
       flexBasis: '30%',
+      maxWidth: '300px',
+      flexShrink: '1',
       borderRight: '1px solid rgb(224, 224, 224)'
     }}
   >
@@ -32,7 +34,8 @@ const Master = props => (
 const Detail = props => (
   <Card zDepth={0} style={{ flexBasis: '70%' }}>
     <CardTitle title={props.title} subtitle={props.subtitle} />
-    <CardText>{props.children}</CardText>
+    {/* <CardText>{props.children}</CardText> */}
+    {props.children}
   </Card>
 );
 

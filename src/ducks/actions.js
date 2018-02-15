@@ -8,6 +8,7 @@ export const GET_OUTLIERS = 'GET_OUTLIERS';
 export const SELECT_COHORT = 'SELECT_COHORT';
 export const GET_ONEONONES = 'GET_ONEONONES';
 export const ADD_ONEONONE = 'ADD_ONEONONE';
+export const GET_STUDENT_DETAILS = 'GET_STUDENT_DETAILS';
 
 export function verifyLogin() {
   return {
@@ -24,10 +25,7 @@ export function getStudents(cohort) {
     type: GET_STUDENTS,
     payload: axios
       .get(`/api/students?cohort=${cohort}`)
-      .then(res => {
-        console.log(res);
-        return res.data;
-      })
+      .then(res => res.data)
       .catch(console.log)
   };
 }
@@ -62,7 +60,8 @@ export function getOutliers() {
   };
 }
 
-export function selectCohort(cohort) {
+export function selectCohort(cohort, where) {
+  console.log(cohort, where);
   return {
     type: SELECT_COHORT,
     payload: cohort
@@ -86,5 +85,12 @@ export function addOneOnOne(data) {
       .post('/api/oneonones', data)
       .then(res => res.data)
       .catch(console.log)
+  };
+}
+
+export function getStudentDetails(dm_id) {
+  return {
+    type: GET_STUDENT_DETAILS,
+    payload: { dm_id }
   };
 }

@@ -52,7 +52,9 @@ export default function reducer(state = initialState, action) {
     });
   case `${GET_OUTLIERS}_FULFILLED`:
     return Object.assign({}, state, { outliers: action.payload });
+
   case `${SELECT_COHORT}`:
+    console.log(action.payload);
     return Object.assign({}, state, { selectedCohort: action.payload });
 
   case `${GET_ONEONONES}_FULFILLED`:
