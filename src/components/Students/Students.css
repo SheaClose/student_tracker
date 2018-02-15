@@ -1,10 +1,6 @@
-.students {
-  float: right;
-  width: 90%;
-}
 .cohort_card {
   margin: 20px auto;
-  width: 90%;
+  /* width: 90%; */
   border: lightgrey 1px solid;
   border-radius: 10px;
   box-shadow: 5px 5px 13px 1px lightgrey;

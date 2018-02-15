@@ -10,7 +10,6 @@ import {
   TableRow,
   TableRowColumn
 } from 'material-ui/Table';
-import { Tabs, Tab } from 'material-ui/Tabs';
 import './Students.css';
 
 class Students extends Component {
@@ -18,7 +17,7 @@ class Students extends Component {
     super(props);
     this.state = {
       selectedCohortIndex: props.students.findIndex(
-        c => c.name === this.props.defaultCohort
+        cohort => cohort.name === this.props.defaultCohort
       )
     };
   }
@@ -29,67 +28,66 @@ class Students extends Component {
       );
       this.setState({ selectedCohortIndex });
     }
+    if (nextProps.selectedCohort) {
+      this.setState({
+        selectedCohortIndex: nextProps.students.findIndex(
+          cohort => cohort.name === nextProps.selectedCohort
+        )
+      });
+    }
   }
 
   render() {
     const { students } = this.props;
-    const { selectedCohortIndex } = this.state;
-    const cohorts = students.map((c, i) => (
-      <Tab value={i} label={c.name} key={c.name}>
-        <div className="cohort_card">
-          <h2 style={{ textAlign: 'center' }}>{c.name}</h2>
-          <Table>
-            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-              <TableRow>
-                <TableHeaderColumn>First Name</TableHeaderColumn>
-                <TableHeaderColumn>Last Name</TableHeaderColumn>
-                <TableHeaderColumn>Email</TableHeaderColumn>
-                <TableHeaderColumn>Status</TableHeaderColumn>
+    const cohort = students[this.state.selectedCohortIndex];
+    const selectedCohort = cohort && (
+      <div className="cohort_card">
+        <h2 style={{ textAlign: 'center' }}>{cohort.name}</h2>
+        <Table>
+          <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+            <TableRow>
+              <TableHeaderColumn>First Name</TableHeaderColumn>
+              <TableHeaderColumn>Last Name</TableHeaderColumn>
+              <TableHeaderColumn>Email</TableHeaderColumn>
+              <TableHeaderColumn>Status</TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false} stripedRows={true}>
+            {cohort.classSession.map((cur, i) => (
+              <TableRow selectable={true} striped={true} key={i}>
+                <TableRowColumn>
+                  <Link to={`/student/${cur.dmId}`}>{cur.first_name}</Link>
+                </TableRowColumn>
+                <TableRowColumn>
+                  <Link to={`/student/${cur.dmId}`}>{cur.last_name}</Link>
+                </TableRowColumn>
+                <TableRowColumn>
+                  <a href={`mailto:${cur.email}`}>{cur.email}</a>
+                </TableRowColumn>
+                <TableRowColumn>
+                  <Link to={`/student/${cur.dmId}`}>{cur.status}</Link>
+                </TableRowColumn>
               </TableRow>
-            </TableHeader>
-            <TableBody displayRowCheckbox={false} stripedRows={true}>
-              {c.classSession.map((cur, i) => (
-                <TableRow selectable={true} striped={true} key={i}>
-                  <TableRowColumn>
-                    <Link to={`/student/${cur.dmId}`}>{cur.first_name}</Link>
-                  </TableRowColumn>
-                  <TableRowColumn>
-                    <Link to={`/student/${cur.dmId}`}>{cur.last_name}</Link>
-                  </TableRowColumn>
-                  <TableRowColumn>
-                    <Link to={`/student/${cur.dmId}`}>{cur.email}</Link>
-                  </TableRowColumn>
-                  <TableRowColumn>
-                    <Link to={`/student/${cur.dmId}`}>{cur.status}</Link>
-                  </TableRowColumn>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </Tab>
-    ));
-    return (
-      <Tabs
-        value={selectedCohortIndex}
-        onChange={e => this.setState({ selectedCohortIndex: e })}
-        className="students"
-      >
-        {cohorts}
-      </Tabs>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     );
+    return <div className="">{selectedCohort}</div>;
   }
 }
 
 Students.propTypes = {
   students: PropTypes.array.isRequired,
-  defaultCohort: PropTypes.string.isRequired
+  defaultCohort: PropTypes.string.isRequired,
+  selectedCohort: PropTypes.string
 };
 
 function mapStateToProps({ mainReducer }) {
   return {
     students: mainReducer.students,
-    defaultCohort: mainReducer.defaultCohort
+    defaultCohort: mainReducer.defaultCohort,
+    selectedCohort: mainReducer.selectedCohort
   };
 }
 
