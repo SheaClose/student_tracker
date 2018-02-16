@@ -39,11 +39,10 @@ class Projects extends Component {
       <React.Fragment key={student.dm_id}>
         <ListItem
           onClick={() => this.setState({ selectedStudent: student })}
-          primaryText={student.name}
+          primaryText={`${student.first_name} ${student.last_name}`}
           secondaryText={
             <p>
-              {student.total_incomplete}
-              incomplete project
+              {`${student.total_incomplete} incomplete project`}
               {student.total_incomplete !== '1' && 's'}
             </p>
           }
@@ -67,6 +66,7 @@ class Projects extends Component {
                 key={project.id}
                 style={{ width: '24%' }}
                 project={project}
+                cohort_id={selectedStudent.cohort_id}
               />
             ))}
           </div>
