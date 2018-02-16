@@ -1,5 +1,3 @@
-const { groupById, groupRowData, objToArray } = require('../utils/groupData');
-
 const projectDecompose = {
   decompose: {
     pk: 'dm_id',
