@@ -15,7 +15,7 @@ WITH
 		WHERE count > 2)
 
 
-SELECT * FROM tardies 
+SELECT students.first_name, students.last_name, students.dm_id, tardies.date, tardies.minutes, tardies.timeframe FROM tardies 
 	JOIN students ON students.dm_id = tardies.dm_id 
 	WHERE students.dm_id IN (
 		SELECT dm_id FROM outliers
