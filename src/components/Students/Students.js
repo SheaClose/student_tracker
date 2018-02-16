@@ -164,14 +164,18 @@ class Students extends Component {
         </div>
       </MasterDetail>
     );
-    return <div className="">{selectedCohort}</div>;
   }
 }
 
 Students.propTypes = {
-  students: PropTypes.array.isRequired,
-  defaultCohort: PropTypes.string.isRequired,
-  selectedCohort: PropTypes.string
+  students: PropTypes.array,
+  defaultCohort: PropTypes.string,
+  selectedCohort: PropTypes.string,
+  getStudents: PropTypes.func,
+  getStudentDetails: PropTypes.func,
+  selectCohort: PropTypes.func,
+  match: PropTypes.object,
+  history: PropTypes.object
 };
 
 function mapStateToProps({ mainReducer }) {
