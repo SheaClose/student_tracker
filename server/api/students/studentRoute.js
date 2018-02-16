@@ -3,7 +3,8 @@ const {
   getOutliers,
   dropStudent,
   getOneOnOnes,
-  addOneOnOne
+  addOneOnOne,
+  getStudentDetails
 } = require('./studentCtrl');
 
 module.exports = app => {
@@ -12,4 +13,5 @@ module.exports = app => {
   app.put('/api/students/drop/:id', dropStudent);
   app.get('/api/oneonones/', getOneOnOnes);
   app.post('/api/oneonones', addOneOnOne);
+  app.get('/api/students/:dm_id', getStudentDetails);
 };

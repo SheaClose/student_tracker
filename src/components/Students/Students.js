@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { withRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
@@ -26,9 +26,8 @@ class Students extends Component {
       this.props.getStudents(cohort_id);
       this.props.selectCohort(cohort_id, 'componentDidMount - Students');
     } else {
-      console.log('no cohort id or dm id', cohort_id, dm_id);
       const cohort = this.props.selectedCohort || this.props.defaultCohort;
-      console.log(cohort);
+
       if (cohort) {
         this.props.getStudents(cohort);
       }
@@ -58,6 +57,15 @@ class Students extends Component {
     // if (nextProps.match.params.dm_id !== nextProps.selectedStudent) {
     //   this.props.getStudentDetails(nextProps.match.params.dm_id);
     // }
+    const nextCohort = nextProps.match.params.cohort_id;
+    const nextStudent = nextProps.match.params.dm_id;
+
+    if (nextCohort && nextStudent) {
+      if (nextStudent !== this.props.match.params.dm_id) {
+        this.props.getStudentDetails(nextProps.match.params.dm_id);
+      }
+    }
+
     if (nextProps.selectedCohort !== this.props.selectedCohort) {
       console.log('selectedcohort changed', nextProps.selectedCohort);
       this.props.history.push(`/students/${nextProps.selectedCohort}`);

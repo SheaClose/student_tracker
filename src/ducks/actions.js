@@ -60,8 +60,7 @@ export function getOutliers() {
   };
 }
 
-export function selectCohort(cohort, where) {
-  console.log(cohort, where);
+export function selectCohort(cohort) {
   return {
     type: SELECT_COHORT,
     payload: cohort
@@ -91,6 +90,9 @@ export function addOneOnOne(data) {
 export function getStudentDetails(dm_id) {
   return {
     type: GET_STUDENT_DETAILS,
-    payload: { dm_id }
+    payload: axios
+      .get(`/api/students/${dm_id}`)
+      .then(res => res.data)
+      .catch(err => console.log('Could not get student details', err))
   };
 }

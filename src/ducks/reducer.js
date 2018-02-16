@@ -6,7 +6,8 @@ import {
   GET_OUTLIERS,
   SELECT_COHORT,
   GET_ONEONONES,
-  ADD_ONEONONE
+  ADD_ONEONONE,
+  GET_STUDENT_DETAILS
 } from './actions';
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   userInfo: {},
   defaultCohort: '',
   selectedCohort: '',
+  studentDetails: {},
   oneOnOnes: []
 };
 
@@ -54,13 +56,14 @@ export default function reducer(state = initialState, action) {
     return Object.assign({}, state, { outliers: action.payload });
 
   case `${SELECT_COHORT}`:
-    console.log(action.payload);
     return Object.assign({}, state, { selectedCohort: action.payload });
 
   case `${GET_ONEONONES}_FULFILLED`:
     return Object.assign({}, state, { oneOnOnes: action.payload });
   case `${ADD_ONEONONE}_FULFILLED`:
     return Object.assign({}, state, { oneOnOnes: action.payload });
+  case `${GET_STUDENT_DETAILS}_FULFILLED`:
+    return Object.assign({}, state, { studentDetails: action.payload });
 
   default:
     return state;

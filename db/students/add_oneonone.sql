@@ -8,7 +8,7 @@ INSERT INTO oneonones
     worried, 
     personal_project_ability, 
     group_project_ability, 
-    mentor_id, 
+    user_id, 
     date, 
     dm_id)
 VALUES 
@@ -21,6 +21,6 @@ VALUES
     ${worried}, 
     ${personal_project_ability}, 
     ${group_project_ability}, 
-    ${mentor_id}, 
+    ${user_id}, 
     ${date}, 
     ${dm_id})
