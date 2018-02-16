@@ -75,6 +75,13 @@ class Students extends Component {
       // console.log('default', nextProps.defaultCohort);
       this.props.getStudents(nextProps.defaultCohort);
     }
+    if (nextProps.selectedCohort) {
+      this.setState({
+        selectedCohortIndex: nextProps.students.findIndex(
+          cohort => cohort.name === nextProps.selectedCohort
+        )
+      });
+    }
   }
 
   render() {
@@ -157,13 +164,14 @@ class Students extends Component {
         </div>
       </MasterDetail>
     );
+    return <div className="">{selectedCohort}</div>;
   }
 }
 
 Students.propTypes = {
   students: PropTypes.array.isRequired,
   defaultCohort: PropTypes.string.isRequired,
-  selectedCohort: PropTypes.string.isRequired
+  selectedCohort: PropTypes.string
 };
 
 function mapStateToProps({ mainReducer }) {
