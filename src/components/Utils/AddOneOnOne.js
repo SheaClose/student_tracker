@@ -41,7 +41,7 @@ class AddOneOnOne extends Component {
       first_name: this.props.student.first_name,
       last_name: this.props.student.last_name,
       dm_id: this.props.student.dm_id,
-      mentor_id: this.props.userInfo.id,
+      user_id: this.props.userInfo.user_id,
       cohort: this.props.cohort
     };
     this.props.addOneOnOne(newOneOnOne);

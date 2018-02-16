@@ -7,6 +7,6 @@ SELECT * FROM
 	FROM students s
 		JOIN project_completion pc ON pc.dm_id = s.dm_id
 		JOIN projects p ON p.id = pc.project_id
-	WHERE s.cohort_id IN (${allowedCohorts:csv}) and completion != 'complete') 
+	WHERE s.cohort_id IN (${cohorts:csv}) and completion != 'complete') 
 AS incompletes 
 WHERE total_incomplete > 2

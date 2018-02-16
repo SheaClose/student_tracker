@@ -8,6 +8,7 @@ export const GET_OUTLIERS = 'GET_OUTLIERS';
 export const SELECT_COHORT = 'SELECT_COHORT';
 export const GET_ONEONONES = 'GET_ONEONONES';
 export const ADD_ONEONONE = 'ADD_ONEONONE';
+export const GET_STUDENT_DETAILS = 'GET_STUDENT_DETAILS';
 
 export function verifyLogin() {
   return {
@@ -19,11 +20,11 @@ export function verifyLogin() {
   };
 }
 
-export function getStudents() {
+export function getStudents(cohort) {
   return {
     type: GET_STUDENTS,
     payload: axios
-      .get('/api/students/')
+      .get(`/api/students?cohort=${cohort}`)
       .then(res => res.data)
       .catch(console.log)
   };
@@ -83,5 +84,15 @@ export function addOneOnOne(data) {
       .post('/api/oneonones', data)
       .then(res => res.data)
       .catch(console.log)
+  };
+}
+
+export function getStudentDetails(dm_id) {
+  return {
+    type: GET_STUDENT_DETAILS,
+    payload: axios
+      .get(`/api/students/${dm_id}`)
+      .then(res => res.data)
+      .catch(err => console.log('Could not get student details', err))
   };
 }
