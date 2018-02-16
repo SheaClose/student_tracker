@@ -34,6 +34,10 @@ class Students extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {
+    /* Trying to figure out how to make sure the path
+    and the selected cohort stay in sync. This code
+    makes an infinite loop of changing the selectedCohort
+    back and forth...  */
     // if (this.props.match.params.cohort_id && nextProps.selectedCohort) {
     //   if (this.props.match.params.cohort_id !== nextProps.selectedCohort) {
     //     this.props.history.push(
