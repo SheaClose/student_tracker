@@ -9,6 +9,7 @@ export const SELECT_COHORT = 'SELECT_COHORT';
 export const GET_ONEONONES = 'GET_ONEONONES';
 export const ADD_ONEONONE = 'ADD_ONEONONE';
 export const GET_STUDENT_DETAILS = 'GET_STUDENT_DETAILS';
+export const GET_ATTENDANCE = 'GET_ATTENDANCE';
 
 export function verifyLogin() {
   return {
@@ -94,5 +95,12 @@ export function getStudentDetails(dm_id) {
       .get(`/api/students/${dm_id}`)
       .then(res => res.data)
       .catch(err => console.log('Could not get student details', err))
+  };
+}
+
+export function getAttendance(cohort) {
+  return {
+    type: GET_ATTENDANCE,
+    payload: axios.get(`/api/attendance/?cohort_id=${cohort}`)
   };
 }

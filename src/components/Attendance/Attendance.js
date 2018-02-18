@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
-import axios from 'axios';
+
+import { getAttendance } from '../../ducks/actions';
 
 import { MasterDetail, Master, Detail } from '../Utils/MasterDetail';
 
@@ -13,11 +15,13 @@ class Attendance extends Component {
       selected: {}
     };
   }
+
   componentDidMount() {
-    axios
-      .get('/api/attendance/?cohort_id=WDL10')
-      .then(result => this.setState({ attendance: result.data }));
+    this.props.getAttendance(
+      this.props.selectedCohort || this.props.defaultCohort
+    );
   }
+
   render() {
     const { selected } = this.state;
     const renderStudents = student => (
@@ -69,4 +73,12 @@ class Attendance extends Component {
   }
 }
 
-export default Attendance;
+const mapStateToProps = ({ mainReducer }) => {
+  const { selectedCohort, defaultCohort } = mainReducer;
+  return {
+    selectedCohort,
+    defaultCohort
+  };
+};
+
+export default connect(mapStateToProps, { getAttendance })(Attendance);
