@@ -101,6 +101,8 @@ export function getStudentDetails(dm_id) {
 export function getAttendance(cohort) {
   return {
     type: GET_ATTENDANCE,
-    payload: axios.get(`/api/attendance/?cohort_id=${cohort}`)
+    payload: axios
+      .get(`/api/attendance/?cohort_id=${cohort}`)
+      .then(res => res.data)
   };
 }

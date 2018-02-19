@@ -7,7 +7,8 @@ import {
   SELECT_COHORT,
   GET_ONEONONES,
   ADD_ONEONONE,
-  GET_STUDENT_DETAILS
+  GET_STUDENT_DETAILS,
+  GET_ATTENDANCE
 } from './actions';
 
 const initialState = {
@@ -18,7 +19,8 @@ const initialState = {
   defaultCohort: '',
   selectedCohort: '',
   studentDetails: {},
-  oneOnOnes: []
+  oneOnOnes: [],
+  attendance: []
 };
 
 export default function reducer(state = initialState, action) {
@@ -64,7 +66,8 @@ export default function reducer(state = initialState, action) {
     return Object.assign({}, state, { oneOnOnes: action.payload });
   case `${GET_STUDENT_DETAILS}_FULFILLED`:
     return Object.assign({}, state, { studentDetails: action.payload });
-
+  case `${GET_ATTENDANCE}_FULFILLED`:
+    return Object.assign({}, state, { attendance: action.payload });
   default:
     return state;
   }

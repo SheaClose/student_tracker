@@ -35,6 +35,18 @@ const oneononesDecompose = {
   }
 };
 
+const tardiesDecompose = {
+  decompose: {
+    pk: 'dm_id',
+    columns: ['first_name', 'last_name', 'count', 'total'],
+    details: {
+      pk: 'id',
+      columns: ['date', 'morning', 'break', 'lunch', 'afternoon'],
+      array: true
+    }
+  }
+};
+
 const formatAttendanceData = (absences, tardies) => {
   const attendance = {};
   groupById(absences, attendance);
@@ -48,7 +60,7 @@ const formatAttendanceData = (absences, tardies) => {
 module.exports = {
   getstudents(req, res) {
     const db = req.app.get('db');
-    db.students
+    db.scripts.students
       .get_students(req.query.cohort)
       .then(students => res.json(students))
       .catch(err => console.log('Error getting students', err));
@@ -59,24 +71,27 @@ module.exports = {
 
       const db = req.app.get('db');
       try {
-        const absencesData = await db.outliers.get_absence_outliers({
+        const absencesData = await db.scripts.outliers.get_absence_outliers({
           cohorts
         });
 
-        const tardiesData = await db.outliers.get_tardies_outliers({
-          cohorts
-        });
-        console.log(tardiesData);
-        const projects = await db.outliers.get_project_outliers(
+        const tardiesData = await db.scripts.outliers
+          .get_tardies_outliers({
+            cohorts,
+            tardiesDecompose
+          })
+          .then(result => console.log(result));
+        const projects = await db.scripts.outliers.get_project_outliers(
           { cohorts },
           projectsDecompose
         );
-        const oneonones = await db.outliers.get_oneonone_outliers(
+        const oneonones = await db.scripts.outliers.get_oneonone_outliers(
           { cohorts },
           oneononesDecompose
         );
 
-        const attendance = formatAttendanceData(absencesData, tardiesData);
+        // const attendance = formatAttendanceData(absencesData, tardiesData);
+        const attendance = [[], tardiesData];
 
         return res.status(200).json({
           attendance,
@@ -93,7 +108,7 @@ module.exports = {
   dropStudent(req, res) {
     const { id } = req.params;
     const db = req.app.get('db');
-    db.students
+    db.scripts.students
       .drop_student(id)
       .then(resp => {
         if (resp.length) {
@@ -106,7 +121,7 @@ module.exports = {
   getOneOnOnes(req, res) {
     const db = req.app.get('db');
     const { cohort } = req.query;
-    db.students
+    db.scripts.students
       .get_oneonones(cohort)
       .then(response => {
         res.status(200).json(response);
@@ -115,10 +130,10 @@ module.exports = {
   },
   addOneOnOne(req, res) {
     const db = req.app.get('db');
-    db.students
+    db.scripts.students
       .add_oneonone(req.body)
       .then(() => {
-        db.students
+        db.scripts.students
           .get_oneonones(req.body.cohort)
           .then(response => res.status(200).json(response))
           .catch(console.log);
@@ -129,7 +144,7 @@ module.exports = {
     res.json('unavailable');
     /* One day this will work.
     const db = req.app.get('db');
-    db.students
+    db.scripts.students
       .get_student_details(req.params)
       .then(result => res.json(result))
       .catch(err =>

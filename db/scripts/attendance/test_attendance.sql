@@ -1,0 +1,1 @@
+INSERT INTO attendance (notes) VALUES (${notes})

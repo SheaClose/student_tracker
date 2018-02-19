@@ -20,7 +20,7 @@ module.exports = {
   getProjects(req, res) {
     const db = req.app.get('db');
     const { cohort_id } = req.params;
-    db.projects
+    db.scripts.projects
       .getProjectsByCohort({ cohort_id }, projectDecompose)
       .then(result => res.status(200).json(result));
   },
@@ -30,10 +30,10 @@ module.exports = {
     const { completion, cohort_id } = req.body;
     console.log('cohort_id', cohort_id);
 
-    db.projects
+    db.scripts.projects
       .updateCompletion({ id, completion })
       .then(() =>
-        db.projects.getProjectsByCohort({ cohort_id }, projectDecompose)
+        db.scripts.projects.getProjectsByCohort({ cohort_id }, projectDecompose)
       )
       .then(result => {
         console.log(result);

@@ -37,7 +37,7 @@ devMtnPassport.use(
   new DevmtnStrategy(devmtnAuth, (jwtoken, user, done) => {
     const db = app.get('db');
 
-    return db.dm_users
+    return db.scripts.dm_users
       .addUser(user)
       .then(dbUser => {
         const finalUser = dbUser.reduce(
