@@ -36,7 +36,7 @@ module.exports = {
         db.scripts.projects.getProjectsByCohort({ cohort_id }, projectDecompose)
       )
       .then(result => {
-        console.log(result);
+        
         res.status(200).json(result);
       });
   },

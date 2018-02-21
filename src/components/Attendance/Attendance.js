@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
-import { ListItem } from 'material-ui/List';
 import FlatButton from 'material-ui/FlatButton';
 import DatePicker from 'material-ui/DatePicker';
 
@@ -12,7 +11,6 @@ import Table, {
   TableRow,
   TableRowColumn
 } from 'material-ui/Table';
-import Divider from 'material-ui/Divider';
 
 import {
   getAttendance,
@@ -21,7 +19,6 @@ import {
   clearAttendance
 } from '../../ducks/actions';
 
-import { MasterDetail, Master, Detail } from '../Utils/MasterDetail';
 import AttendanceDetail from './AttendanceDetail';
 
 class Attendance extends Component {

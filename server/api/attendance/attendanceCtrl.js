@@ -12,7 +12,6 @@ const attendanceDecompose = {
 module.exports = {
   getAttendance(req, res) {
     const db = req.app.get('db');
-    console.log(req.query);
     const { cohort_id } = req.query;
     const date = new Date(req.query.date);
 
@@ -33,7 +32,6 @@ module.exports = {
   },
   postAttendance(req, res) {
     const db = req.app.get('db');
-    console.log(req.body);
     const { cohort_id, date } = req.body;
     const updates = req.body.values.map(student =>
       db.attendance
@@ -42,7 +40,7 @@ module.exports = {
           dm_id: student.dm_id
         })
         .catch(err =>
-          console.log(`error saving attendance for ${student.dm_id}`, err)
+          console.log(`Error saving attendance for ${student.dm_id}`, err)
         )
     );
 
