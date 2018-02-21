@@ -8,7 +8,10 @@ import {
   GET_ONEONONES,
   ADD_ONEONONE,
   GET_STUDENT_DETAILS,
-  GET_ATTENDANCE
+  GET_ATTENDANCE,
+  UPDATE_ATTENDANCE,
+  SUBMIT_ATTENDANCE,
+  CLEAR_ATTENDANCE
 } from './actions';
 
 const initialState = {
@@ -20,7 +23,8 @@ const initialState = {
   selectedCohort: '',
   studentDetails: {},
   oneOnOnes: [],
-  attendance: []
+  attendance: [],
+  updatedAttendance: []
 };
 
 export default function reducer(state = initialState, action) {
@@ -68,6 +72,50 @@ export default function reducer(state = initialState, action) {
     return Object.assign({}, state, { studentDetails: action.payload });
   case `${GET_ATTENDANCE}_FULFILLED`:
     return Object.assign({}, state, { attendance: action.payload });
+    /* eslint-disable no-case-declarations */
+  case UPDATE_ATTENDANCE:
+    const updateFunction = ({ attendance = {}, ...student }) => {
+      if (!action.payload.dm_id) {
+        // update everybody if no dm_id is specified
+        return Object.assign({}, student, {
+          attendance: {
+            ...attendance,
+            date: action.payload.date,
+            [action.payload.timeframe]: action.payload.value
+          }
+        });
+      } else if (action.payload.dm_id === student.dm_id) {
+        // update the one student if they're the student we're updating
+        return Object.assign({}, student, {
+          attendance: {
+            ...attendance,
+            date: action.payload.date,
+            [action.payload.timeframe]: action.payload.value
+          }
+        });
+      }
+      return Object.assign({}, student, {
+        attendance: {
+          ...attendance,
+          date: action.payload.date
+        }
+      });
+    };
+
+    const updatedAttendance = state.updatedAttendance.length
+      ? state.updatedAttendance.map(updateFunction)
+      : state.attendance.map(updateFunction);
+    return Object.assign({}, state, { updatedAttendance });
+    /* eslint-enable */
+
+  case `${SUBMIT_ATTENDANCE}_FULFILLED`:
+    return Object.assign({}, state, {
+      attendance: action.payload,
+      updatedAttendance: []
+    });
+  case CLEAR_ATTENDANCE:
+    return Object.assign({}, state, { updatedAttendance: [] });
+
   default:
     return state;
   }

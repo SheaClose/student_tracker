@@ -10,6 +10,9 @@ export const GET_ONEONONES = 'GET_ONEONONES';
 export const ADD_ONEONONE = 'ADD_ONEONONE';
 export const GET_STUDENT_DETAILS = 'GET_STUDENT_DETAILS';
 export const GET_ATTENDANCE = 'GET_ATTENDANCE';
+export const UPDATE_ATTENDANCE = 'UPDATE_ATTENDANCE';
+export const SUBMIT_ATTENDANCE = 'SUBMIT_ATTENDANCE';
+export const CLEAR_ATTENDANCE = 'CLEAR_ATTENDANCE';
 
 export function verifyLogin() {
   return {
@@ -98,11 +101,42 @@ export function getStudentDetails(dm_id) {
   };
 }
 
-export function getAttendance(cohort) {
+export function getAttendance(cohort, date) {
   return {
     type: GET_ATTENDANCE,
     payload: axios
-      .get(`/api/attendance/?cohort_id=${cohort}`)
+      .get(`/api/attendance/?cohort_id=${cohort}&date=${date}`)
       .then(res => res.data)
+      .catch(console.log)
+  };
+}
+
+export function submitAttendance(values, cohort_id, date) {
+  return {
+    type: SUBMIT_ATTENDANCE,
+    payload: axios
+      .post('/api/attendance', { values, cohort_id, date })
+      .then(res => res.data)
+      .catch(console.log)
+  };
+}
+
+export function updateAttendance(timeframe, date, value = '0', dm_id) {
+  console.log(date);
+  return {
+    type: UPDATE_ATTENDANCE,
+    payload: {
+      timeframe,
+      value,
+      dm_id,
+      date
+    }
+  };
+}
+
+export function clearAttendance() {
+  return {
+    type: CLEAR_ATTENDANCE,
+    payload: []
   };
 }
