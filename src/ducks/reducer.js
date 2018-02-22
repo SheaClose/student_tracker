@@ -11,7 +11,8 @@ import {
   GET_ATTENDANCE,
   UPDATE_ATTENDANCE,
   SUBMIT_ATTENDANCE,
-  CLEAR_ATTENDANCE
+  CLEAR_ATTENDANCE,
+  CLEAR_SNACKBAR
 } from './actions';
 
 const initialState = {
@@ -24,7 +25,8 @@ const initialState = {
   studentDetails: {},
   oneOnOnes: [],
   attendance: [],
-  updatedAttendance: []
+  updatedAttendance: [],
+  snackbar: ''
 };
 
 export default function reducer(state = initialState, action) {
@@ -67,7 +69,10 @@ export default function reducer(state = initialState, action) {
   case `${GET_ONEONONES}_FULFILLED`:
     return Object.assign({}, state, { oneOnOnes: action.payload });
   case `${ADD_ONEONONE}_FULFILLED`:
-    return Object.assign({}, state, { oneOnOnes: action.payload });
+    return Object.assign({}, state, {
+      oneOnOnes: action.payload,
+      snackbar: 'Successfully added one-on-one'
+    });
   case `${GET_STUDENT_DETAILS}_FULFILLED`:
     return Object.assign({}, state, { studentDetails: action.payload });
   case `${GET_ATTENDANCE}_FULFILLED`:
@@ -107,15 +112,22 @@ export default function reducer(state = initialState, action) {
       : state.attendance.map(updateFunction);
     return Object.assign({}, state, { updatedAttendance });
     /* eslint-enable */
+  case `${SUBMIT_ATTENDANCE}_REJECTED`:
+    return Object.assign({}, state, {
+      snackbar: 'Error updating attendance'
+    });
 
   case `${SUBMIT_ATTENDANCE}_FULFILLED`:
     return Object.assign({}, state, {
       attendance: action.payload,
-      updatedAttendance: []
+      updatedAttendance: [],
+      snackbar: 'Attendance updated successfully'
     });
+
   case CLEAR_ATTENDANCE:
     return Object.assign({}, state, { updatedAttendance: [] });
-
+  case CLEAR_SNACKBAR:
+    return Object.assign({}, state, { snackbar: action.payload });
   default:
     return state;
   }

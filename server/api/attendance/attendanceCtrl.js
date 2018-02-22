@@ -33,6 +33,7 @@ module.exports = {
   postAttendance(req, res) {
     const db = req.app.get('db');
     const { cohort_id, date } = req.body;
+    console.log(req.body);
     const updates = req.body.values.map(student =>
       db.attendance
         .save({

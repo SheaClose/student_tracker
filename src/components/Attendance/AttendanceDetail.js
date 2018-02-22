@@ -29,7 +29,9 @@ class AttendanceDetail extends Component {
                 dm_id
               )
             }
-            value={attendance.morning === undefined ? '' : attendance.morning}
+            value={
+              attendance.morning === null ? '' : attendance.morning.toString()
+            }
           />
         </TableRowColumn>
         <TableRowColumn>
@@ -38,7 +40,7 @@ class AttendanceDetail extends Component {
             onChange={e =>
               this.props.updateAttendance('break', date, e.target.value, dm_id)
             }
-            value={attendance.break === undefined ? '' : attendance.break}
+            value={attendance.break === null ? '' : attendance.break.toString()}
           />
         </TableRowColumn>
         <TableRowColumn>
@@ -47,7 +49,7 @@ class AttendanceDetail extends Component {
             onChange={e =>
               this.props.updateAttendance('lunch', date, e.target.value, dm_id)
             }
-            value={attendance.lunch === undefined ? '' : attendance.lunch}
+            value={attendance.lunch === null ? '' : attendance.lunch.toString()}
           />
         </TableRowColumn>
         <TableRowColumn>
@@ -62,7 +64,9 @@ class AttendanceDetail extends Component {
               )
             }
             value={
-              attendance.afternoon === undefined ? '' : attendance.afternoon
+              attendance.afternoon === null
+                ? ''
+                : attendance.afternoon.toString()
             }
           />
         </TableRowColumn>
@@ -76,7 +80,8 @@ AttendanceDetail.propTypes = {
   dm_id: PropTypes.number,
   first_name: PropTypes.string,
   last_name: PropTypes.string,
-  updateAttendance: PropTypes.func
+  updateAttendance: PropTypes.func,
+  date: PropTypes.object
 };
 
 const mapStateToProps = ({ mainReducer }) => {

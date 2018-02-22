@@ -13,6 +13,7 @@ export const GET_ATTENDANCE = 'GET_ATTENDANCE';
 export const UPDATE_ATTENDANCE = 'UPDATE_ATTENDANCE';
 export const SUBMIT_ATTENDANCE = 'SUBMIT_ATTENDANCE';
 export const CLEAR_ATTENDANCE = 'CLEAR_ATTENDANCE';
+export const CLEAR_SNACKBAR = 'CLEAR_SNACKBAR';
 
 export function verifyLogin() {
   return {
@@ -111,11 +112,11 @@ export function getAttendance(cohort, date) {
   };
 }
 
-export function submitAttendance(values, cohort_id, date) {
+export function submitAttendance(values, date, cohort_id) {
   return {
     type: SUBMIT_ATTENDANCE,
     payload: axios
-      .post('/api/attendance', { values, cohort_id, date })
+      .post('/api/attendance', { values, date, cohort_id })
       .then(res => res.data)
       .catch(console.log)
   };
@@ -138,5 +139,12 @@ export function clearAttendance() {
   return {
     type: CLEAR_ATTENDANCE,
     payload: []
+  };
+}
+
+export function clearSnackbar() {
+  return {
+    type: CLEAR_SNACKBAR,
+    payload: ''
   };
 }

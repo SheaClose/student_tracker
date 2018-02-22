@@ -72,7 +72,7 @@ class Attendance extends Component {
             );
           }}
         />
-        <Table>
+        <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
               <TableHeaderColumn>Student</TableHeaderColumn>
@@ -159,6 +159,7 @@ Attendance.propTypes = {
   defaultCohort: PropTypes.string,
   updatedAttendance: PropTypes.array,
   attendance: PropTypes.array,
+  clearAttendance: PropTypes.func,
   getAttendance: PropTypes.func,
   updateAttendance: PropTypes.func,
   submitAttendance: PropTypes.func,
