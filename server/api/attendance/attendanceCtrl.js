@@ -4,7 +4,15 @@ const attendanceDecompose = {
     columns: ['first_name', 'last_name', 'dm_id'],
     attendance: {
       pk: 'date',
-      columns: ['date', 'morning', 'break', 'lunch', 'afternoon', 'id']
+      columns: [
+        'date',
+        'morning',
+        'break',
+        'lunch',
+        'afternoon',
+        'id',
+        'absent'
+      ]
     }
   }
 };

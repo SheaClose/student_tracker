@@ -123,7 +123,6 @@ export function submitAttendance(values, date, cohort_id) {
 }
 
 export function updateAttendance(timeframe, date, value = '0', dm_id) {
-  console.log(date);
   return {
     type: UPDATE_ATTENDANCE,
     payload: {

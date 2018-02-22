@@ -76,12 +76,14 @@ class Attendance extends Component {
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
               <TableHeaderColumn>Student</TableHeaderColumn>
+              <TableHeaderColumn>Absent?</TableHeaderColumn>
               <TableHeaderColumn>Morning</TableHeaderColumn>
               <TableHeaderColumn>Break</TableHeaderColumn>
               <TableHeaderColumn>Lunch</TableHeaderColumn>
               <TableHeaderColumn>Afternoon</TableHeaderColumn>
             </TableRow>
             <TableRow>
+              <TableHeaderColumn />
               <TableHeaderColumn />
               <TableHeaderColumn>
                 <span
@@ -129,24 +131,26 @@ class Attendance extends Component {
                 {...student}
               />
             ))}
-            <TableRow>
-              <TableRowColumn colSpan="5" style={{ textAlign: 'center' }}>
-                <FlatButton onClick={() => this.props.clearAttendance()}>
-                  Cancel
-                </FlatButton>
-                <FlatButton
-                  onClick={() =>
-                    this.props.submitAttendance(
-                      this.props.updatedAttendance,
-                      this.state.date,
-                      this.props.selectedCohort || this.props.defaultCohort
-                    )
-                  }
-                >
-                  Submit
-                </FlatButton>
-              </TableRowColumn>
-            </TableRow>
+            {this.props.updatedAttendance.length && (
+              <TableRow>
+                <TableRowColumn colSpan="5" style={{ textAlign: 'center' }}>
+                  <FlatButton onClick={() => this.props.clearAttendance()}>
+                    Cancel
+                  </FlatButton>
+                  <FlatButton
+                    onClick={() =>
+                      this.props.submitAttendance(
+                        this.props.updatedAttendance,
+                        this.state.date,
+                        this.props.selectedCohort || this.props.defaultCohort
+                      )
+                    }
+                  >
+                    Submit
+                  </FlatButton>
+                </TableRowColumn>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { TableRow, TableRowColumn } from 'material-ui/Table';
 import TextField from 'material-ui/TextField';
+import Checkbox from 'material-ui/Checkbox';
 
 import { updateAttendance } from '../../ducks/actions';
 
@@ -18,6 +19,14 @@ class AttendanceDetail extends Component {
     return (
       <TableRow key={dm_id}>
         <TableRowColumn>{`${first_name} ${last_name}`}</TableRowColumn>
+        <TableRowColumn>
+          <Checkbox
+            checked={Boolean(attendance.absent)}
+            onCheck={(e, checked) =>
+              this.props.updateAttendance('absent', date, checked, dm_id)
+            }
+          />
+        </TableRowColumn>
         <TableRowColumn>
           <TextField
             hintText="Not Marked"
