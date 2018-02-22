@@ -39,7 +39,9 @@ class AttendanceDetail extends Component {
               )
             }
             value={
-              attendance.morning === null ? '' : attendance.morning.toString()
+              attendance.morning === null || attendance.morning === undefined
+                ? ''
+                : attendance.morning.toString()
             }
           />
         </TableRowColumn>
@@ -49,7 +51,11 @@ class AttendanceDetail extends Component {
             onChange={e =>
               this.props.updateAttendance('break', date, e.target.value, dm_id)
             }
-            value={attendance.break === null ? '' : attendance.break.toString()}
+            value={
+              attendance.break === null || attendance.break === undefined
+                ? ''
+                : attendance.break.toString()
+            }
           />
         </TableRowColumn>
         <TableRowColumn>
@@ -58,7 +64,11 @@ class AttendanceDetail extends Component {
             onChange={e =>
               this.props.updateAttendance('lunch', date, e.target.value, dm_id)
             }
-            value={attendance.lunch === null ? '' : attendance.lunch.toString()}
+            value={
+              attendance.lunch === null || attendance.lunch === undefined
+                ? ''
+                : attendance.lunch.toString()
+            }
           />
         </TableRowColumn>
         <TableRowColumn>
@@ -73,7 +83,8 @@ class AttendanceDetail extends Component {
               )
             }
             value={
-              attendance.afternoon === null
+              attendance.afternoon === null ||
+              attendance.afternoon === undefined
                 ? ''
                 : attendance.afternoon.toString()
             }
