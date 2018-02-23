@@ -1,72 +1,195 @@
 import React, { Component } from 'react';
-import { ListItem } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { PropTypes } from 'prop-types';
+import FlatButton from 'material-ui/FlatButton';
+import DatePicker from 'material-ui/DatePicker';
 
-import { MasterDetail, Master, Detail } from '../Utils/MasterDetail';
+import Table, {
+  TableHeader,
+  TableHeaderColumn,
+  TableBody,
+  TableRow,
+  TableRowColumn
+} from 'material-ui/Table';
+
+import {
+  getAttendance,
+  updateAttendance,
+  submitAttendance,
+  clearAttendance
+} from '../../ducks/actions';
+
+import AttendanceDetail from './AttendanceDetail';
 
 class Attendance extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      attendance: [],
-      selected: {}
+      updatedAttendance: [],
+      selected: {},
+      date: new Date()
     };
   }
+
   componentDidMount() {
-    axios
-      .get('/api/attendance/?cohort_id=WDL10')
-      .then(result => this.setState({ attendance: result.data }));
-  }
-  render() {
-    const { selected } = this.state;
-    const renderStudents = student => (
-      <React.Fragment key={student.dm_id || student.cohort_id}>
-        <ListItem
-          onClick={() => this.setState({ selected: student })}
-          primaryText={student.name}
-          secondaryText={
-            <p>
-              {/* student.attendance */}
-              incomplete project
-            </p>
-          }
-        />
-        <Divider />
-      </React.Fragment>
+    const date = this.state.date.toDateString();
+    this.props.getAttendance(
+      this.props.selectedCohort || this.props.defaultCohort,
+      date
     );
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const date = this.state.date.toDateString();
+    if (nextProps.selectedCohort !== this.props.selectedCohort) {
+      this.setState({ updatedAttendance: [] });
+      nextProps.getAttendance(nextProps.selectedCohort, date);
+      nextProps.clearAttendance();
+    } else if (nextProps.defaultCohort !== this.props.defaultCohort) {
+      this.setState({ updatedAttendance: [] });
+      nextProps.getAttendance(nextProps.defaultCohort, date);
+      nextProps.clearAttendance();
+    }
+  }
+
+  render() {
+    const { updatedAttendance = [], attendance = [] } = this.props;
+    const displayedAttendance = updatedAttendance.length
+      ? updatedAttendance
+      : attendance;
 
     return (
-      <MasterDetail>
-        <Master list={this.state.attendance} renderMethod={renderStudents}>
-          <ListItem
-            onClick={() => this.setState({ selected: { name: 'WDL10' } })}
-            primaryText={'WDL10'}
-            secondaryText="Overview"
-          />
-          <Divider />
-        </Master>
-        <Detail title={selected.name}>
-          {this.state.attendance.map(student => (
-            <div
-              key={student.dm_id}
-              style={{
-                display: 'flex',
-                flexDirection: 'row'
-              }}
-            >
-              <div style={{ width: '30%' }}>{student.name}</div>
-              {student.attendance.map(stamp => (
-                <div key={stamp.id} style={{ width: '30%' }}>
-                  {stamp.timeframe + stamp.minutes}
-                </div>
-              ))}
-            </div>
-          ))}
-        </Detail>
-      </MasterDetail>
+      <div>
+        <DatePicker
+          hintText="Choose Date"
+          container="inline"
+          value={this.state.date}
+          onChange={(e, date) => {
+            this.setState({ date });
+            this.props.getAttendance(
+              this.props.selectedCohort || this.props.defaultCohort,
+              date
+            );
+          }}
+        />
+        <Table selectable={false}>
+          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+            <TableRow>
+              <TableHeaderColumn>Student</TableHeaderColumn>
+              <TableHeaderColumn>Absent?</TableHeaderColumn>
+              <TableHeaderColumn>Morning</TableHeaderColumn>
+              <TableHeaderColumn>Break</TableHeaderColumn>
+              <TableHeaderColumn>Lunch</TableHeaderColumn>
+              <TableHeaderColumn>Afternoon</TableHeaderColumn>
+            </TableRow>
+            <TableRow>
+              <TableHeaderColumn />
+              <TableHeaderColumn />
+              <TableHeaderColumn>
+                <span
+                  onClick={() =>
+                    this.props.updateAttendance('morning', this.state.date)
+                  }
+                >
+                  Mark All On Time
+                </span>
+              </TableHeaderColumn>
+              <TableHeaderColumn>
+                <span
+                  onClick={() =>
+                    this.props.updateAttendance('break', this.state.date)
+                  }
+                >
+                  Mark All On Time
+                </span>
+              </TableHeaderColumn>
+              <TableHeaderColumn>
+                <span
+                  onClick={() =>
+                    this.props.updateAttendance('lunch', this.state.date)
+                  }
+                >
+                  Mark All On Time
+                </span>
+              </TableHeaderColumn>
+              <TableHeaderColumn>
+                <span
+                  onClick={() =>
+                    this.props.updateAttendance('afternoon', this.state.date)
+                  }
+                >
+                  Mark All On Time
+                </span>
+              </TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false}>
+            {displayedAttendance.map(student => (
+              <AttendanceDetail
+                key={student.dm_id}
+                date={this.state.date}
+                {...student}
+              />
+            ))}
+            {this.props.updatedAttendance.length && (
+              <TableRow>
+                <TableRowColumn colSpan="5" style={{ textAlign: 'center' }}>
+                  <FlatButton onClick={() => this.props.clearAttendance()}>
+                    Cancel
+                  </FlatButton>
+                  <FlatButton
+                    onClick={() =>
+                      this.props.submitAttendance(
+                        this.props.updatedAttendance,
+                        this.state.date,
+                        this.props.selectedCohort || this.props.defaultCohort
+                      )
+                    }
+                  >
+                    Submit
+                  </FlatButton>
+                </TableRowColumn>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     );
   }
 }
 
-export default Attendance;
+Attendance.propTypes = {
+  selectedCohort: PropTypes.string,
+  defaultCohort: PropTypes.string,
+  updatedAttendance: PropTypes.array,
+  attendance: PropTypes.array,
+  clearAttendance: PropTypes.func,
+  getAttendance: PropTypes.func,
+  updateAttendance: PropTypes.func,
+  submitAttendance: PropTypes.func,
+  userInfo: PropTypes.object
+};
+
+const mapStateToProps = ({ mainReducer }) => {
+  const {
+    selectedCohort,
+    defaultCohort,
+    attendance,
+    updatedAttendance,
+    userInfo
+  } = mainReducer;
+  return {
+    selectedCohort,
+    defaultCohort,
+    updatedAttendance,
+    attendance,
+    userInfo
+  };
+};
+
+export default connect(mapStateToProps, {
+  getAttendance,
+  updateAttendance,
+  submitAttendance,
+  clearAttendance
+})(Attendance);

@@ -27,7 +27,7 @@ const ProjectOutliers = props => {
                   }}
                 >
                   <div>
-                    <p>{student.name}</p>
+                    <p>{`${student.first_name} ${student.last_name}`}</p>
                   </div>
                   <Rating title="Incomplete" value={student.projects.length} />
                   <div>

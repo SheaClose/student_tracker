@@ -4,11 +4,11 @@ const express = require('express'),
   session = require('express-session'),
   massive = require('massive'),
   passport = require('passport'),
-  axios = require('axios'),
   path = require('path'),
   { Strategy: DevmtnStrategy } = require('devmtn-auth'),
   devMtnPassport = new passport.Passport(),
   syncStudents = require('./studentSyncCronJob');
+
 require('dotenv').config();
 
 const app = express();
@@ -18,8 +18,7 @@ const {
   connectionString,
   sessionConfig,
   devmtnAuth,
-  auth_redirect,
-  authHeaders
+  auth_redirect
 } = require(`../configs/${configPath}.config`);
 const masterRoutes = require('./masterRoutes');
 
@@ -38,12 +37,22 @@ devMtnPassport.use(
   new DevmtnStrategy(devmtnAuth, (jwtoken, user, done) => {
     const db = app.get('db');
 
-    return db.dm_users.addUser(user).then(dbUser => {
-      dbUser[0].roles = user.roles;
-      done(null, dbUser[0]);
-    });
-    // db.dm_users.getUser([user.id]).then(dbUser => done(null, dbUser[0]));
-    // return done(null, user);
+    return db.scripts.dm_users
+      .addUser(user)
+      .then(dbUser => {
+        const finalUser = dbUser.reduce(
+          (acc, cur) => ({
+            cohorts: [...acc.cohorts, cur.name],
+            name: `${cur.first_name} ${cur.last_name}`,
+            user_id: cur.user_id,
+            default_cohort_id: cur.default_cohort_id
+          }),
+          { cohorts: [] }
+        );
+        finalUser.roles = user.roles;
+        done(null, finalUser);
+      })
+      .catch(err => console.log('Could not add or select user', err));
   })
 );
 
@@ -69,28 +78,7 @@ app.get(
 app.get(
   '/auth/devmtn/callback',
   devMtnPassport.authenticate('devmtn', { failureRedirect: '/loginFailed' }),
-  (req, res) => {
-    axios
-      .get(
-        `https://devmountain.com/api/mentors/${req.user.user_id}/classsessions`,
-        authHeaders
-      )
-      .then(sessionResponse => {
-        /**
-         * Currently only adding sesssion id and short_name,
-         * however in the future if there is any other information
-         *  that is needed about the classes that the mentor/instructor
-         * was over, this is where we'd want to add it.
-         */
-        const sessions = sessionResponse.data.map(userSession => ({
-          id: userSession.id,
-          name: userSession.short_name
-        }));
-        req.session.devmtnUser = Object.assign({}, req.user, { sessions });
-        return res.redirect(`${auth_redirect}${req.session.redirect}`);
-      })
-      .catch(err => console.log('Cannot get sessions: ', err));
-  }
+  (req, res) => res.redirect(`${auth_redirect}${req.session.redirect}`)
 );
 
 app.get('/logout', (req, res) => {

@@ -6,7 +6,13 @@ import {
   GET_OUTLIERS,
   SELECT_COHORT,
   GET_ONEONONES,
-  ADD_ONEONONE
+  ADD_ONEONONE,
+  GET_STUDENT_DETAILS,
+  GET_ATTENDANCE,
+  UPDATE_ATTENDANCE,
+  SUBMIT_ATTENDANCE,
+  CLEAR_ATTENDANCE,
+  CLEAR_SNACKBAR
 } from './actions';
 
 const initialState = {
@@ -16,7 +22,11 @@ const initialState = {
   userInfo: {},
   defaultCohort: '',
   selectedCohort: '',
-  oneOnOnes: []
+  studentDetails: {},
+  oneOnOnes: [],
+  attendance: [],
+  updatedAttendance: [],
+  snackbar: ''
 };
 
 export default function reducer(state = initialState, action) {
@@ -52,14 +62,72 @@ export default function reducer(state = initialState, action) {
     });
   case `${GET_OUTLIERS}_FULFILLED`:
     return Object.assign({}, state, { outliers: action.payload });
+
   case `${SELECT_COHORT}`:
     return Object.assign({}, state, { selectedCohort: action.payload });
 
   case `${GET_ONEONONES}_FULFILLED`:
     return Object.assign({}, state, { oneOnOnes: action.payload });
   case `${ADD_ONEONONE}_FULFILLED`:
-    return Object.assign({}, state, { oneOnOnes: action.payload });
+    return Object.assign({}, state, {
+      oneOnOnes: action.payload,
+      snackbar: 'Successfully added one-on-one'
+    });
+  case `${GET_STUDENT_DETAILS}_FULFILLED`:
+    return Object.assign({}, state, { studentDetails: action.payload });
+  case `${GET_ATTENDANCE}_FULFILLED`:
+    return Object.assign({}, state, { attendance: action.payload });
+    /* eslint-disable no-case-declarations */
+  case UPDATE_ATTENDANCE:
+    const updateFunction = ({ attendance = {}, ...student }) => {
+      if (!action.payload.dm_id) {
+        // update everybody if no dm_id is specified
+        return Object.assign({}, student, {
+          attendance: {
+            ...attendance,
+            date: action.payload.date,
+            [action.payload.timeframe]: action.payload.value
+          }
+        });
+      } else if (action.payload.dm_id === student.dm_id) {
+        // update the one student if they're the student we're updating
+        return Object.assign({}, student, {
+          attendance: {
+            ...attendance,
+            date: action.payload.date,
+            [action.payload.timeframe]: action.payload.value
+          }
+        });
+      }
+      return Object.assign({}, student, {
+        attendance: {
+          ...attendance,
+          date: action.payload.date
+        }
+      });
+    };
 
+    const updatedAttendance = state.updatedAttendance.length
+      ? state.updatedAttendance.map(updateFunction)
+      : state.attendance.map(updateFunction);
+    return Object.assign({}, state, { updatedAttendance });
+    /* eslint-enable */
+  case `${SUBMIT_ATTENDANCE}_REJECTED`:
+    return Object.assign({}, state, {
+      snackbar: 'Error updating attendance'
+    });
+
+  case `${SUBMIT_ATTENDANCE}_FULFILLED`:
+    return Object.assign({}, state, {
+      attendance: action.payload,
+      updatedAttendance: [],
+      snackbar: 'Attendance updated successfully'
+    });
+
+  case CLEAR_ATTENDANCE:
+    return Object.assign({}, state, { updatedAttendance: [] });
+  case CLEAR_SNACKBAR:
+    return Object.assign({}, state, { snackbar: action.payload });
   default:
     return state;
   }

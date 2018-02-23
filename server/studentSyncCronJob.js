@@ -8,7 +8,7 @@ module.exports = app => {
   cron.schedule('* */8 * * *', async () => {
     const db = app.get('db');
     try {
-      const users = await db.dm_users.getAllUsers();
+      const users = await db.scripts.dm_users.getAllUsers();
       /** extract a list of the cohort sessions the mentor is over */
       const sessionPromises = users.map(async user => {
         try {
@@ -22,7 +22,7 @@ module.exports = app => {
               /** While we have reference to user and cohort, create
                * a link to them both in the Db, if not exists.
                */
-              db.user_cohort.link_user_cohort(user.user_id, id);
+              db.scripts.user_cohort.link_user_cohort(user.user_id, id);
               /** Only need to save the name, id, start and end date from each cohort */
               return { short_name, id, date_start, date_end };
             }
@@ -45,7 +45,7 @@ module.exports = app => {
         .reduce((acc, cur) => [...acc, ...cur], [])
         .filter((c, i, a) => i === a.findIndex(cur => cur.id === c.id))
         .map(session =>
-          db.cohorts.create_cohort([
+          db.scripts.cohorts.create_cohort([
             session.id,
             session.short_name,
             session.date_start,
@@ -82,7 +82,7 @@ module.exports = app => {
                   .then(students => {
                     students.map(student => {
                       const { first_name, last_name, email, dmId } = student;
-                      return db.students
+                      return db.scripts.students
                         .create_new_student([
                           dmId,
                           first_name,

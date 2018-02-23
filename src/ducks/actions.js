@@ -8,6 +8,12 @@ export const GET_OUTLIERS = 'GET_OUTLIERS';
 export const SELECT_COHORT = 'SELECT_COHORT';
 export const GET_ONEONONES = 'GET_ONEONONES';
 export const ADD_ONEONONE = 'ADD_ONEONONE';
+export const GET_STUDENT_DETAILS = 'GET_STUDENT_DETAILS';
+export const GET_ATTENDANCE = 'GET_ATTENDANCE';
+export const UPDATE_ATTENDANCE = 'UPDATE_ATTENDANCE';
+export const SUBMIT_ATTENDANCE = 'SUBMIT_ATTENDANCE';
+export const CLEAR_ATTENDANCE = 'CLEAR_ATTENDANCE';
+export const CLEAR_SNACKBAR = 'CLEAR_SNACKBAR';
 
 export function verifyLogin() {
   return {
@@ -19,11 +25,11 @@ export function verifyLogin() {
   };
 }
 
-export function getStudents() {
+export function getStudents(cohort) {
   return {
     type: GET_STUDENTS,
     payload: axios
-      .get('/api/students/')
+      .get(`/api/students?cohort=${cohort}`)
       .then(res => res.data)
       .catch(console.log)
   };
@@ -83,5 +89,61 @@ export function addOneOnOne(data) {
       .post('/api/oneonones', data)
       .then(res => res.data)
       .catch(console.log)
+  };
+}
+
+export function getStudentDetails(dm_id) {
+  return {
+    type: GET_STUDENT_DETAILS,
+    payload: axios
+      .get(`/api/students/${dm_id}`)
+      .then(res => res.data)
+      .catch(err => console.log('Could not get student details', err))
+  };
+}
+
+export function getAttendance(cohort, date) {
+  return {
+    type: GET_ATTENDANCE,
+    payload: axios
+      .get(`/api/attendance/?cohort_id=${cohort}&date=${date}`)
+      .then(res => res.data)
+      .catch(console.log)
+  };
+}
+
+export function submitAttendance(values, date, cohort_id) {
+  return {
+    type: SUBMIT_ATTENDANCE,
+    payload: axios
+      .post('/api/attendance', { values, date, cohort_id })
+      .then(res => res.data)
+      .catch(console.log)
+  };
+}
+
+export function updateAttendance(timeframe, date, value = '0', dm_id) {
+  return {
+    type: UPDATE_ATTENDANCE,
+    payload: {
+      timeframe,
+      value,
+      dm_id,
+      date
+    }
+  };
+}
+
+export function clearAttendance() {
+  return {
+    type: CLEAR_ATTENDANCE,
+    payload: []
+  };
+}
+
+export function clearSnackbar() {
+  return {
+    type: CLEAR_SNACKBAR,
+    payload: ''
   };
 }

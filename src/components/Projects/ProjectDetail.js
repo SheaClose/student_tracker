@@ -22,11 +22,12 @@ class ProjectDetail extends Component {
     this.props.updateCompletion(
       this.props.project.id,
       this.state.newCompletion,
-      this.props.project.cohort_id
+      this.props.cohort_id
     );
   }
   render() {
     const { style, project } = this.props;
+
     return (
       <div
         style={{
@@ -86,7 +87,8 @@ class ProjectDetail extends Component {
 ProjectDetail.propTypes = {
   updateCompletion: PropTypes.func,
   project: PropTypes.object,
-  style: PropTypes.object
+  style: PropTypes.object,
+  cohort_id: PropTypes.string
 };
 
 export default connect(null, { updateCompletion })(ProjectDetail);

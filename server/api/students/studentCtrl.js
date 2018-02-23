@@ -1,10 +1,51 @@
 const { groupById, groupRowData, objToArray } = require('../utils/groupData');
 
-/**
- * This is purely for development. Provides a dummy session for mentors who've
- * only mentored once (to see what it would look like with multiple cohorts.)
- */
-const dummyCohort = require('../../../configs/cohort');
+const projectsDecompose = {
+  decompose: {
+    pk: 'dm_id',
+    columns: ['first_name', 'last_name', 'total_incomplete', 'dm_id'],
+    projects: {
+      pk: 'id',
+      columns: ['name', 'due_date', 'completion', 'id'],
+      array: true
+    }
+  }
+};
+const oneononesDecompose = {
+  decompose: {
+    pk: 'dm_id',
+    columns: ['first_name', 'last_name', 'dm_id'],
+    oneonones: {
+      pk: 'id',
+      columns: [
+        'id',
+        'notes',
+        'attitude',
+        'skill',
+        'confidence_skill',
+        'confidence_personal',
+        'defer_drop_concern',
+        'worried',
+        'personal_project_ability',
+        'date',
+        'user_id'
+      ],
+      array: true
+    }
+  }
+};
+
+const tardiesDecompose = {
+  decompose: {
+    pk: 'dm_id',
+    columns: ['first_name', 'last_name', 'count', 'total'],
+    details: {
+      pk: 'id',
+      columns: ['date', 'morning', 'break', 'lunch', 'afternoon'],
+      array: true
+    }
+  }
+};
 
 const formatAttendanceData = (absences, tardies) => {
   const attendance = {};
@@ -19,100 +60,47 @@ const formatAttendanceData = (absences, tardies) => {
 module.exports = {
   getstudents(req, res) {
     const db = req.app.get('db');
-    /** get list of cohorts for current user */
-    db
-      .run(
-        'select cohort_id from user_cohort where user_id = $1',
-        req.user.user_id
-      )
-      .then(ids => ids.map(cur => cur.cohort_id))
-      .then(cohortIds => {
-        const cohortPromisese = cohortIds.map(async cohortid => {
-          const cohorts = await db.run(
-            `select * from cohorts 
-                where cohort_id = $1`,
-            cohortid
-          );
-          const cohortPromises = cohorts.map(
-            ({ id, date_start, date_end, name }) => {
-              const inSession =
-                new Date(date_start).getTime() < Date.now() &&
-                new Date(date_end).getTime() > Date.now();
-              return db
-                .run('select * from students where cohort_id = $1', name)
-                .then(studentList => ({
-                  inSession,
-                  id,
-                  date_start,
-                  date_end,
-                  name,
-                  classSession: studentList.map(
-                    ({ dm_id, first_name, last_name, email }) => ({
-                      dm_id,
-                      first_name,
-                      last_name,
-                      email
-                    })
-                  )
-                }))
-                .catch(console.log);
-            }
-          );
-          return Promise.all(cohortPromises).then(c => c[0]);
-        });
-        Promise.all(cohortPromisese)
-          .then(cohorts =>
-            [...cohorts, dummyCohort].sort(
-              (a, b) => +a.name.replace(/\D/g, '') - +b.name.replace(/\D/g, '')
-            )
-          )
-          .then(cohorts => res.json(cohorts))
-          .catch(console.log);
-      })
-      .catch(console.log);
+    db.scripts.students
+      .get_students(req.query.cohort)
+      .then(students => res.json(students))
+      .catch(err => console.log('Error getting students', err));
   },
   async getOutliers(req, res) {
-    const { devmtnUser } = req.session;
-    if (devmtnUser) {
-      let allowedCohorts = devmtnUser.sessions.map(session => session.name);
-      if (process.env.NOD_ENV !== 'production') {
-        allowedCohorts = [...allowedCohorts, 'WDL99', 'WDL6', 'WDL7'];
-      }
+    if (req.user) {
+      const { cohorts } = req.user;
+
       const db = req.app.get('db');
       try {
-        const absencesData = await db.students.get_absence_outliers({
-          allowedCohorts
+        const absencesData = await db.scripts.outliers.get_absence_outliers({
+          cohorts
         });
-        const tardiesData = await db.students.get_tardies_outliers({
-          allowedCohorts
-        });
-        const projectsData = await db.students.get_project_outliers({
-          allowedCohorts
-        });
-        const oneononesData = await db.students.get_oneonone_outliers({
-          allowedCohorts
-        });
-        const attendance = formatAttendanceData(absencesData, tardiesData);
 
-        const formattedProjects = {};
-        groupById(projectsData, formattedProjects);
-        groupRowData(projectsData, formattedProjects, 'projects');
-        const projects = objToArray(formattedProjects);
+        const tardiesData = await db.scripts.outliers
+          .get_tardies_outliers({
+            cohorts,
+            tardiesDecompose
+          })
+          .then(result => console.log(result));
+        const projects = await db.scripts.outliers.get_project_outliers(
+          { cohorts },
+          projectsDecompose
+        );
+        const oneonones = await db.scripts.outliers.get_oneonone_outliers(
+          { cohorts },
+          oneononesDecompose
+        );
 
-        const formattedOneonones = {};
-        groupById(oneononesData, formattedOneonones);
-        groupRowData(oneononesData, formattedOneonones, 'oneonones');
-        const oneonones = objToArray(formattedOneonones);
+        // const attendance = formatAttendanceData(absencesData, tardiesData);
+        const attendance = [[], tardiesData];
 
         return res.status(200).json({
           attendance,
           projects,
-          formattedProjects,
-          formattedOneonones,
           oneonones
         });
       } catch (e) {
-        return res.status(500).json('Async Error');
+        console.log(e);
+        return res.status(500).json('Error getting outlier information');
       }
     }
     return res.status(500).json('User not logged in');
@@ -120,7 +108,7 @@ module.exports = {
   dropStudent(req, res) {
     const { id } = req.params;
     const db = req.app.get('db');
-    db.students
+    db.scripts.students
       .drop_student(id)
       .then(resp => {
         if (resp.length) {
@@ -133,21 +121,35 @@ module.exports = {
   getOneOnOnes(req, res) {
     const db = req.app.get('db');
     const { cohort } = req.query;
-    db.students
+    db.scripts.students
       .get_oneonones(cohort)
-      .then(response => res.status(200).json(response))
+      .then(response => {
+        res.status(200).json(response);
+      })
       .catch(console.log);
   },
   addOneOnOne(req, res) {
     const db = req.app.get('db');
-    db.students
+    db.scripts.students
       .add_oneonone(req.body)
       .then(() => {
-        db.students
+        db.scripts.students
           .get_oneonones(req.body.cohort)
           .then(response => res.status(200).json(response))
           .catch(console.log);
       })
       .catch(console.log);
+  },
+  getStudentDetails(req, res) {
+    res.json('unavailable');
+    /* One day this will work.
+    const db = req.app.get('db');
+    db.scripts.students
+      .get_student_details(req.params)
+      .then(result => res.json(result))
+      .catch(err =>
+        console.log('Error retrieving student details', req.params, err)
+      );
+      */
   }
 };

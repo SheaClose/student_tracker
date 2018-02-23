@@ -12,19 +12,15 @@ const SelectCohort = props => (
       props.selectCohort(value);
     }}
   >
-    {props.cohorts.map(x => (
-      <MenuItem key={x.name} primaryText={x.name} value={x.name} />
+    {props.cohorts.map(cohort => (
+      <MenuItem key={cohort} primaryText={cohort} value={cohort} />
     ))}
   </DropDownMenu>
 );
 const mapStateToProps = state => {
-  const {
-    students: cohorts,
-    selectedCohort,
-    defaultCohort
-  } = state.mainReducer;
+  const { userInfo, selectedCohort, defaultCohort } = state.mainReducer;
   return {
-    cohorts,
+    cohorts: userInfo.cohorts || [],
     selectedCohort,
     defaultCohort
   };
