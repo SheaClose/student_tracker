@@ -14,6 +14,7 @@ import {
 } from '../../ducks/actions';
 import './Students.css';
 import { MasterDetail, Master } from '../Utils/MasterDetail';
+import ProjectDetail from '../Projects/ProjectDetail';
 
 class Students extends Component {
   componentDidMount() {
@@ -79,22 +80,18 @@ class Students extends Component {
       // console.log('default', nextProps.defaultCohort);
       this.props.getStudents(nextProps.defaultCohort);
     }
-    if (nextProps.selectedCohort) {
-      this.setState({
-        selectedCohortIndex: nextProps.students.findIndex(
-          cohort => cohort.name === nextProps.selectedCohort
-        )
-      });
-    }
   }
 
   render() {
     const { students } = this.props;
     const { category, cohort_id, dm_id } = this.props.match.params;
     // console.log('students', students);
-    const selectedStudent =
-      students.find(student => student.dm_id === +dm_id) || {};
-    // console.log(selectedStudent);
+    // const selectedStudent =
+    //   students.find(student => student.dm_id === +dm_id) || {};
+    const { studentDetails = {} } = this.props;
+    const selectedStudent = studentDetails;
+    const { projects = [] } = studentDetails;
+    console.log(studentDetails);
 
     const renderStudents = student => (
       <React.Fragment key={student.dm_id}>
@@ -129,9 +126,17 @@ class Students extends Component {
           >
             <Tab style={{ background: '#AAA' }} label="Info" value="info">
               <Card zDepth={0}>
-                <CardTitle>
-                  {selectedStudent.first_name} {selectedStudent.last_name}
-                </CardTitle>
+                <CardTitle
+                  title={`${selectedStudent.first_name} ${
+                    selectedStudent.last_name
+                  }`}
+                  subtitle={
+                    <div>
+                      <a href={selectedStudent.linkedin_link}>LinkedIn</a>,{' '}
+                      <a href={selectedStudent.github_link}>Github</a>
+                    </div>
+                  }
+                />
               </Card>
             </Tab>
             <Tab
@@ -144,7 +149,6 @@ class Students extends Component {
                 render={() => (
                   <Card zDepth={0}>
                     <CardTitle>{selectedStudent.first_name}</CardTitle>
-                    <CardText>oneoneoneoen</CardText>
                   </Card>
                 )}
               />
@@ -155,7 +159,27 @@ class Students extends Component {
               style={{ background: '#AAA' }}
               label="Projects"
             >
-              test
+              <Card zDepth={0}>
+                <CardTitle>{selectedStudent.first_name}</CardTitle>
+                <CardText>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-around',
+                      flexWrap: 'wrap'
+                    }}
+                  >
+                    {projects.map(project => (
+                      <ProjectDetail
+                        key={project.id}
+                        style={{ width: '24%' }}
+                        project={project}
+                        cohort_id={selectedStudent.cohort_id}
+                      />
+                    ))}
+                  </div>
+                </CardText>
+              </Card>
             </Tab>
             <Tab
               value="attendance"
@@ -186,7 +210,8 @@ function mapStateToProps({ mainReducer }) {
   return {
     students: mainReducer.students,
     defaultCohort: mainReducer.defaultCohort,
-    selectedCohort: mainReducer.selectedCohort
+    selectedCohort: mainReducer.selectedCohort,
+    studentDetails: mainReducer.studentDetails
   };
 }
 

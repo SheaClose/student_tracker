@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { selectCohort } from '../../ducks/actions';
 
 const SelectCohort = props => (

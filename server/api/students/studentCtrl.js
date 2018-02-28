@@ -140,16 +140,28 @@ module.exports = {
       })
       .catch(console.log);
   },
-  getStudentDetails(req, res) {
-    res.json('unavailable');
-    /* One day this will work.
+  async getStudentDetails(req, res) {
     const db = req.app.get('db');
-    db.scripts.students
-      .get_student_details(req.params)
-      .then(result => res.json(result))
-      .catch(err =>
-        console.log('Error retrieving student details', req.params, err)
+    const { dm_id } = req.params;
+    try {
+      const info = await db.scripts.students.get_student_info(
+        { dm_id },
+        { single: true }
       );
-      */
+      const attendance = await db.scripts.students.get_student_attendance({
+        dm_id
+      });
+      const projects = await db.scripts.students.get_student_projects({
+        dm_id
+      });
+      const oneonones = await db.scripts.students.get_student_oneonones({
+        dm_id
+      });
+
+      const student = { ...info, attendance, projects, oneonones };
+      res.json(student);
+    } catch (e) {
+      console.log(`Error getting student details for ${dm_id}`, e);
+    }
   }
 };
