@@ -27,7 +27,7 @@
         "express-session": "^1.15.6",
         "global": "^4.3.2",
         "google-auth-library": "^0.10.0",
-        "massive": "^4.5.0",
+        "massive": "^4.6.5",
         "material-ui": "^0.20.0",
         "node-cron": "^1.2.1",
         "passport": "^0.4.0",
@@ -46,7 +46,7 @@
         "react-scripts": "1.0.17"
     },
     "scripts": {
-        "start": "concurrently --kill-others \"nodemon --watch server server/index.js\" \"react-scripts start\"",
+        "start": "concurrently --kill-others \"nodemon --watch server --inspect server/index.js\" \"react-scripts start\"",
         "build": "react-scripts build",
         "test": "react-scripts test --env=jsdom",
         "eject": "react-scripts eject"

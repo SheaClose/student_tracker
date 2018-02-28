@@ -17,7 +17,7 @@ const OneOnOneOutliers = props => {
         {oneonones.map(student =>
           student.oneonones.map(detail => (
             <List key={detail.id}>
-              <p>{detail.first_name}</p>
+              <p>{student.first_name}</p>
               <OneOnOneDetail detail={detail} />
             </List>
           ))

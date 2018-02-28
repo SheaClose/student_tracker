@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { selectCohort } from '../../ducks/actions';
 
 const SelectCohort = props => (
@@ -12,19 +13,15 @@ const SelectCohort = props => (
       props.selectCohort(value);
     }}
   >
-    {props.cohorts.map(x => (
-      <MenuItem key={x.name} primaryText={x.name} value={x.name} />
+    {props.cohorts.map(cohort => (
+      <MenuItem key={cohort} primaryText={cohort} value={cohort} />
     ))}
   </DropDownMenu>
 );
 const mapStateToProps = state => {
-  const {
-    students: cohorts,
-    selectedCohort,
-    defaultCohort
-  } = state.mainReducer;
+  const { userInfo, selectedCohort, defaultCohort } = state.mainReducer;
   return {
-    cohorts,
+    cohorts: userInfo.cohorts || [],
     selectedCohort,
     defaultCohort
   };

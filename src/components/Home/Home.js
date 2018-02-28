@@ -10,7 +10,8 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <AttendanceOutliers style={{ margin: '25px' }} />
+        {/* AttendanceOutliers is really, really broken
+        <AttendanceOutliers style={{ margin: '25px' }} /> */}
         <ProjectOutliers style={{ margin: '25px' }} />
         <OneOnOneOutliers style={{ margin: '25px' }} />
       </div>
