@@ -8,12 +8,6 @@ import Checkbox from 'material-ui/Checkbox';
 import { updateAttendance } from '../../ducks/actions';
 
 class AttendanceDetail extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      student: {}
-    };
-  }
   render() {
     const { dm_id, first_name, last_name, date, attendance = {} } = this.props;
     return (
@@ -39,6 +33,15 @@ class AttendanceDetail extends Component {
               )
             }
             value={
+              /* This can be:
+              - undefined if there's no attendance data in the
+                db for this student on this day
+              - null if there's attendance data in the db for
+              this student on this day, but not this timeframe
+              But you can't just check for a falsy value, because
+              it can also be 0 if they were on time.
+              Also, TextField requires the value to be a string.
+              */
               attendance.morning === null || attendance.morning === undefined
                 ? ''
                 : attendance.morning.toString()
@@ -96,6 +99,7 @@ class AttendanceDetail extends Component {
 }
 
 AttendanceDetail.propTypes = {
+  // attendance is from props, not redux
   attendance: PropTypes.object,
   dm_id: PropTypes.number,
   first_name: PropTypes.string,

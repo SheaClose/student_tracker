@@ -40,12 +40,16 @@ class Attendance extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    /* Get attendance for the selectedCohort if it changes */
     const date = this.state.date.toDateString();
     if (nextProps.selectedCohort !== this.props.selectedCohort) {
       this.setState({ updatedAttendance: [] });
       nextProps.getAttendance(nextProps.selectedCohort, date);
       nextProps.clearAttendance();
     } else if (nextProps.defaultCohort !== this.props.defaultCohort) {
+      /* defaultCohort isn't guaranteed to have returned from the server on
+      componentDidMount, so update to get the defaultCohort data
+      if it changes */
       this.setState({ updatedAttendance: [] });
       nextProps.getAttendance(nextProps.defaultCohort, date);
       nextProps.clearAttendance();
@@ -54,6 +58,10 @@ class Attendance extends Component {
 
   render() {
     const { updatedAttendance = [], attendance = [] } = this.props;
+    /* TODO: There's gotta be a better way.
+    If we've made any updates to attendance, display those updates.
+    If not, display the original attendance from the db.
+    */
     const displayedAttendance = updatedAttendance.length
       ? updatedAttendance
       : attendance;

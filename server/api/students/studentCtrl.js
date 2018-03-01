@@ -1,5 +1,5 @@
-const { groupById, groupRowData, objToArray } = require('../utils/groupData');
-
+/* massive accepts a decompose object that converts the
+  array of results into an array of objects with a defined schema */
 const projectsDecompose = {
   decompose: {
     pk: 'dm_id',
@@ -47,16 +47,6 @@ const tardiesDecompose = {
   }
 };
 
-const formatAttendanceData = (absences, tardies) => {
-  const attendance = {};
-  groupById(absences, attendance);
-  groupById(tardies, attendance);
-  groupRowData(absences, attendance, 'absences');
-  groupRowData(tardies, attendance, 'tardies');
-
-  return objToArray(attendance);
-};
-
 module.exports = {
   getstudents(req, res) {
     const db = req.app.get('db');
@@ -71,16 +61,20 @@ module.exports = {
 
       const db = req.app.get('db');
       try {
+        /* db scripts are in scripts directory so we don't have
+        namespace collisions between script folders and table names */
+
+        /* TODO: attendance outliers doesn't currently work. It sends this
+        blank data so the front end doesn't go crazy
         const absencesData = await db.scripts.outliers.get_absence_outliers({
           cohorts
+        }); */
+
+        const tardiesData = await db.scripts.outliers.get_tardies_outliers({
+          cohorts,
+          tardiesDecompose
         });
 
-        const tardiesData = await db.scripts.outliers
-          .get_tardies_outliers({
-            cohorts,
-            tardiesDecompose
-          })
-          .then(result => console.log(result));
         const projects = await db.scripts.outliers.get_project_outliers(
           { cohorts },
           projectsDecompose
@@ -90,7 +84,8 @@ module.exports = {
           oneononesDecompose
         );
 
-        // const attendance = formatAttendanceData(absencesData, tardiesData);
+        /* TODO: attendance outliers doesn't currently work. It sends this
+        blank data so the front end doesn't go crazy */
         const attendance = [[], tardiesData];
 
         return res.status(200).json({
@@ -126,7 +121,10 @@ module.exports = {
       .then(response => {
         res.status(200).json(response);
       })
-      .catch(console.log);
+      .catch(e => {
+        console.log(`Error getting one on ones for ${cohort}`, e);
+        res.status(500).json(e);
+      });
   },
   addOneOnOne(req, res) {
     const db = req.app.get('db');
@@ -136,14 +134,19 @@ module.exports = {
         db.scripts.students
           .get_oneonones(req.body.cohort)
           .then(response => res.status(200).json(response))
-          .catch(console.log);
+          .catch(e => console.log('Error getting one on ones after update', e));
       })
-      .catch(console.log);
+      .catch(e => {
+        console.log('Error adding one on one', e);
+        res.status(500).json(e);
+      });
   },
   async getStudentDetails(req, res) {
     const db = req.app.get('db');
     const { dm_id } = req.params;
     try {
+      /* massive accepts an options object.
+      { single: true } extracts the one result from the array  */
       const info = await db.scripts.students.get_student_info(
         { dm_id },
         { single: true }
@@ -162,6 +165,7 @@ module.exports = {
       res.json(student);
     } catch (e) {
       console.log(`Error getting student details for ${dm_id}`, e);
+      res.status(500).json(e);
     }
   }
 };

@@ -22,31 +22,31 @@ module.exports = {
     const { cohort_id } = req.params;
     db.scripts.projects
       .getProjectsByCohort({ cohort_id }, projectDecompose)
-      .then(result => res.status(200).json(result));
+      .then(result => res.status(200).json(result))
+      .catch(e => {
+        console.log(`Error getting projects for ${cohort_id}`, e);
+        res.status(500).json(e);
+      });
   },
   updateCompletion(req, res) {
     const db = req.app.get('db');
     const { id } = req.params;
     const { completion, cohort_id } = req.body;
-    console.log('cohort_id', cohort_id);
 
+    /* Update the one project's completion, then send ALL the students'
+    completion data to the front end because it's stored as a giant
+    array instead of by each student individually. */
     db.scripts.projects
       .updateCompletion({ id, completion })
       .then(() =>
-        db.scripts.projects.getProjectsByCohort({ cohort_id }, projectDecompose)
+        db.scripts.projects
+          .getProjectsByCohort({ cohort_id }, projectDecompose)
+          .catch(e => console.log('Error getting projects after update', e))
       )
-      .then(result => {
-        
-        res.status(200).json(result);
+      .then(result => res.status(200).json(result))
+      .catch(e => {
+        res.status(500).json(e);
+        console.log('Error updating completion', e);
       });
-  },
-  saveCohortRepo(req, res) {
-    console.log(req, res);
-  },
-  editCohortRepo(req, res) {
-    console.log(req, res);
-  },
-  removeCohortRepo(req, res) {
-    console.log(req, res);
   }
 };

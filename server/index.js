@@ -40,6 +40,8 @@ devMtnPassport.use(
     return db.scripts.dm_users
       .addUser(user)
       .then(dbUser => {
+        /* format the dbUser to have an array of allowed cohorts
+         could probably be redone with a decompose object */
         const finalUser = dbUser.reduce(
           (acc, cur) => ({
             cohorts: [...acc.cohorts, cur.name],
@@ -49,6 +51,11 @@ devMtnPassport.use(
           }),
           { cohorts: [] }
         );
+        /* take the roles from the DevMountain API user and
+        add them to our dbUser as of 2/28 we aren't currently
+        using them, but will need them for some functionality.
+        verifyAuth middleware expects them, so I've left them here.
+         */
         finalUser.roles = user.roles;
         done(null, finalUser);
       })
