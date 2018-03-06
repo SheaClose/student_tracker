@@ -64,13 +64,30 @@ module.exports = {
         /* db scripts are in scripts directory so we don't have
         namespace collisions between script folders and table names */
 
-        /* TODO: attendance outliers doesn't currently work. It sends this
-        blank data so the front end doesn't go crazy
-        const absencesData = await db.scripts.outliers.get_absence_outliers({
+        /* TODO: attendance outliers doesn't currently work and is commented
+        out on the front end. The SQL statements need to be reworked and the
+        front end is expecting attendance to be an array of students with
+        absences and tardies as properties.
+          {
+            attendance: [
+              {
+                dm_id: 1234,
+                absences: [{}],
+                tardies: [{}]
+              },
+              {
+                dm_id: 4321,
+                absences: [{}],
+                tardies: [{}]
+              }
+            ]
+          }
+        */
+        const absences = await db.scripts.outliers.get_absence_outliers({
           cohorts
-        }); */
+        });
 
-        const tardiesData = await db.scripts.outliers.get_tardies_outliers({
+        const tardies = await db.scripts.outliers.get_tardies_outliers({
           cohorts,
           tardiesDecompose
         });
@@ -84,9 +101,8 @@ module.exports = {
           oneononesDecompose
         );
 
-        /* TODO: attendance outliers doesn't currently work. It sends this
-        blank data so the front end doesn't go crazy */
-        const attendance = [[], tardiesData];
+        /* TODO: attendance outliers doesn't work. See note above. */
+        const attendance = { absences, tardies };
 
         return res.status(200).json({
           attendance,

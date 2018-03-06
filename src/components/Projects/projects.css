@@ -1,8 +1,0 @@
-.editLink a {
-  opacity: 0;
-  transition: all 100ms;
-}
-
-.editLink:hover a {
-  opacity: 1;
-}

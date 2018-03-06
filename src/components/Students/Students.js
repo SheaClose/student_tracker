@@ -12,7 +12,7 @@ import {
   getStudentDetails,
   selectCohort
 } from '../../ducks/actions';
-import './Students.css';
+
 import { MasterDetail, Master } from '../Utils/MasterDetail';
 import ProjectDetail from '../Projects/ProjectDetail';
 
@@ -21,12 +21,17 @@ class Students extends Component {
     const { cohort_id, dm_id } = this.props.match.params;
 
     if (dm_id) {
+      // If a student is already selected via params, get their details
       this.props.getStudentDetails(dm_id);
     }
     if (cohort_id) {
+      /* If a cohort is already selected via params, get its students
+      and change the selected cohort on redux to match the params
+      */
       this.props.getStudents(cohort_id);
-      this.props.selectCohort(cohort_id, 'componentDidMount - Students');
+      this.props.selectCohort(cohort_id);
     } else {
+      // Otherwise just get students for the selectedCohort or the defaultCohort
       const cohort = this.props.selectedCohort || this.props.defaultCohort;
 
       if (cohort) {
@@ -51,7 +56,7 @@ class Students extends Component {
     //     nextProps.match.params.cohort_id !==
     //     (nextProps.selectedCohort || nextProps.defaultCohort)
     //   ) {
-    //     console.log(nextProps);
+    //
     //     this.props.selectCohort(
     //       nextProps.match.params.cohort_id,
     //       'receiveporps'
@@ -72,12 +77,9 @@ class Students extends Component {
     }
 
     if (nextProps.selectedCohort !== this.props.selectedCohort) {
-      console.log('selectedcohort changed', nextProps.selectedCohort);
       this.props.history.push(`/students/${nextProps.selectedCohort}`);
-      // console.log('selected', nextProps.selectedCohort);
       this.props.getStudents(nextProps.selectedCohort);
     } else if (nextProps.defaultCohort !== this.props.defaultCohort) {
-      // console.log('default', nextProps.defaultCohort);
       this.props.getStudents(nextProps.defaultCohort);
     }
   }
@@ -85,14 +87,11 @@ class Students extends Component {
   render() {
     const { students } = this.props;
     const { category, cohort_id, dm_id } = this.props.match.params;
-    // console.log('students', students);
-    // const selectedStudent =
-    //   students.find(student => student.dm_id === +dm_id) || {};
-    const { studentDetails = {} } = this.props;
-    const selectedStudent = studentDetails;
-    const { projects = [] } = studentDetails;
-    console.log(studentDetails);
 
+    const { studentDetails = {} } = this.props;
+    const { projects = [] } = studentDetails;
+
+    // This is the callback for the map function in the Master component
     const renderStudents = student => (
       <React.Fragment key={student.dm_id}>
         <ListItem
@@ -113,11 +112,12 @@ class Students extends Component {
         <Divider />
       </React.Fragment>
     );
-    // console.log(this.props);
+
     return (
       <MasterDetail>
         <Master list={students} renderMethod={renderStudents} />
         <div style={{ flexBasis: '70%', flexGrow: '1' }}>
+          {/* The tabs should probably be separate components */}
           <Tabs
             value={category || 'info'}
             onChange={tab =>
@@ -127,13 +127,13 @@ class Students extends Component {
             <Tab style={{ background: '#AAA' }} label="Info" value="info">
               <Card zDepth={0}>
                 <CardTitle
-                  title={`${selectedStudent.first_name} ${
-                    selectedStudent.last_name
+                  title={`${studentDetails.first_name} ${
+                    studentDetails.last_name
                   }`}
                   subtitle={
                     <div>
-                      <a href={selectedStudent.linkedin_link}>LinkedIn</a>,{' '}
-                      <a href={selectedStudent.github_link}>Github</a>
+                      <a href={studentDetails.linkedin_link}>LinkedIn</a>,{' '}
+                      <a href={studentDetails.github_link}>Github</a>
                     </div>
                   }
                 />
@@ -148,7 +148,7 @@ class Students extends Component {
                 path="/students/:cohort_id/:id"
                 render={() => (
                   <Card zDepth={0}>
-                    <CardTitle>{selectedStudent.first_name}</CardTitle>
+                    <CardTitle>{studentDetails.first_name}</CardTitle>
                   </Card>
                 )}
               />
@@ -160,7 +160,7 @@ class Students extends Component {
               label="Projects"
             >
               <Card zDepth={0}>
-                <CardTitle>{selectedStudent.first_name}</CardTitle>
+                <CardTitle>{studentDetails.first_name}</CardTitle>
                 <CardText>
                   <div
                     style={{
@@ -174,7 +174,7 @@ class Students extends Component {
                         key={project.id}
                         style={{ width: '24%' }}
                         project={project}
-                        cohort_id={selectedStudent.cohort_id}
+                        cohort_id={studentDetails.cohort_id}
                       />
                     ))}
                   </div>
@@ -203,7 +203,8 @@ Students.propTypes = {
   getStudentDetails: PropTypes.func,
   selectCohort: PropTypes.func,
   match: PropTypes.object,
-  history: PropTypes.object
+  history: PropTypes.object,
+  studentDetails: PropTypes.object
 };
 
 function mapStateToProps({ mainReducer }) {

@@ -4,6 +4,10 @@ import { PropTypes } from 'prop-types';
 import { List } from 'material-ui/List';
 import { Card, CardTitle } from 'material-ui/Card';
 
+/* These are meant to make the views with a list on
+ the left and detail on the right
+*/
+
 const MasterDetail = props => (
   <div style={{ display: 'flex', flexDirection: 'row' }}>{props.children}</div>
 );

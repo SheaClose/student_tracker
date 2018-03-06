@@ -15,6 +15,10 @@ import { MasterDetail, Master, Detail } from '../Utils/MasterDetail';
 class OneOnOnes extends Component {
   constructor(props) {
     super(props);
+    /* this component uses state to keep track of
+    the selected student. It might be better if it
+    used URL params like the Students page instead
+    */
     this.state = {
       open: false,
       selectedStudent: {}
@@ -95,7 +99,8 @@ class OneOnOnes extends Component {
             <OneOnOneDetail detail={selectedStudent} />
             <Divider />
             <div style={{ textAlign: 'center' }}>
-              {/* Eventually this button will load previous one on ones for the same student */}
+              {/* Eventually this button will load
+              previous one on ones for the same student */}
               <FlatButton secondary={true}>Load Previous...</FlatButton>
             </div>
           </List>

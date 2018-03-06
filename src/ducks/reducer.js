@@ -79,6 +79,7 @@ export default function reducer(state = initialState, action) {
     return Object.assign({}, state, { attendance: action.payload });
     /* eslint-disable no-case-declarations */
   case UPDATE_ATTENDANCE:
+    /* TODO: This is trying to do way too much in one function */
     const updateFunction = ({ attendance = {}, ...student }) => {
       if (!action.payload.dm_id) {
         // update everybody if no dm_id is specified

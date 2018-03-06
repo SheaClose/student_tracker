@@ -19,6 +19,7 @@ class User extends Component {
         <div className="user_card_container">
           <Paper className="paper">
             <DefaultCohortButton className="user_button" />
+            {/* DropStudent doesn't work anymore, not sure why */}
             <DropStudent className="user_button" />
             <RaisedButton
               style={button_style}

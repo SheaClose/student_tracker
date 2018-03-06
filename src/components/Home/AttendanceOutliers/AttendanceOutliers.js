@@ -6,7 +6,9 @@ import Card, { CardTitle, CardText } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 
 import Rating from '../../Utils/Rating';
-
+/* TODO: This is expecting an array of students with
+absence and tardy properties. It might make more sense
+to do it some other way */
 const AttendanceOutliers = props => {
   const { outliers = { attendance: [] } } = props;
   const { attendance } = outliers;
@@ -57,7 +59,8 @@ const AttendanceOutliers = props => {
 };
 
 AttendanceOutliers.propTypes = {
-  outliers: PropTypes.object
+  outliers: PropTypes.object,
+  style: PropTypes.object
 };
 
 const mapStateToProps = ({ mainReducer }) => ({

@@ -11,7 +11,9 @@ import { updateCompletion } from '../../ducks/projects/actions';
 class ProjectDetail extends Component {
   constructor(props) {
     super(props);
-    this.state = { newCompletion: this.props.project.completion };
+    this.state = {
+      newCompletion: this.props.project.completion
+    };
     this.handleChange = this.handleChange.bind(this);
     this.updateCompletion = this.updateCompletion.bind(this);
   }
@@ -78,7 +80,6 @@ class ProjectDetail extends Component {
 
           <NavigationCheck onClick={this.updateCompletion} />
         </div>
-        {/* {this.state.newCompletion !== project.completion && 'test'} */}
       </div>
     );
   }

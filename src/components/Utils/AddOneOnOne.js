@@ -12,6 +12,9 @@ import {
 import { addOneOnOne } from '../../ducks/actions';
 import RatingBar from './RatingBar';
 
+/* Maybe move this to OneOnOnes folder? Initially there wasn't
+a separate view for OneOnOnes */
+
 class AddOneOnOne extends Component {
   constructor(props) {
     super(props);

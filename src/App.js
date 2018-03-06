@@ -61,6 +61,8 @@ class App extends Component {
           </ToolbarGroup>
         </Toolbar>
         <NavBar open={this.state.open} toggleDrawer={this.toggleDrawer} />
+        {/* The Snackbar is here so redux can just control the one snackbar
+        instead of multiple snackbars throughout  */}
         <Snackbar
           open={Boolean(this.props.snackbar)}
           message={this.props.snackbar}

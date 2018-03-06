@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { selectCohort } from '../../ducks/actions';
 
 const SelectCohort = props => (
@@ -13,6 +12,7 @@ const SelectCohort = props => (
       props.selectCohort(value);
     }}
   >
+    {/* Need to change this to a raised button so it's more visible */}
     {props.cohorts.map(cohort => (
       <MenuItem key={cohort} primaryText={cohort} value={cohort} />
     ))}

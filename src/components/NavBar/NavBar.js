@@ -8,6 +8,9 @@ import MenuItem from 'material-ui/MenuItem';
 import Logo from '../../images/devLogo.png';
 import './NavBar.css';
 
+/* This is the Drawer side nav, not the bar across the top.
+The bar across the top is inlined in App.js
+*/
 class NavBar extends Component {
   constructor(props) {
     super(props);
@@ -42,6 +45,9 @@ class NavBar extends Component {
               <img className="navImage" src={Logo} alt="logo" />
             </MenuItem>
           </Link>
+          <Link to="/">
+            <MenuItem onClick={this.props.toggleDrawer}>Home</MenuItem>
+          </Link>
           <Link to="/projects">
             <MenuItem onClick={this.props.toggleDrawer}>Projects</MenuItem>
           </Link>
@@ -65,7 +71,9 @@ class NavBar extends Component {
 }
 
 NavBar.propTypes = {
-  isAuthed: PropTypes.bool.isRequired
+  isAuthed: PropTypes.bool.isRequired,
+  open: PropTypes.bool,
+  toggleDrawer: PropTypes.func
 };
 
 function mapStateToProps({ mainReducer }) {

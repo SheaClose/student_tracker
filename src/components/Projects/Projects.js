@@ -35,6 +35,9 @@ class Projects extends Component {
         flexWrap: 'wrap'
       }
     };
+    /* this gets passed into the Master component
+    as the map function for the student list
+    */
     const renderStudents = student => (
       <React.Fragment key={student.dm_id}>
         <ListItem
